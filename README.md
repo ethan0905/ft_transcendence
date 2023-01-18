@@ -9,7 +9,7 @@ environment:: // This section defines environment variables to be passed to the 
 - CHOKIDAR_USEPOLLING=true: // This sets the environment variable CHOKIDAR_USEPOLLING to true, which will be passed to the container and can be accessed by the React application.
 ````
 
-## Backend
+## 🔙 Backend
 Simple backend written in TypeScript using the NestJS framework:
 ````typescript
 import { Controller, Post, Body } from '@nestjs/common';
@@ -38,7 +38,7 @@ The response would be:
     "result": 7
 }
 ````
-### How do I send a `POST` request to backend ?
+### ❔ How do I send a `POST` request to backend ?
 There are several ways to send a `POST` request to a backend, depending on your use case and the tools you have available.
   1) curl: `curl -X POST -H "Content-Type: application/json" -d '{"num1":3,"num2":4}' http://localhost:3000/calculator/add`
   2) javascript: 
