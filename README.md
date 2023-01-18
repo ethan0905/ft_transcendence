@@ -40,8 +40,11 @@ The response would be:
 ````
 ### ❔ How do I send a `POST` request to backend ?
 There are several ways to send a `POST` request to a backend, depending on your use case and the tools you have available.
-  1) curl: `curl -X POST -H "Content-Type: application/json" -d '{"num1":3,"num2":4}' http://localhost:3000/calculator/add`
-  2) javascript: 
+  1) From bash using curl cmd:
+````bash
+curl -X POST -H "Content-Type: application/json" -d '{"num1":3,"num2":4}' http://localhost:3000/calculator/add`
+````
+  3) javascript: 
  ````javascript
  fetch('http://localhost:3000/calculator/add', {
   method: 'POST',
