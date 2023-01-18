@@ -38,6 +38,21 @@ The response would be:
     "result": 7
 }
 ````
+### How do I send a `POST` request to backend ?
+There are several ways to send a `POST` request to a backend, depending on your use case and the tools you have available.
+  1) curl: `curl -X POST -H "Content-Type: application/json" -d '{"num1":3,"num2":4}' http://localhost:3000/calculator/add`
+  2) javascript: 
+ ````javascript
+ fetch('http://localhost:3000/calculator/add', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({ num1: 3, num2: 4 }),
+})
+  .then((res) => res.json())
+  .then((data) => console.log(data));
+  ````
 
 ### ressources
 #### docker and react live reload
