@@ -6,6 +6,8 @@
  - [🔙 Backend](#-backend)
  - [❔ How do I send a `POST` request to backend ?](#-how-do-i-send-a-post-request-to-backend-)
  - [🔗 How do I connect frontend with backend?](#-how-do-i-connect-frontend-with-backend)
+ - [🚀 How to install PostgreSQL database and connect it to nestjs?](#)
+ - [🗃️ ressources](#-ressources)
 
 ## 🔄 Dynamic reload
 ````yaml
@@ -233,6 +235,6 @@ Note that you need to have a PostgreSQL server running and accessible from your 
 It's also good to test the connection before running the application and if there's an issue, you can check the PostgreSQL server logs for more information.
 
 Drop a ⭐ if that helped you ;)
-### 🗃️ ressources
+## 🗃️ ressources
 #### docker and react live reload
 https://medium.com/@chavezharris/live-reload-with-docker-and-react-3d6de03920af
