@@ -56,7 +56,8 @@ curl -X POST -H "Content-Type: application/json" -d '{"num1":3,"num2":4}' http:/
   .then((res) => res.json())
   .then((data) => console.log(data));
   ````
-## How do I connect frontend with backend?
+
+### 🔗 How do I connect frontend with backend?
 Here is an example of how you might connect a frontend and backend using a RESTful API with the Nest.js framework:
 
 On the backend, create a new Nest.js project using the Nest CLI and then create a new controller for your API. For example, you might create a file called `users.controller.ts` and add the following code:
