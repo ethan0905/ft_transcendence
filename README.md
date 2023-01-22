@@ -226,7 +226,7 @@ export class UsersService {
   }
 }
 ````
-6. Finally, you should start your application and check if the connection to the database is working correctly.
+Finally, you should start your application and check if the connection to the database is working correctly.
 
 Note that you need to have a PostgreSQL server running and accessible from your application, also, make sure to use the correct credentials for your database in the ormconfig.json file, and the database should exist before running the application.
 
