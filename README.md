@@ -2,10 +2,10 @@
 
 ## 📔 Summary
 
- - [🔄 Dynamic reload](#)
- - [🔙 Backend](#)
- - [❔ How do I send a `POST` request to backend ?](#)
- - [🔗 How do I connect frontend with backend?](#)
+ - [🔄 Dynamic reload](#-dynamic-reload)
+ - [🔙 Backend](#-backend)
+ - [❔ How do I send a `POST` request to backend ?](#-how-do-i-send-a-post-request-to-backend-)
+ - [🔗 How do I connect frontend with backend?](#-how-do-i-connect-frontend-with-backend)
 
 ## 🔄 Dynamic reload
 ````yaml
