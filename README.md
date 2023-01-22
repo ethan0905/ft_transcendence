@@ -56,6 +56,88 @@ curl -X POST -H "Content-Type: application/json" -d '{"num1":3,"num2":4}' http:/
   .then((res) => res.json())
   .then((data) => console.log(data));
   ````
+## How do I connect frontend with backend?
+Here is an example of how you might connect a frontend and backend using a RESTful API with the Nest.js framework:
+
+On the backend, create a new Nest.js project using the Nest CLI and then create a new controller for your API. For example, you might create a file called `users.controller.ts` and add the following code:
+
+````typescript
+import { Controller, Get, Post, Body } from '@nestjs/common';
+
+@Controller('users')
+export class UsersController {
+  @Get()
+  findAll() {
+    return 'This action returns all users';
+  }
+
+  @Post()
+  create(@Body() createUserDto: CreateUserDto) {
+    return `This action adds a new user: ${createUserDto}`;
+  }
+}
+````
+Create the service to handle the logic of the controllers, in this example, the `users.service.ts`:
+````typescript
+import { Injectable } from '@nestjs/common';
+
+@Injectable()
+export class UsersService {
+  private readonly users: User[] = [];
+
+  create(user: User) {
+    this.users.push(user);
+  }
+
+  findAll(): User[] {
+    return this.users;
+  }
+}
+````
+On the frontend, you can use a JavaScript library like axios to send HTTP requests to the backend API. For example, you might create a file called `users.js` and add the following code:
+````javascript
+import axios from 'axios';
+
+export const getUsers = () => {
+  return axios.get('http://localhost:3000/users').then(response => response.data);
+}
+
+export const createUser = (data) => {
+  return axios.post('http://localhost:3000/users', data).then(response => response.data);
+}
+````
+Finally, you can use these methods to retrieve data from the backend or send data to be stored or processed. For example, in a React component you can use the methods to fetch the data from the backend and update the component's state:
+````javascript
+import { useState, useEffect } from 'react';
+import { getUsers, createUser } from './users';
+
+function Users() {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    getUsers().then(data => setUsers(data));
+  }, []);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    createUser({ name: 'John Doe', age: 30 }).then(() => getUsers().then(data => setUsers(data)));
+  }
+
+  return (
+    <div>
+      <h1>Users</h1>
+      <ul>
+        {users.map(user => (
+          <li key={user.id}>{user.name}</li>
+        ))}
+      </ul>
+      <form onSubmit={handleSubmit}>
+        <button type="submit">Add user</button>
+      </form>
+    </div>
+  );
+}
+````
 
 ### ressources
 #### docker and react live reload
