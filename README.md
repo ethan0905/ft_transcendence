@@ -232,7 +232,7 @@ Note that you need to have a PostgreSQL server running and accessible from your 
 
 It's also good to test the connection before running the application and if there's an issue, you can check the PostgreSQL server logs for more information.
 
-Drop a star if that helped you ;)
+Drop a ⭐ if that helped you ;)
 ### ressources
 #### docker and react live reload
 https://medium.com/@chavezharris/live-reload-with-docker-and-react-3d6de03920af
