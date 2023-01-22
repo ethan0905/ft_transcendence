@@ -146,6 +146,92 @@ function Users() {
   );
 }
 ````
+### How to install PostgreSQL database and connect it to nestjs?
+To properly configure the connection to a PostgreSQL database and set it up on a Nest.js application, you can follow these steps:
+
+Install the @nestjs/typeorm and pg (or pg-native) package in your Nest.js application:
+````bash
+npm install @nestjs/typeorm pg
+````
+Create a new configuration file, for example ormconfig.json, in the root of your project. This file should contain the configuration settings for connecting to your PostgreSQL database. Here is an example:
+````json
+{
+  "type": "postgres",
+  "host": "localhost",
+  "port": 5432,
+  "username": "postgres",
+  "password": "postgres",
+  "database": "testdb",
+  "entities": ["dist/**/*.entity{.ts,.js}"],
+  "synchronize": true
+}
+````
+In the main file of your application, for example main.ts, you need to import TypeOrmModule from @nestjs/typeorm and call the forRoot method with the path to the ormconfig.json file.
+````typescript
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsersModule } from './users/users.module';
+
+@Module({
+  imports: [
+    TypeOrmModule.forRoot(),
+    UsersModule,
+  ],
+})
+export class AppModule {}
+````
+In the module where you want to use the entities, you need to import TypeOrmModule and call the forFeature method passing the entities you want to use.
+````typescript
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsersService } from './users.service';
+import { UsersController } from './users.controller';
+import { User } from './user.entity';
+
+@Module({
+  imports: [TypeOrmModule.forFeature([User])],
+  providers: [UsersService],
+  controllers: [UsersController],
+})
+export class UsersModule {}
+````
+In your service, you can use the getRepository function from typeorm to perform CRUD operations on your entities.
+````typescript
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from './user.entity';
+
+@Injectable()
+export class UsersService {
+  constructor(
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
+  ) {}
+
+  async findAll(): Promise<User[]> {
+    return await this.usersRepository.find();
+  }
+
+  async create(user: User): Promise<User> {
+    return await this.usersRepository.save(user);
+  }
+
+  async update(id: number, user: User): Promise<void> {
+    await this.usersRepository.update(id, user);
+  }
+
+  async delete(id: numberand : Promise<void> {
+    await this.usersRepository.delete(id);
+  }
+}
+````
+6. Finally, you should start your application and check if the connection to the database is working correctly.
+
+Note that you need to have a PostgreSQL server running and accessible from your application, also, make sure to use the correct credentials for your database in the ormconfig.json file, and the database should exist before running the application.
+
+It's also good to test the connection before running the application and if there's an issue, you can check the PostgreSQL server logs for more information.
+
 Drop a star if that helped you ;)
 ### ressources
 #### docker and react live reload
