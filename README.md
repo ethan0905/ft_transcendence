@@ -7,7 +7,7 @@
  - [❔ How do I send a `POST` request to backend ?](#-how-do-i-send-a-post-request-to-backend-)
  - [🔗 How do I connect frontend with backend?](#-how-do-i-connect-frontend-with-backend)
  - [🚀 How to install PostgreSQL database and connect it to nestjs?](#-how-to-install-postgresql-database-and-connect-it-to-nestjs)
- - [🗃️ ressources](#-ressources)
+ - [🗃️ ressources](#%EF%B8%8F-ressources)
 
 ## 🔄 Dynamic reload
 ````yaml
