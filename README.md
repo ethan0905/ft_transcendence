@@ -146,7 +146,7 @@ function Users() {
   );
 }
 ````
-### How to install PostgreSQL database and connect it to nestjs?
+### 🚀 How to install PostgreSQL database and connect it to nestjs?
 To properly configure the connection to a PostgreSQL database and set it up on a Nest.js application, you can follow these steps:
 
 Install the @nestjs/typeorm and pg (or pg-native) package in your Nest.js application:
