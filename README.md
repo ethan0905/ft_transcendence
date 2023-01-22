@@ -1,5 +1,12 @@
 # ft_transcendance
 
+## 📔 Summary
+
+ - [🔄 Dynamic reload](#)
+ - [🔙 Backend](#)
+ - [❔ How do I send a `POST` request to backend ?](#)
+ - [🔗 How do I connect frontend with backend?](#)
+
 ## 🔄 Dynamic reload
 ````yaml
 volumes:: // This section specifies the volumes to create for the service.
