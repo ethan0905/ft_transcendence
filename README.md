@@ -240,3 +240,5 @@ Drop a ⭐ if that helped you ;)
 https://medium.com/@chavezharris/live-reload-with-docker-and-react-3d6de03920af
 #### postgres install
 https://github.com/khezen/compose-postgres
+#### install dockerize app with nestjs/postgreSQL and prisma
+https://dev.to/mnzs/database-with-prisma-orm-docker-and-postgres-nestjs-with-passport-02-180l
