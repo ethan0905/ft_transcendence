@@ -8,12 +8,12 @@ export class AuthController{
 	//POST /auth/signup
 	@Post('signup')
 	signup() {
-		return {msg: "Hello"};
+		return this.authService.signup();
 	}
 
 	//POST /auth/signin
 	@Post('signin')
 	signin() {
-		return 'I am signin in';
+		return this.authService.signin();
 	}
 }
