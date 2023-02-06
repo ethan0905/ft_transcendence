@@ -235,6 +235,11 @@ Note that you need to have a PostgreSQL server running and accessible from your 
 It's also good to test the connection before running the application and if there's an issue, you can check the PostgreSQL server logs for more information.
 
 Drop a ⭐ if that helped you ;)
+
+## 🗃️ tools
+For backend, you can use Postman to test your api request. I am using Insomnia which is more minimalist and pleasant to use.  
+https://insomnia.rest/download  
+
 ## 🗃️ ressources
 #### docker and react live reload
 https://medium.com/@chavezharris/live-reload-with-docker-and-react-3d6de03920af
