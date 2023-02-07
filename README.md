@@ -236,7 +236,7 @@ It's also good to test the connection before running the application and if ther
 
 Drop a ⭐ if that helped you ;)
 
-## 🗃️ tools
+## 🔔 Reminder
 For backend, you can use Postman to test your api request. I am using Insomnia which is more minimalist and pleasant to use.  
 https://insomnia.rest/download  
 
@@ -288,6 +288,11 @@ ForbiddenExecption is from `@nestjs/common`
 
 Working on config env var:
 `yarn add @nestjs/config`
+
+Authentification:
+`yarn add @nestjs/passport passport @nestjs/jwt passport-jwt` --> install authentification packages  
+`yarn add -D @types/passport-jwt`  
+JSON web tokens --> jwt --> we store the var inside the .env file, and we create a var that `config.get('JWT_SECRET')` from env.
 
 `yarn start:dev` --> to run the backend application  
 use insomnia to interact using POST resquest  
