@@ -282,6 +282,10 @@ Hash datas:
 You can use bcrypt, but there is a problem, it is limited to the first 72 bytes. So for that reason I am using argon.
 `yarn add argon2` --> to install packages
 
+Errors sent:  
+need to import PrismaClientKnownRequestError from `@prisma/client/runtime` if you want it work properly  
+ForbiddenExecption is from `@nestjs/common`  
+
 `yarn start:dev` --> to run the backend application  
 use insomnia to interact using POST resquest  
 `docker-compose up backend -d` --> to build your postgres database  
