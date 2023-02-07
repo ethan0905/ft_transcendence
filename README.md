@@ -293,6 +293,11 @@ Authentification:
 `yarn add @nestjs/passport passport @nestjs/jwt passport-jwt` --> install authentification packages  
 `yarn add -D @types/passport-jwt`  
 JSON web tokens --> jwt --> we store the var inside the .env file, and we create a var that `config.get('JWT_SECRET')` from env.
+strategy folder and JwtStrategy class is for validating the token   
+
+implementing our own end to end tests:
+`yarn add -D  pactum`
+`yarn test:e2e` --> allows us to run the test e2e file
 
 `yarn start:dev` --> to run the backend application  
 use insomnia to interact using POST resquest  

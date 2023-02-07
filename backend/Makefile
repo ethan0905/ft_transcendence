@@ -23,6 +23,9 @@ down:
 ps:
 	docker-compose -f docker-compose.yml ps
 
+e2e:
+	yarn test:e2e
+
 fclean: down
 	docker rmi -f $$(docker images -qa);\
 	docker volume rm $$(docker volume ls -q);\
