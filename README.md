@@ -275,7 +275,12 @@ Error: Nest can't resolve dependencies of the AuthService (?). Please make sure 
 ````
 
 Step AuthDto:  
-`yarn add class-validator class-transformer`   
+`yarn add class-validator class-transformer` --> add library   
+use it to check data type object when posting request  
+
+Hash datas:  
+You can use bcrypt, but there is a problem, it is limited to the first 72 bytes. So for that reason I am using argon.
+`yarn add argon2` --> to install packages
 
 `yarn start:dev` --> to run the backend application  
 use insomnia to interact using POST resquest  
