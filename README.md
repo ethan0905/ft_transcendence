@@ -298,6 +298,10 @@ strategy folder and JwtStrategy class is for validating the token
 implementing our own end to end tests:
 `yarn add -D  pactum`
 `yarn test:e2e` --> allows us to run the test e2e file
+We gonna need to use an other database in order to not mess up with the real one. For that reason we gonna use `yarn add -D dotenv-cli` to get env variable in a cleaner way, not changing the prisma schema.  
+Then, we doing some sexy env injection --> `dotenv -e .env.test --` before the concerned test command. 
+`"prisma:test:deploy": "dotenv -e .env.test -- prisma migrate deploy",`  
+`"test:e2e": "dotenv -e .env.test -- jest --watch --no-cache --config ./test/jest-e2e.json"`  
 
 `yarn start:dev` --> to run the backend application  
 use insomnia to interact using POST resquest  
