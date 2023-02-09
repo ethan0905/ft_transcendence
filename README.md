@@ -21,10 +21,10 @@ At first, I didn't know where to start, so here are the steps to follow if you w
   2. Dockerize your frontend (check my documentation on how to dynamicaly reload your page)  
   3. When this is done, install your backend using NestJs, PostgreSQL and Prisma ORM  
   4. Dockerize your backend (check my documentation on how to install your backend)  
-  5. Then, finish by linking your frontend to your backend. If this work, you can now dockerize your full app from the root of the repository.  
+  5. Then, finish by linking your frontend to your backend. Dockerize your full app from the root of the repository.  
 
-Now that you have the project logic, we gonna go deeper into the building of your web application.
-Drop a star to support my work ⭐
+Now that you have the project logic, we gonna go deeper into the building of your web application.  
+Drop a star to support my work ⭐ Thank you  
 
 ## 🔄 Dynamic reload
 ````yaml
