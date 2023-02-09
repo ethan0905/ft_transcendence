@@ -6,12 +6,25 @@
 
 ## 📔 Summary
 
+ - [How to build a web app?](#)
  - [🔄 Dynamic reload](#-dynamic-reload)
  - [🔙 Backend](#-backend)
  - [❔ How do I send a `POST` request to backend ?](#-how-do-i-send-a-post-request-to-backend-)
  - [🔗 How do I connect frontend with backend?](#-how-do-i-connect-frontend-with-backend)
  - [🚀 How to install PostgreSQL database and connect it to nestjs?](#-how-to-install-postgresql-database-and-connect-it-to-nestjs)
  - [🗃️ ressources](#%EF%B8%8F-ressources)
+
+## How to build a web app?
+At first, I didn't know where to start, so here are the steps to follow if you want to properly build your web application. The following instructions are precious, and could save you some time. 
+  
+  1- Install your frontend using the ReactJs framework
+  2- Dockerize your frontend (check my documentation on how to dynamicaly reload your page)
+  3- When this is done, install your backend using NestJs, PostgreSQL and Prisma ORM
+  4- Dockerize your backend (check doc)
+  5- Then, finish by linking your frontend to your backend. If this work, you can now dockerize your full app from the root of the repository.
+
+Now that you have the project logic, we gonna go deeper into the building of your web application.
+Drop a star to support my work ⭐
 
 ## 🔄 Dynamic reload
 ````yaml
