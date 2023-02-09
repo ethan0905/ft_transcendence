@@ -244,6 +244,10 @@ Drop a ⭐ if that helped you ;)
 For backend, you can use Postman to test your api request. I am using Insomnia which is more minimalist and pleasant to use.  
 https://insomnia.rest/download  
 
+`yarn start:dev` --> to run the backend application  
+use insomnia to interact using POST resquest  
+`docker-compose up backend -d` --> to build your postgres database  
+
 Step to install the backend:  
 `nest new backend` --> to create the repository  
 remove all useless .controller and .service files inside src  
@@ -327,10 +331,6 @@ E2E testing is designed to test that your app works properly based on the API re
 
 To push further:
 We can work on api security, we can run our api in a cluster mode.. and more... 
-
-`yarn start:dev` --> to run the backend application  
-use insomnia to interact using POST resquest  
-`docker-compose up backend -d` --> to build your postgres database  
 
 ## 🗃️ ressources
 #### docker and react live reload
