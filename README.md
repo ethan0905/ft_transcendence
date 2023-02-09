@@ -6,7 +6,7 @@
 
 ## 📔 Summary
 
- - [How to build a web app?](#)
+ - [🏗️ How to build a web app?](#-how-to-build-a-web-app)
  - [🔄 Dynamic reload](#-dynamic-reload)
  - [🔙 Backend](#-backend)
  - [❔ How do I send a `POST` request to backend ?](#-how-do-i-send-a-post-request-to-backend-)
@@ -14,7 +14,7 @@
  - [🚀 How to install PostgreSQL database and connect it to nestjs?](#-how-to-install-postgresql-database-and-connect-it-to-nestjs)
  - [🗃️ ressources](#%EF%B8%8F-ressources)
 
-## How to build a web app?
+## 🏗️ How to build a web app?
 At first, I didn't know where to start, so here are the steps to follow if you want to properly build your web application. The following instructions are precious, and could save you some time. 
   
   1- Install your frontend using the ReactJs framework
