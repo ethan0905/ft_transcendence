@@ -6,7 +6,7 @@
 
 ## 📔 Summary
 
- - [🏗️ How to build a web app?](#-how-to-build-a-web-app)
+ - [🏗️ How to build a web app?](#%EF%B8%8F-how-to-build-a-web-app)
  - [🔄 Dynamic reload](#-dynamic-reload)
  - [🔙 Backend](#-backend)
  - [❔ How do I send a `POST` request to backend ?](#-how-do-i-send-a-post-request-to-backend-)
