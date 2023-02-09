@@ -1,5 +1,9 @@
 # ft_transcendance
 
+> Project is in progress.. The final readme will come soon
+> From today you can use it to understand the basic concepts for the backend
+> I am gonna explain progressively how to install the basic structure of the project, using NestJS, PostgreSQL, Prisma for the backend, and ReactJS for the frontend.
+
 ## 📔 Summary
 
  - [🔄 Dynamic reload](#-dynamic-reload)
@@ -302,6 +306,27 @@ We gonna need to use an other database in order to not mess up with the real one
 Then, we doing some sexy env injection --> `dotenv -e .env.test --` before the concerned test command. 
 `"prisma:test:deploy": "dotenv -e .env.test -- prisma migrate deploy",`  
 `"test:e2e": "dotenv -e .env.test -- jest --watch --no-cache --config ./test/jest-e2e.json"`  
+I created a `pretest:e2e` that clean the existing volumes, and get launch when you call `yarn test:e2e` command.  
+We then need to restart prisma studio using the special test env `npx dotenv -e .env.test -- prisma studio`  
+
+Be carefull, stop the server before running e2e tests. If not, you gonna get this kind of errors  
+````bash
+  ● App e2e › Auth › Signup › should signup
+
+    listen EADDRINUSE: address already in use :::3333
+
+      22 |     );
+      23 |     await app.init();
+    > 24 |     await app.listen(3333);
+         |               ^
+      25 |
+      26 |     prisma = app.get(PrismaService);
+      27 |     await prisma.cleanDatabase();
+````
+E2E testing is designed to test that your app works properly based on the API request done with it. To be sure that everything is ok, you should also implement integration testing (using insomnia).
+
+To push further:
+We can work on api security, we can run our api in a cluster mode.. and more... 
 
 `yarn start:dev` --> to run the backend application  
 use insomnia to interact using POST resquest  
@@ -314,3 +339,7 @@ https://medium.com/@chavezharris/live-reload-with-docker-and-react-3d6de03920af
 https://github.com/khezen/compose-postgres
 #### install dockerize app with nestjs/postgreSQL and prisma
 https://dev.to/mnzs/database-with-prisma-orm-docker-and-postgres-nestjs-with-passport-02-180l
+
+#### nestjs api
+https://www.youtube.com/watch?v=GHTA143_b-s&ab_channel=freeCodeCamp.org  
+https://github.com/vladwulf/nestjs-api-tutorial  

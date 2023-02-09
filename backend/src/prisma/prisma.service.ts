@@ -14,4 +14,11 @@ export class PrismaService extends PrismaClient {
 		});
 		// console.log(config.get('DATABASE_URL'));
 	}
+
+	cleanDatabase() {
+		return this.$transaction([ //using the $transaction allows us to execute the deleteMany function first on bookmark, then on user. It is safier than not using it.
+			this.bookmark.deleteMany(),
+			this.user.deleteMany(),
+		])
+	}
 }

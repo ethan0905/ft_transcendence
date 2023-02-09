@@ -12,10 +12,19 @@
 
 all:	up
 
+# to build the config for backend
 up:
 	docker-compose -f docker-compose.yml up -d
 	sleep 1
 	npx prisma migrate deploy
+
+# to run the backend
+run:
+	yarn start:dev
+
+# to run the database
+prisma-studio:
+	npx prisma studio
 
 down:
 	docker-compose -f docker-compose.yml down
@@ -23,6 +32,7 @@ down:
 ps:
 	docker-compose -f docker-compose.yml ps
 
+# to run end2end tests
 e2e:
 	yarn test:e2e
 
