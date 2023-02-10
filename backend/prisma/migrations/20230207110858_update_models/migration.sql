@@ -11,6 +11,9 @@ DROP TABLE "Bookmark";
 -- DropTable
 DROP TABLE "User";
 
+-- DropTable
+DROP TABLE "Chat";
+
 -- CreateTable
 CREATE TABLE "users" (
     "id" SERIAL NOT NULL,
@@ -35,6 +38,18 @@ CREATE TABLE "bookmarks" (
     "userId" INTEGER NOT NULL,
 
     CONSTRAINT "bookmarks_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "chats" (
+    "id" SERIAL NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "name" TEXT NOT NULL,
+    "message" TEXT NOT NULL,
+    "user" TEXT NOT NULL,
+
+    CONSTRAINT "chats_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
