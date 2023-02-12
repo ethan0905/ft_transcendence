@@ -345,6 +345,11 @@ E2E testing is designed to test that your app works properly based on the API re
 To push further:
 We can work on api security, we can run our api in a cluster mode.. and more... 
 
+Dockerizing your entire app:
+1. Create your Dockerfiles inside frontend and backend. Tests them individualy using the `docker build .` command.  
+2. Go to the root of your directory and create your `docker-compose.yml` file.   
+3. 
+
 ## 🗃️ ressources
 #### docker and react live reload
 https://medium.com/@chavezharris/live-reload-with-docker-and-react-3d6de03920af
