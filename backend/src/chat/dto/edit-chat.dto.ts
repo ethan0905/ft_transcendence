@@ -2,10 +2,10 @@ import { IsEmail, IsOptional, IsString , IsTrue } from 'class-validator';
 import { IsUser } from '../../user/validators/is-user.validator';
 
 
-export class ChatDto{
+export class EditChatDto{
     @IsString()
     @IsOptional()
-    name?: string;
+    Chatname?: string;
 
     @IsString()
     @IsOptional()
@@ -13,7 +13,7 @@ export class ChatDto{
 
     @IsUser()
     @IsOptional()
-    users?: string[];
+    Users?: string[];
 
     @IsTrue()
     @IsOptional()
@@ -21,11 +21,11 @@ export class ChatDto{
 
     @IsString()
     @IsOptional()
-    password?: string;
+    Password?: string;
 
     @IsString()
     @IsOptional()
-    passwordConfirmation?: string;
+    PasswordConfirmation?: string;
 
     @IsString()
     @IsOptional()
