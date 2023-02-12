@@ -1,6 +1,4 @@
 import { IsEmail, IsOptional, IsString , IsTrue } from 'class-validator';
-import { IsUser } from '../../user/validators/is-user.validator';
-
 
 export class EditChatDto{
     @IsString()
