@@ -35,10 +35,10 @@ export class ChatService {
         return chat;
     }
 
-    async editChat(chatId: number, dto: EditChatDto) {
+    async editChat(Name: String, dto: EditChatDto) {
         const chat = await this.prisma.chat.update({
             where: {
-                id: chatId,
+                chatName: Name,
             },
             data: {
                 ...dto,
