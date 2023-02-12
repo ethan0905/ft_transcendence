@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { ChatDto } from './dto';
+import { EditChatDto } from './dto';
 
 @Injectable()
 export class ChatService {
     constructor(private prisma: PrismaService) {}
 
-    async editChat(chatId: number, dto: ChatDto) {
+    async editChat(chatId: number, dto: EditChatDto) {
         const chat = await this.prisma.chat.update({
             where: {
                 id: chatId,

@@ -4,8 +4,8 @@ import { Request } from 'express';
 import { JwtGuard } from '../auth/guard';
 import { GetUser } from '../auth/decorator';
 import { User } from '@prisma/client';
-import { ChatDto } from './dto';
-import { UserService } from './user.service';
+import { EditChatDto } from './dto';
+// import { UserService } from './user.service';
 import { ChatService } from './chat.service';
 
 @UseGuards(JwtGuard)
@@ -29,12 +29,12 @@ export class ChatController {
     constructor(private chatService: ChatService) {}
 
     @Get()
-    getChats(@GetUser() user: User) {
+    getChats(@getChats() chat: Chat) {
         return this.chatService.getChats(user.id);
     }
 
     @Patch()
-    editChat(@GetUser('id') userId: number, @Body() dto: ChatDto) {
+    editChat(@GetUser('id') userId: number, @Body() dto: EditChatDto) {
         return this.chatService.editChat(userId, dto);
     }
 }

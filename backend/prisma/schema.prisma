@@ -47,12 +47,12 @@ model Chat {
   updatedAt DateTime  @updatedAt
 
   chatId    Int
-  ChatName      string
-  User      User[]
-  isPrivate Boolean
-  Password  String?
-  Admin     String[]
-  Msg       String[]
+  chatName      String
+  // User      String[]
+  // isPrivate Boolean
+  // Password  String?
+  // Admin     String[]
+  msg       String[]
 
   @@map("chat")
 }

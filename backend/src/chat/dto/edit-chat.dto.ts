@@ -5,33 +5,33 @@ import { IsUser } from '../../user/validators/is-user.validator';
 export class EditChatDto{
     @IsString()
     @IsOptional()
-    Chatname?: string;
+    chatName?: string;
 
     @IsString()
     @IsOptional()
     description?: string;
 
-    @IsUser()
-    @IsOptional()
-    Users?: string[];
+    // @IsUser()
+    // @IsOptional()
+    // Users?: string[];
 
-    @IsTrue()
-    @IsOptional()
-    isPrivate?: boolean;
+    // @IsTrue()
+    // @IsOptional()
+    // isPrivate?: boolean;
+
+    // @IsString()
+    // @IsOptional()
+    // Password?: string;
+
+    // @IsString()
+    // @IsOptional()
+    // PasswordConfirmation?: string;
+
+    // @IsString()
+    // @IsOptional()
+    // Admin?: string[];
 
     @IsString()
     @IsOptional()
-    Password?: string;
-
-    @IsString()
-    @IsOptional()
-    PasswordConfirmation?: string;
-
-    @IsString()
-    @IsOptional()
-    Admin?: string[];
-
-    @IsString()
-    @IsOptional()
-    Msg?: string[];
+    msg?: string[];
 }

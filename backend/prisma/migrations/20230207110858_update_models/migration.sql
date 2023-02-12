@@ -11,9 +11,6 @@ DROP TABLE "Bookmark";
 -- DropTable
 DROP TABLE "User";
 
--- DropTable
-DROP TABLE "Chat";
-
 -- CreateTable
 CREATE TABLE "users" (
     "id" SERIAL NOT NULL,
