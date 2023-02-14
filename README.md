@@ -4,6 +4,14 @@
 > From today you can use it to understand the basic concepts for the backend
 > I am gonna explain progressively how to install the basic structure of the project, using NestJS, PostgreSQL, Prisma for the backend, and ReactJS for the frontend.
 
+## ⚙️ How to run the project?
+
+1. Run the command `make up`  
+2. On a different terminal, after the project has been built, in the /project folder run `make schema`  
+3. Go to your navigator:  
+    --> `localhost:3000`: for the frontend  
+    --> `localhost:5555`: for prisma studio  
+
 ## 📔 Summary
 
  - [🏗️ How to build a web app?](#%EF%B8%8F-how-to-build-a-web-app)
@@ -345,6 +353,14 @@ E2E testing is designed to test that your app works properly based on the API re
 To push further:
 We can work on api security, we can run our api in a cluster mode.. and more... 
 
+Dockerizing your entire app:
+1. Create your Dockerfiles inside frontend and backend. Tests them individualy using the `docker build .` command.  
+2. Go to the root of your directory and create your `docker-compose.yml` file.   
+3. 
+
+If you have any trouble, go inside your container using this command:  
+`docker exec -it <name> sh`
+
 ## 🗃️ ressources
 #### docker and react live reload
 https://medium.com/@chavezharris/live-reload-with-docker-and-react-3d6de03920af
@@ -356,3 +372,19 @@ https://dev.to/mnzs/database-with-prisma-orm-docker-and-postgres-nestjs-with-pas
 #### nestjs api
 https://www.youtube.com/watch?v=GHTA143_b-s&ab_channel=freeCodeCamp.org  
 https://github.com/vladwulf/nestjs-api-tutorial  
+
+#### Troubles dockerizing your app on Mac m1 chips?
+https://pythonspeed.com/articles/docker-build-problems-mac/
+
+#### My savior!!!!!!!!!!!!!!!!!!!!
+https://stackoverflow.com/questions/71251937/error-p1001-cant-reach-database-server-at-localhost5200  
+pb1: un packet propre a l'architecture macos arm64 encore dans mon package.json (qui empechait mon backend de se lancer)  
+pb2: le port 5432 qui etait pas accessible depuis mon back (il fallait remplacer localhost par ma db_name, et le port 5434 par le port 5432)  
+
+#### install prisma studio inside docker-compose
+https://hub.docker.com/r/timothyjmiller/prisma-studio  
+npm i -D @prisma/cli@dev  
+go inside container, copy the schema.prisma config in /schema.prisma.  
+run `docker cp backend/prisma/schema.prisma backend_prisma:/schema.prisma`  
+run `docker exec backend_prisma npx prisma migrate dev`  
+go on the `localhost:5555` and it should be good  

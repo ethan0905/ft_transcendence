@@ -6,7 +6,7 @@ services:
        context: .
        dockerfile: Dockerfile
      volumes:
-       - ./:/frontend:delegated
+       - ./:/usr/src/frontend:delegated
        - /node_modules
      ports:
        - 3000:3000

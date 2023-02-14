@@ -1,0 +1,86 @@
+# Use this tool to format your yml files
+# https://jsonformatter.org/yaml-formatter
+
+version: '3.8'
+
+volumes:
+  data:
+#   uploads:
+
+services:
+  postgres:
+    image: 'postgres:13'
+    restart: always
+    container_name: backend_postgres
+    ports:
+      - 5434:5432
+    environment:
+      POSTGRES_USER: ethan
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: nest
+    networks:
+      - transcendance_ntw
+    volumes:
+      - data:/var/lib/postgresql/data
+      # - ./postgres-db:/var/lib/postgresql/data
+
+  prisma-studio:
+    image: 'timothyjmiller/prisma-studio:latest'
+    restart: unless-stopped
+    container_name: backend_prisma
+    command: "npx prisma migrate dev"
+    env_file:
+      - ./backend/.env
+    ports:
+      - 5555:5555
+    networks:
+      - transcendance_ntw
+    depends_on:
+      - backend
+
+  backend:
+    container_name: backend_nestjs
+    restart: unless-stopped
+    image: transcendance-api:1.0.0
+    build:
+      context: backend
+      # target: production
+      dockerfile: Dockerfile
+    ports:
+      - 3333:3333
+    networks:
+      - transcendance_ntw
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - postgres
+    # healthcheck:
+    #   test: yarn start:prod
+    #   # interval: 
+    #   timeout: 30s
+    #   retries: 3
+
+  frontend:
+    container_name: frontend_reactjs
+    restart: unless-stopped
+    image: transcendance-client:1.0.0
+    build:
+      context: frontend
+      # target: production
+      dockerfile: Dockerfile
+    volumes:
+      - ./frontend:/app
+    ports:
+      - 3000:3000
+    networks:
+      - transcendance_ntw
+    depends_on:
+      - backend
+    healthcheck:
+      test: npm start
+      timeout: 30s
+      retries: 3
+
+networks:
+  transcendance_ntw:
+    driver: bridge

@@ -1,23 +1,23 @@
 import logo from './logo.svg';
 import './App.css';
+import FormPage from './pages/form.js'; 
 
 function App() {
+  // const object = {
+  //   email: 'front@gmail.com',
+  //   password: '12345',
+  // };
+
+  // const data = await axios.post('http://localhost:3333/auth/signup', object);
+
+  // if (data.status === parseInt('401'))
+  //   console.log("error 401");
+  // else
+  //   console.log("Success");
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <FormPage />
     </div>
   );
 }

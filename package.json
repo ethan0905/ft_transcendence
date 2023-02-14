@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "@prisma/cli": "^2.16.0-dev.68"
+  }
+}
