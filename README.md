@@ -4,6 +4,14 @@
 > From today you can use it to understand the basic concepts for the backend
 > I am gonna explain progressively how to install the basic structure of the project, using NestJS, PostgreSQL, Prisma for the backend, and ReactJS for the frontend.
 
+## How to run the project?
+
+1. Run the command `make up`  
+2. On a different terminal, after the project has been built, in the /project folder run `make schema`  
+3. Go to your navigator:  
+    --> `localhost:3000`: for the frontend  
+    --> `localhost:5555`: for prisma studio  
+
 ## 📔 Summary
 
  - [🏗️ How to build a web app?](#%EF%B8%8F-how-to-build-a-web-app)
