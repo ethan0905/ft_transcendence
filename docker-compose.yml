@@ -2,6 +2,11 @@
 # https://jsonformatter.org/yaml-formatter
 
 version: '3.8'
+
+volumes:
+  data:
+#   uploads:
+
 services:
   postgres:
     image: 'postgres:13'
@@ -16,7 +21,8 @@ services:
     networks:
       - transcendance_ntw
     volumes:
-      - ./postgres-db:/var/lib/postgresql/data
+      - data:/var/lib/postgresql/data
+      # - ./postgres-db:/var/lib/postgresql/data
 
   backend:
     container_name: backend_nestjs
@@ -30,8 +36,15 @@ services:
       - 3333:3333
     networks:
       - transcendance_ntw
+    volumes:
+      - ./backend:/app
     depends_on:
       - postgres
+    healthcheck:
+      test: yarn start:prod
+      # interval: 
+      timeout: 30s
+      retries: 3
 
   frontend:
     container_name: frontend_reactjs
@@ -41,28 +54,18 @@ services:
       context: frontend
       # target: production
       dockerfile: Dockerfile
-    # volumes:
-    #   - ./:/usr/src/frontend:delegated
-    #   - /node_modules
+    volumes:
+      - ./frontend:/app
     ports:
       - 3000:3000
-    # environment:
-    #   - CHOKIDAR_USEPOLLING=true
     networks:
       - transcendance_ntw
     depends_on:
       - backend
-    
-  # test-postgres:
-  #   image: 'postgres:13'
-  #   ports:
-  #     - '5435:5432'
-  #   environment:
-  #     POSTGRES_USER: ethan
-  #     POSTGRES_PASSWORD: 123
-  #     POSTGRES_DB: nest
-  #   networks:
-  #     - transcendance_ntw
+    healthcheck:
+      test: npm start
+      timeout: 30s
+      retries: 3
 
 networks:
   transcendance_ntw:

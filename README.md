@@ -350,6 +350,9 @@ Dockerizing your entire app:
 2. Go to the root of your directory and create your `docker-compose.yml` file.   
 3. 
 
+If you have any trouble, go inside your container using this command:  
+`docker exec -it <name> sh`
+
 ## 🗃️ ressources
 #### docker and react live reload
 https://medium.com/@chavezharris/live-reload-with-docker-and-react-3d6de03920af
@@ -361,3 +364,6 @@ https://dev.to/mnzs/database-with-prisma-orm-docker-and-postgres-nestjs-with-pas
 #### nestjs api
 https://www.youtube.com/watch?v=GHTA143_b-s&ab_channel=freeCodeCamp.org  
 https://github.com/vladwulf/nestjs-api-tutorial  
+
+#### Troubles dockerizing your app on Mac m1 chips?
+https://pythonspeed.com/articles/docker-build-problems-mac/

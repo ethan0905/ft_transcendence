@@ -12,20 +12,37 @@
 # # Deploy app for local development
 # CMD npm start --host 0.0.0.0 --port 3000 --disableHostCheck true
 
+# =======
 
-FROM node:14 AS Production
+FROM --platform=linux/amd64 node:14 AS Production
 
 ENV NODE_ENV=production
 
-WORKDIR /usr/src/frontend
+# WORKDIR /usr/src/frontend
+WORKDIR /app
 
-COPY package.json .
+# COPY package.json .
 
-RUN npm install axios
-RUN npm install
+# RUN npm install axios
+# RUN npm install
 
 COPY . .
 
-RUN npm run build
+# RUN npm run build
 
-CMD ["sh", "-c", "npm start"]
+EXPOSE 3333
+
+CMD ["/bin/sh", "-c", "npm install && npm start"]
+
+#-====
+
+# FROM node:14
+
+# COPY ./     /app/
+
+# WORKDIR /app
+
+# RUN npm install
+
+# CMD ["npm", "run", "build"]
+

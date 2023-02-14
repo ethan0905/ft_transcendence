@@ -3,16 +3,19 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: c2h6 <esafar@student.42.fr>                +#+  +:+       +#+         #
+#    By: c2h6 <c2h6@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/13 12:28:32 by c2h6              #+#    #+#              #
-#    Updated: 2022/09/13 12:28:34 by c2h6             ###   ########.fr        #
+#    Updated: 2023/02/14 11:29:29 by c2h6             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 all:	up
 
 up:
+	docker-compose up --build
+
+upd:
 	docker-compose -f docker-compose.yml up -d
 
 info:
@@ -21,6 +24,8 @@ info:
 	@docker images
 	@echo "\n"
 	@docker volume ls
+	@echo "\n"
+	@docker network ls
 
 down:
 	docker-compose -f docker-compose.yml down

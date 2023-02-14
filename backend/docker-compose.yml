@@ -1,7 +1,7 @@
 # Use this tool to format your yml files
 # https://jsonformatter.org/yaml-formatter
 
-version: '3.8'
+version: '3.9'
 services:
   postgres:
     image: 'postgres:13'
@@ -13,16 +13,28 @@ services:
       POSTGRES_DB: nest
     networks:
       - transcendance_ntw
-  test-postgres:
-    image: 'postgres:13'
-    ports:
-      - '5435:5432'
-    environment:
-      POSTGRES_USER: ethan
-      POSTGRES_PASSWORD: 123
-      POSTGRES_DB: nest
-    networks:
-      - transcendance_ntw
+
+  backend:
+    image: 'node:13'
+    # build:
+    #   platform: linux/amd64
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: yarn install && yarn start:dev
+    depends_on:
+      - postgres
+
+  # test-postgres:
+  #   image: 'postgres:13'
+  #   ports:
+  #     - '5435:5432'
+  #   environment:
+  #     POSTGRES_USER: ethan
+  #     POSTGRES_PASSWORD: 123
+  #     POSTGRES_DB: nest
+  #   networks:
+  #     - transcendance_ntw
 
 networks:
   transcendance_ntw: null

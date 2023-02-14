@@ -1,4 +1,5 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { Express } from 'express';
 
  // structure of the decorator coming from the nestjs documentation
 export const GetUser = createParamDecorator(
