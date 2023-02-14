@@ -1,7 +1,7 @@
 # ft_transcendance
 
-> Project is in progress.. The final readme will come soon
-> From today you can use it to understand the basic concepts for the backend
+> Project is in progress.. The final readme will come soon  
+> From today you can use it to understand the basic concepts for the backend  
 > I am gonna explain progressively how to install the basic structure of the project, using NestJS, PostgreSQL, Prisma for the backend, and ReactJS for the frontend.
 
 ## ⚙️ How to run the project?
