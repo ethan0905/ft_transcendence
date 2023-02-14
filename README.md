@@ -377,14 +377,14 @@ https://github.com/vladwulf/nestjs-api-tutorial
 https://pythonspeed.com/articles/docker-build-problems-mac/
 
 #### My savior!!!!!!!!!!!!!!!!!!!!
-https://stackoverflow.com/questions/71251937/error-p1001-cant-reach-database-server-at-localhost5200
-pb1: un packet propre a l'architecture macos arm64 encore dans mon package.json (qui empechait mon backend de se lancer)
-pb2: le port 5432 qui etait pas accessible depuis mon back (il fallait remplacer localhost par ma db_name, et le port 5434 par le port 5432)
+https://stackoverflow.com/questions/71251937/error-p1001-cant-reach-database-server-at-localhost5200  
+pb1: un packet propre a l'architecture macos arm64 encore dans mon package.json (qui empechait mon backend de se lancer)  
+pb2: le port 5432 qui etait pas accessible depuis mon back (il fallait remplacer localhost par ma db_name, et le port 5434 par le port 5432)  
 
 #### install prisma studio inside docker-compose
-https://hub.docker.com/r/timothyjmiller/prisma-studio
-npm i -D @prisma/cli@dev
-go inside container, copy the schema.prisma config in /schema.prisma.
-run `docker cp backend/prisma/schema.prisma backend_prisma:/schema.prisma`
-run `docker exec backend_prisma npx prisma migrate dev`
-go on the `localhost:5555` and it should be good
+https://hub.docker.com/r/timothyjmiller/prisma-studio  
+npm i -D @prisma/cli@dev  
+go inside container, copy the schema.prisma config in /schema.prisma.  
+run `docker cp backend/prisma/schema.prisma backend_prisma:/schema.prisma`  
+run `docker exec backend_prisma npx prisma migrate dev`  
+go on the `localhost:5555` and it should be good  
