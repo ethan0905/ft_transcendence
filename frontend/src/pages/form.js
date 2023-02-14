@@ -20,7 +20,7 @@ function FormPage() {
   const submitSignup = (e) => {
     e.preventDefault();
     signupUser({
-      email: "Docker@gmail.com",
+      email: "paul454@gmail.com",
       password: '12345',
     }).then((data) => console.log(data))
     // .then(() => getUsers().then(data => setUsers(data)));
@@ -36,7 +36,7 @@ function FormPage() {
 
   return (
     <div>
-      <h1>Users</h1>
+      <h1>Users or whatever</h1>
 
       <form onSubmit={submitSignup}>
         <div>

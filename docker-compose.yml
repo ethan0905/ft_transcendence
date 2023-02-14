@@ -24,6 +24,20 @@ services:
       - data:/var/lib/postgresql/data
       # - ./postgres-db:/var/lib/postgresql/data
 
+  prisma-studio:
+    image: 'timothyjmiller/prisma-studio:latest'
+    restart: unless-stopped
+    container_name: backend_prisma
+    command: "npx prisma migrate dev"
+    env_file:
+      - ./backend/.env
+    ports:
+      - 5555:5555
+    networks:
+      - transcendance_ntw
+    depends_on:
+      - backend
+
   backend:
     container_name: backend_nestjs
     restart: unless-stopped
@@ -40,11 +54,11 @@ services:
       - ./backend:/app
     depends_on:
       - postgres
-    healthcheck:
-      test: yarn start:prod
-      # interval: 
-      timeout: 30s
-      retries: 3
+    # healthcheck:
+    #   test: yarn start:prod
+    #   # interval: 
+    #   timeout: 30s
+    #   retries: 3
 
   frontend:
     container_name: frontend_reactjs
