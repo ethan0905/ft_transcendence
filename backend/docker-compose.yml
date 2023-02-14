@@ -14,16 +14,16 @@ services:
     networks:
       - transcendance_ntw
 
-  backend:
-    image: 'node:13'
-    # build:
-    #   platform: linux/amd64
-    working_dir: /app
-    volumes:
-      - .:/app
-    command: yarn install && yarn start:dev
-    depends_on:
-      - postgres
+  # backend:
+  #   image: 'node:13'
+  #   # build:
+  #   #   platform: linux/amd64
+  #   working_dir: /app
+  #   volumes:
+  #     - .:/app
+  #   command: yarn install && yarn start:dev
+  #   depends_on:
+  #     - postgres
 
   # test-postgres:
   #   image: 'postgres:13'
