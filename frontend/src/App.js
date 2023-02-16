@@ -1,23 +1,20 @@
-import logo from './logo.svg';
 import './App.css';
-import FormPage from './pages/form.js'; 
+import { useState } from 'react';
+import { Login } from './components/auth-form';
+import { Register } from './components/register-form';
 
 function App() {
-  // const object = {
-  //   email: 'front@gmail.com',
-  //   password: '12345',
-  // };
+  const [currentForm, setCurrentForm] = useState('login');
 
-  // const data = await axios.post('http://localhost:3333/auth/signup', object);
-
-  // if (data.status === parseInt('401'))
-  //   console.log("error 401");
-  // else
-  //   console.log("Success");
+  const toggleForm = (formName) => {
+    setCurrentForm(formName);
+  }
 
   return (
-    <div>
-      <FormPage />
+    <div className='App'>
+      {
+        currentForm === "login" ? <Login onFormSwitch={toggleForm} /> : <Register onFormSwitch={toggleForm} />
+      }
     </div>
   );
 }

@@ -24,19 +24,19 @@ services:
       - data:/var/lib/postgresql/data
       # - ./postgres-db:/var/lib/postgresql/data
 
-  prisma-studio:
-    image: 'timothyjmiller/prisma-studio:latest'
-    restart: unless-stopped
-    container_name: backend_prisma
-    command: "npx prisma migrate dev"
-    env_file:
-      - ./backend/.env
-    ports:
-      - 5555:5555
-    networks:
-      - transcendance_ntw
-    depends_on:
-      - backend
+  # prisma-studio:
+  #   image: 'timothyjmiller/prisma-studio:latest'
+  #   restart: unless-stopped
+  #   container_name: backend_prisma
+  #   command: "npx prisma migrate dev"
+  #   env_file:
+  #     - ./backend/.env
+  #   ports:
+  #     - 5555:5555
+  #   networks:
+  #     - transcendance_ntw
+  #   depends_on:
+  #     - backend
 
   backend:
     container_name: backend_nestjs
@@ -48,6 +48,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - 3333:3333
+      - 5555:5555
     networks:
       - transcendance_ntw
     volumes:
@@ -76,6 +77,8 @@ services:
       - transcendance_ntw
     depends_on:
       - backend
+    environment:
+      - CHOKIDAR_USEPOLLING=true 
     healthcheck:
       test: npm start
       timeout: 30s
