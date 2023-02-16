@@ -7,8 +7,9 @@
 ## ⚙️ How to run the project?
 
 1. Run the command `make up`  
-2. On a different terminal, after the project has been built, in the /project folder run `make schema`  
-3. Go to your navigator:  
+2. On a different terminal, after the project has been built, in the /project folder run `make exec` to go inside the backend service  
+3. Run the command: `npx prisma studio`    
+4. Go to your navigator:  
     --> `localhost:3000`: for the frontend  
     --> `localhost:5555`: for prisma studio  
 
