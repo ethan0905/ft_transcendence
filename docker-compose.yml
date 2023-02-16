@@ -5,7 +5,6 @@ version: '3.8'
 
 volumes:
   data:
-#   uploads:
 
 services:
   postgres:
@@ -83,6 +82,17 @@ services:
       test: npm start
       timeout: 30s
       retries: 3
+
+  test-postgres:
+    image: 'postgres:13'
+    ports:
+      - '5435:5432'
+    environment:
+      POSTGRES_USER: ethan
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: nest
+    networks:
+      - transcendance_ntw
 
 networks:
   transcendance_ntw:
