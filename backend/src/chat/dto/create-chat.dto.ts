@@ -7,7 +7,9 @@ export class CreateChatDto {
 
     @IsString()
     @IsNotEmpty()
-    descritpion: string;
+    author: string;
+
+    @
 
     // @IsString()
     // @IsOptional()

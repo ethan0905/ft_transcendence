@@ -41,18 +41,28 @@ model Bookmark {
   @@map("bookmarks")
 }
 
+model Msg {
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  author      User
+  message     String
+
+  @@map("msg")
+}
+
 model Chat {
   id        Int       @id @default(autoincrement())
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
-  chatId    Int
-  chatName      String
-  // User      String[]
-  // isPrivate Boolean
-  // Password  String?
-  // Admin     String[]
-  msg       String[]
+  chatId       Int
+  chatName     String
+  User         User[]
+  isPrivate    Boolean
+  Password     String?
+  Admin        User[]
+  msg          Msg[]
 
   @@map("chat")
 }
