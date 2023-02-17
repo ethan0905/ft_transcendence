@@ -7,6 +7,10 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true, //block any other type variables
   })); // in order to use NestJs builtin pipes
+
+  var cors = require('cors'); //for connectivity with frontend
+  app.use(cors());
+
   await app.listen(3333);
 }
 bootstrap();
