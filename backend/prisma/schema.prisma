@@ -24,6 +24,7 @@ model User {
   bookmarks Bookmark[]
   
   @@map("users")
+  @@unique([email])
 }
 
 model Bookmark {
@@ -45,10 +46,21 @@ model Msg {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
-  author      User
+  // author      User @relation(fields: [userid], references: [id])
   message     String
 
+  owner       User      @relation(fields: [userId], references: [id])
+  userId      Int
+  channel     Chat   @relation(fields: [cid], references: [id])
+  cid         Int
+
+  // userId      Int @id @default(autoincrement())
+
+  // chatId      Int
+  // chat        Chat @relation(fields: [chatId], references: [id])
+
   @@map("msg")
+  @@unique([userId, cid])
 }
 
 model Chat {
@@ -58,11 +70,12 @@ model Chat {
 
   chatId       Int
   chatName     String
-  User         User[]
+  user         Int[]
   isPrivate    Boolean
   Password     String?
-  Admin        User[]
+  Admin        Int[]
   msg          Msg[]
+  
 
   @@map("chat")
 }
