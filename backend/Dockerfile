@@ -1,18 +1,40 @@
-FROM node:14 as development
+FROM node:14 AS Production
 
-ENV NODE_ENV=development
+ENV NODE_ENV=production
 
+# WORKDIR /usr/src/backend
 WORKDIR /app
+
+# COPY package.json .
+# COPY tsconfig.json .
+
+# RUN yarn add -D prisma @types/passport-jwt pactum dotenv-cli @nestjs/cli @prisma/client class-validator class-transformer argon2 @nestjs/config @nestjs/passport passport @nestjs/jwt passport-jwt
+
+# # missing package when running the docker?
+# RUN yarn add -D @node-rs/xxhash-linux-arm64-gnu
+
+# RUN yarn install
 
 RUN yarn global add @nestjs/cli 
 RUN yarn global add express
-RUN yarn global add dotenv-cli
 
 COPY . .
 
-EXPOSE 3000
+# RUN yarn run build
 
-# if you want to run the app
+EXPOSE 3000
+# CMD ["/bin/sh", "-c", "yarn start:dev"]
+
 ENTRYPOINT ["/bin/sh", "-c", "yarn install --non-interactive && npx prisma migrate dev && yarn run build && yarn start:prod"]
-# if you want to do e2e tests
-# CMD ["/bin/sh", "-c", "yarn install --non-interactive && npx prisma migrate dev"]
+
+# FROM node:14
+
+# COPY ./     /app/
+
+# WORKDIR /app
+
+# RUN  yarn install
+
+# EXPOSE 3333
+
+# CMD ["yarn", "start:dev"]

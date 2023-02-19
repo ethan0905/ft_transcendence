@@ -7,7 +7,7 @@
 ## ⚙️ How to run the project?
 
 1. Run the command `make up`  
-2. On a different terminal, after the project has been built, in the /project folder run `make exec` to go inside the backend service  
+2. On a different terminal, after the project has been built, in the /project folder run `make prisma` to go inside the backend service  
 3. Run the command: `npx prisma studio`    
 4. Go to your navigator:  
     --> `localhost:3000`: for the frontend  
@@ -389,11 +389,3 @@ go inside container, copy the schema.prisma config in /schema.prisma.
 run `docker cp backend/prisma/schema.prisma backend_prisma:/schema.prisma`  
 run `docker exec backend_prisma npx prisma migrate dev`  
 go on the `localhost:5555` and it should be good  
-
-#### 42 API
-https://api.intra.42.fr/apidoc/guides/getting_started  
-`curl -X POST --data "grant_type=client_credentials&client_id=MY_AWESOME_UID&client_secret=MY_AWESOME_SECRET" https://api.intra.42.fr/oauth/token`  
-
-https://api.intra.42.fr/apidoc/guides/web_application_flow  
-passport strategy for authentificating with 42, using OAuth 2.0 API:  
-https://github.com/pandark/passport-42  

@@ -5,6 +5,7 @@ version: '3.8'
 
 volumes:
   data:
+#   uploads:
 
 services:
   postgres:
@@ -13,10 +14,8 @@ services:
     container_name: backend_postgres
     ports:
       - 5434:5432
-    environment:
-      POSTGRES_USER: ethan
-      POSTGRES_PASSWORD: 123
-      POSTGRES_DB: nest
+    env_file:
+      - ./backend/.env
     networks:
       - transcendance_ntw
     volumes:
@@ -82,17 +81,6 @@ services:
       test: npm start
       timeout: 30s
       retries: 3
-
-  test-postgres:
-    image: 'postgres:13'
-    ports:
-      - '5435:5432'
-    environment:
-      POSTGRES_USER: ethan
-      POSTGRES_PASSWORD: 123
-      POSTGRES_DB: nest
-    networks:
-      - transcendance_ntw
 
 networks:
   transcendance_ntw:
