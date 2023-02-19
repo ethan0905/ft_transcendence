@@ -1,12 +1,14 @@
-import { Controller, Get, UseGuards, Req, Patch, Body } from '@nestjs/common';
+import { Controller, Get, Post, UseGuards, Req, Patch, Body } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { JwtGuard } from '../auth/guard';
 import { GetUser } from '../auth/decorator';
 import { User } from '@prisma/client';
-import { EditChatDto } from './dto';
-// import { UserService } from './user.service';
+import { ChatDto } from './dto';
+import { UserService } from 'src/user/user.service';
 import { ChatService } from './chat.service';
+import { Tag } from './style/chat.style'
+
 
 @UseGuards(JwtGuard)
 // @Controller('users')
@@ -26,15 +28,21 @@ import { ChatService } from './chat.service';
 
 @Controller('chats')
 export class ChatController {
-    constructor(private chatService: ChatService) {}
+  constructor(private chatService: ChatService) {}
 
-    @Get()
-    getChats(@getChats() chat: Chat) {
-        return this.chatService.getChats(user.id);
-    }
-
-    @Patch()
-    editChat(@GetUser('id') userId: number, @Body() dto: EditChatDto) {
-        return this.chatService.editChat(userId, dto);
-    }
+  @Post()
+  async createNewChannel(@Body() info: ChatDto): Promise<ChatDto> {
+    const newChannel = await this.chatService.newChannel(info);
+    const isPassword = info.Password ? true : false;
+    const tags: Tag[] = newChannel.members.map(member => ({
+      id: member.id,
+      name: member.name
+    }));
+    const createdChannel: ChatDto = {
+      chatName: newChannel.chatName,
+      isPassword: isPassword,
+      members: tags
+    };
+    return createdChannel;
+  }
 }

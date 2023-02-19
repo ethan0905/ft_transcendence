@@ -22,9 +22,18 @@ model User {
   lastName  String?
 
   bookmarks Bookmark[]
+
+  owner       Chat[] @relation("owner")
+  admin       Chat[] @relation("admin")
+  members     Chat[] @relation("members")
+  invit       Chat[] @relation("invit")
+  chanBlocked Chat[] @relation("blocked")
+  
+  msgs        Msg[]
+  mute       Mute[]
   
   @@map("users")
-  @@unique([email])
+  @@unique([id, email])
 }
 
 model Bookmark {
@@ -43,39 +52,52 @@ model Bookmark {
 }
 
 model Msg {
+  id        Int       @id @default(autoincrement())
+
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
-  // author      User @relation(fields: [userid], references: [id])
-  message     String
+  msg       String
+  history   String[]
 
-  owner       User      @relation(fields: [userId], references: [id])
-  userId      Int
-  channel     Chat   @relation(fields: [cid], references: [id])
-  cid         Int
+  owner     User    @relation(fields: [userId], references: [id])
+  userId    Int
+  chat      Chat    @relation(fields: [chatId], references: [id])
+  chatId    Int
 
-  // userId      Int @id @default(autoincrement())
-
-  // chatId      Int
-  // chat        Chat @relation(fields: [chatId], references: [id])
-
-  @@map("msg")
-  @@unique([userId, cid])
 }
 
 model Chat {
+  id         Int       @id @default(autoincrement())
+  chatName   String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  
+  isPrivate  Boolean   @default(false)
+  Password   String?
+  dm         Boolean   @default(false)
+  isPassword Boolean   @default(false)
+
+  msgs       Msg[]
+
+  owner      User[]    @relation("owner")
+  admin      User[]    @relation("admin")
+  members    User[]    @relation("members")
+  invit      User[]    @relation("invit")
+  blocked    User[]    @relation("blocked")
+  muted      Mute[]
+
+  @@unique([id])
+}
+
+model Mute {
   id        Int       @id @default(autoincrement())
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
-  chatId       Int
-  chatName     String
-  user         Int[]
-  isPrivate    Boolean
-  Password     String?
-  Admin        Int[]
-  msg          Msg[]
-  
+  chatId    Int
+  chat      Chat      @relation(fields: [chatId], references: [id])
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id])
 
-  @@map("chat")
 }

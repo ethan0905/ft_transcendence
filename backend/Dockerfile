@@ -25,9 +25,9 @@ COPY . .
 EXPOSE 3000
 # CMD ["/bin/sh", "-c", "yarn start:dev"]
 
-ENTRYPOINT ["/bin/sh", "-c", "yarn install --non-interactive && npx prisma migrate dev && yarn run build && yarn start:prod"]
+ENTRYPOINT ["/bin/sh", "-c", "yarn install  && npx prisma migrate deploy && yarn run build && yarn start:prod"]
 
-# FROM node:14
+# FROM node:14 --non-interactive
 
 # COPY ./     /app/
 
