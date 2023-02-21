@@ -69,60 +69,62 @@ Then try fetching some datas:
 4. Click on the `Send` button to make the request.
 ````json
 [
-	{
-		"grade": "Learner",
-		"level": 7.86,
-		"skills": [
-            "_comment": "skills chart datas",
-		],
-		"blackholed_at": "2023-06-11T07:42:00.000Z",
-		"id": 113993,
-		"begin_at": "2021-05-20T07:42:00.000Z",
-		"end_at": null,
-		"cursus_id": 21,
-		"has_coalition": true,
-		"created_at": "2021-03-03T16:52:44.905Z",
-		"updated_at": "2021-04-13T17:03:17.437Z",
-		"user": {
-			"id": 83783,
-			"email": "esafar@student.42.fr",
-			"login": "esafar",
-			"first_name": "Ethan",
-			"last_name": "Safar",
-			"usual_full_name": "Ethan Safar",
-			"usual_first_name": null,
-			"url": "https://api.intra.42.fr/v2/users/esafar",
-			"phone": "hidden",
-			"displayname": "Ethan Safar",
-			"kind": "student",
-			"image": {
-              "_comment": "image datas",
-			},
-			"staff?": false,
-			"correction_point": 1,
-			"pool_month": "february",
-			"pool_year": "2021",
-			"location": "e2r10p11",
-			"wallet": 590,
-			"anonymize_date": "2026-02-21T00:00:00.000+01:00",
-			"data_erasure_date": "2026-02-21T00:00:00.000+01:00",
-			"created_at": "2021-01-29T09:11:30.649Z",
-			"updated_at": "2023-02-21T12:31:42.973Z",
-			"alumnized_at": null,
-			"alumni?": false,
-			"active?": true
-		},
-		"cursus": {
-			"id": 21,
-			"created_at": "2019-07-29T08:45:17.896Z",
-			"name": "42cursus",
-			"slug": "42cursus",
-			"kind": "main"
-		}
-	},
-	{
-          "_comment": "piscine datas",
-	}
+   {
+      "grade":"Learner",
+      "level":7.86,
+      "skills":[
+         {
+            "_comment":"skills chart datas"
+         }
+      ],
+      "blackholed_at":"2023-06-11T07:42:00.000Z",
+      "id":113993,
+      "begin_at":"2021-05-20T07:42:00.000Z",
+      "end_at":null,
+      "cursus_id":21,
+      "has_coalition":true,
+      "created_at":"2021-03-03T16:52:44.905Z",
+      "updated_at":"2021-04-13T17:03:17.437Z",
+      "user":{
+         "id":83783,
+         "email":"esafar@student.42.fr",
+         "login":"esafar",
+         "first_name":"Ethan",
+         "last_name":"Safar",
+         "usual_full_name":"Ethan Safar",
+         "usual_first_name":null,
+         "url":"https://api.intra.42.fr/v2/users/esafar",
+         "phone":"hidden",
+         "displayname":"Ethan Safar",
+         "kind":"student",
+         "image":{
+            "_comment":"image datas"
+         },
+         "staff?":false,
+         "correction_point":1,
+         "pool_month":"february",
+         "pool_year":"2021",
+         "location":"e2r10p11",
+         "wallet":590,
+         "anonymize_date":"2026-02-21T00:00:00.000+01:00",
+         "data_erasure_date":"2026-02-21T00:00:00.000+01:00",
+         "created_at":"2021-01-29T09:11:30.649Z",
+         "updated_at":"2023-02-21T12:31:42.973Z",
+         "alumnized_at":null,
+         "alumni?":false,
+         "active?":true
+      },
+      "cursus":{
+         "id":21,
+         "created_at":"2019-07-29T08:45:17.896Z",
+         "name":"42cursus",
+         "slug":"42cursus",
+         "kind":"main"
+      }
+   },
+   {
+      "_comment":"piscine datas"
+   }
 ]
 ````
 
