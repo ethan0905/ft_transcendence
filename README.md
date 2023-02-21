@@ -73,7 +73,7 @@ Then try fetching some datas:
 		"grade": "Learner",
 		"level": 7.86,
 		"skills": [
-      // skills chart datas
+      {"_comment": "skills chart datas"},
 		],
 		"blackholed_at": "2023-06-11T07:42:00.000Z",
 		"id": 113993,
@@ -96,7 +96,7 @@ Then try fetching some datas:
 			"displayname": "Ethan Safar",
 			"kind": "student",
 			"image": {
-        // image datas
+        {"_comment": "image datas"},
 			},
 			"staff?": false,
 			"correction_point": 1,
@@ -121,7 +121,7 @@ Then try fetching some datas:
 		}
 	},
 	{
-    // piscine datas
+    "_comment": "piscine datas",
 	}
 ]
 ````
