@@ -49,9 +49,9 @@ https://zestedesavoir.com/articles/1616/comprendre-oauth-2-0-par-lexemple/
 Learn how to use the api first using insomnia:  
 1. Go to form, add `grant_type`, `client_id` and `client_secret` with the proper values
 2. Open Insomnia and create a new request.
-3. Set the request method to POST.
-3. Set the request URL to https://api.intra.42.fr/oauth/token.
-4. Click on the Send button to make the request.
+3. Set the request method to `POST`.
+3. Set the request URL to `https://api.intra.42.fr/oauth/token`.
+4. Click on the `Send` button to make the request.
 ````json
 {
 	"access_token": "c658886374ba74eff621ce40a1f55386c559446e6b9b87f520f93f9f2d50ae37",
@@ -63,10 +63,10 @@ Learn how to use the api first using insomnia:
 ````
 
 Then try fetching some datas:  
-1. Set the request method to GET.
-2. Set the request URL to https://api.intra.42.fr/v2/cursus.
-3. Click on the Headers tab and add a new header with the key Authorization and the value Bearer YOUR_ACCESS_TOKEN (replace YOUR_ACCESS_TOKEN with your actual access token).
-4. Click on the Send button to make the request.
+1. Set the request method to `GET`.
+2. Set the request URL to `https://api.intra.42.fr/v2/cursus`.
+3. Click on the Headers tab and add a new header with the key `Authorization` and the value `Bearer YOUR_ACCESS_TOKEN` (replace YOUR_ACCESS_TOKEN with your actual access token).
+4. Click on the `Send` button to make the request.
 ````json
 [
 	{
