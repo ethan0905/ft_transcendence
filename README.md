@@ -35,6 +35,97 @@ At first, I didn't know where to start, so here are the steps to follow if you w
 Now that you have the project logic, we gonna go deeper into the building of your web application.  
 Drop a star to support my work ⭐ Thank you  
 
+## How to implement the 42 OAuth?
+
+1. Create a new application on the 42 API website and obtain the client_id and client_secret.
+2. In your frontend application, create a button that redirects the user to the 42 OAuth authorization URL. This URL will include the client_id, redirect_uri, and response_type parameters.
+3. After the user has authorized your application, the 42 API will redirect the user back to your application with an authorization code.
+4. In your backend application, create a new endpoint that can exchange the authorization code for an access token. This endpoint will send a POST request to the 42 API token endpoint with the client_id, client_secret, redirect_uri, and code parameters.
+5. After receiving the access token from the 42 API, you can use it to make authenticated requests to the 42 API on behalf of the user.
+6. Once the user is authenticated with the 42 API, you can register them in your database by sending a POST request to your backend API with the user's 42 profile information.
+
+https://zestedesavoir.com/articles/1616/comprendre-oauth-2-0-par-lexemple/  
+
+Learn how to use the api first using insomnia:  
+1. Go to form, add `grant_type`, `client_id` and `client_secret` with the proper values
+2. Open Insomnia and create a new request.
+3. Set the request method to POST.
+3. Set the request URL to https://api.intra.42.fr/oauth/token.
+4. Click on the Send button to make the request.
+````json
+{
+	"access_token": "c658886374ba74eff621ce40a1f55386c559446e6b9b87f520f93f9f2d50ae37",
+	"token_type": "bearer",
+	"expires_in": 7200,
+	"scope": "public",
+	"created_at": 1676986181
+}
+````
+
+Then try fetching some datas:  
+1. Set the request method to GET.
+2. Set the request URL to https://api.intra.42.fr/v2/cursus.
+3. Click on the Headers tab and add a new header with the key Authorization and the value Bearer YOUR_ACCESS_TOKEN (replace YOUR_ACCESS_TOKEN with your actual access token).
+4. Click on the Send button to make the request.
+````json
+[
+	{
+		"grade": "Learner",
+		"level": 7.86,
+		"skills": [
+      // [skills chart datas...]
+		],
+		"blackholed_at": "2023-06-11T07:42:00.000Z",
+		"id": 113993,
+		"begin_at": "2021-05-20T07:42:00.000Z",
+		"end_at": null,
+		"cursus_id": 21,
+		"has_coalition": true,
+		"created_at": "2021-03-03T16:52:44.905Z",
+		"updated_at": "2021-04-13T17:03:17.437Z",
+		"user": {
+			"id": 83783,
+			"email": "esafar@student.42.fr",
+			"login": "esafar",
+			"first_name": "Ethan",
+			"last_name": "Safar",
+			"usual_full_name": "Ethan Safar",
+			"usual_first_name": null,
+			"url": "https://api.intra.42.fr/v2/users/esafar",
+			"phone": "hidden",
+			"displayname": "Ethan Safar",
+			"kind": "student",
+			"image": {
+          // [images datas...]
+			},
+			"staff?": false,
+			"correction_point": 1,
+			"pool_month": "february",
+			"pool_year": "2021",
+			"location": "e2r10p11",
+			"wallet": 590,
+			"anonymize_date": "2026-02-21T00:00:00.000+01:00",
+			"data_erasure_date": "2026-02-21T00:00:00.000+01:00",
+			"created_at": "2021-01-29T09:11:30.649Z",
+			"updated_at": "2023-02-21T12:31:42.973Z",
+			"alumnized_at": null,
+			"alumni?": false,
+			"active?": true
+		},
+		"cursus": {
+			"id": 21,
+			"created_at": "2019-07-29T08:45:17.896Z",
+			"name": "42cursus",
+			"slug": "42cursus",
+			"kind": "main"
+		}
+	},
+	{
+    // [piscine datas ...]
+	}
+]
+````
+
 ## 🔄 Dynamic reload
 ````yaml
 volumes:: // This section specifies the volumes to create for the service.
