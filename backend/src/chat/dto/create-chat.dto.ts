@@ -1,5 +1,5 @@
 import { IsString, IsNotEmpty, IsOptional, IsBoolean, IsEmail, IsArray, IsNumber } from 'class-validator';
-import { Tag } from '../style/chat.style';
+import { Tag } from '../type/chat.type';
 
 export class ChatDto {
     @IsString()
