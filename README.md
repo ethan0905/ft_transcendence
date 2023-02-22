@@ -70,7 +70,7 @@ Then try fetching some datas:
 ````json
 [
    {
-      "grade":"Learner",
+      "grade":"Learner", // this is for grade
       "level":7.86,
       "skills":[
          {

@@ -6,7 +6,7 @@
 #    By: esafar <esafar@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/13 12:28:32 by c2h6              #+#    #+#              #
-#    Updated: 2023/02/16 15:51:47 by esafar           ###   ########.fr        #
+#    Updated: 2023/02/20 17:38:25 by esafar           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,7 +43,7 @@ fclean: down
 	docker system prune -a --force
 
 re:
-	docker-compose -f docker-compose.yml build
-	docker-compose -f docker-compose.yml up
+	fclean
+	all
 
 .PHONY:	all up down ps fclean re

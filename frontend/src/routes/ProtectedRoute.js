@@ -4,12 +4,14 @@ import { Route, Navigate } from 'react-router-dom';
 
 const useAuth = () => {
     const user = { loggedIn: false };
-    return user && user.loggedIn;
+    return user.loggedIn;
 };
 
 const ProtectedRoute = () => {
-    const isAuth = useAuth();
-    return isAuth ? <Route /> : <Navigate to="/login" />;
+    const user = { loggedIn: false };
+    // const isAuth = useAuth();
+
+    return user.loggedIn ? <Route /> : <Navigate to="/login" />;
 };
 
 // const ProtectedRoute = ({ component: Component, isLoggedIn, ...rest }) => {

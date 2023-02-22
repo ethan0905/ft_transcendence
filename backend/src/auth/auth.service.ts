@@ -1,7 +1,8 @@
 import { Injectable, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { AuthDto } from './dto';
+import { AuthDto, Auth42Dto } from './dto';
 import * as argon from 'argon2';
+import { User } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
@@ -58,6 +59,28 @@ export class AuthService{
 
 		//3. send back the user
 		return this.signToken(user.id, user.email);
+	}
+
+	// signin using 42 API
+	async signin_42(dto: Auth42Dto): Promise<User> {
+		//1. find the user by 42 id
+		const user = await this.prisma.user.findUnique({
+			where: {
+				id42: dto.id,
+			},
+		});
+		//if user does not exist, create it
+		if (!user) {
+			const newUser = await this.prisma.user.create({
+				data: {
+					userId42: dto.id,
+					email: dto.email,
+					username: dto.username,
+					avatar: dto.avatar,
+				},
+			});
+			return this.signToken(newUser.id, newUser.email);
+		}
 	}
 
 	async signToken(userId: number, email: string): Promise<{access_token: string}> {
