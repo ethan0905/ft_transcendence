@@ -1,4 +1,5 @@
 # ft_transcendance
+<p align="left"> <img src="https://komarev.com/ghpvc/?username=ethan0905&label=ft_transcendance%20views&color=0e75b6&style=flat" alt="jcluzet" /> </p>
 
 > Project is in progress.. The final readme will come soon  
 > From today you can use it to understand the basic concepts for the backend  
@@ -389,3 +390,6 @@ go inside container, copy the schema.prisma config in /schema.prisma.
 run `docker cp backend/prisma/schema.prisma backend_prisma:/schema.prisma`  
 run `docker exec backend_prisma npx prisma migrate dev`  
 go on the `localhost:5555` and it should be good  
+
+#### how to switch from yarn package manager to npm?
+https://stackoverflow.com/questions/51239726/react-native-switch-from-yarn-to-npm  
