@@ -5,7 +5,7 @@ ENV NODE_ENV=production
 # WORKDIR /usr/src/backend
 WORKDIR /app
 
-# COPY package.json .
+COPY package.json .
 # COPY tsconfig.json .
 
 # RUN yarn add -D prisma @types/passport-jwt pactum dotenv-cli @nestjs/cli @prisma/client class-validator class-transformer argon2 @nestjs/config @nestjs/passport passport @nestjs/jwt passport-jwt
@@ -18,14 +18,17 @@ WORKDIR /app
 RUN npm install @nestjs/cli 
 RUN npm install express
 
+RUN npm install
+
 COPY . .
 
-# RUN yarn run build
+RUN npm run build
 
 EXPOSE 3000
 # CMD ["/bin/sh", "-c", "yarn start:dev"]
 
-ENTRYPOINT ["/bin/sh", "-c", "npm install --non-interactive && npx prisma migrate dev && npm run build && npm start"]
+# ENTRYPOINT ["/bin/sh", "-c", "npm install && npx prisma migrate dev && npm run build && npx prisma migrate deploy && npm start"]
+CMD ["npm", "run" ,"start:migrate"]
 
 # FROM node:14
 
