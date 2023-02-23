@@ -15,8 +15,8 @@ WORKDIR /app
 
 # RUN yarn install
 
-RUN yarn global add @nestjs/cli 
-RUN yarn global add express
+RUN npm install @nestjs/cli 
+RUN npm install express
 
 COPY . .
 
@@ -25,7 +25,7 @@ COPY . .
 EXPOSE 3000
 # CMD ["/bin/sh", "-c", "yarn start:dev"]
 
-ENTRYPOINT ["/bin/sh", "-c", "yarn install --non-interactive && npx prisma migrate dev && yarn run build && yarn start:prod"]
+ENTRYPOINT ["/bin/sh", "-c", "npm install --non-interactive && npx prisma migrate dev && npm run build && npm start"]
 
 # FROM node:14
 
