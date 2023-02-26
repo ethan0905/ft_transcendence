@@ -22,13 +22,16 @@ RUN npm install
 
 COPY . .
 
-RUN npm run build
+# RUN npm run build
 
 EXPOSE 3000
 # CMD ["/bin/sh", "-c", "yarn start:dev"]
 
 # ENTRYPOINT ["/bin/sh", "-c", "npm install && npx prisma migrate dev && npm run build && npx prisma migrate deploy && npm start"]
-CMD ["npm", "run" ,"start"]
+CMD ["/bin/sh", "-c", "npm start && sleep 2 && npx prisma migrate deploy"]
+# CMD ["/bin/sh", "-c", "npm start ; npx prisma migrate deploy"]
+
+# CMD ["/bin/bash"]
 
 # FROM node:14
 
