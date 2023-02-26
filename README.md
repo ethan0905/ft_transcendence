@@ -10,7 +10,7 @@
 1. Run the command `make up`  
 2. On a different terminal, after the project has been built, in the /project folder run `make prisma` to go inside the backend service  
 3. Run the command: `npx prisma studio`    
-4. Go to your navigator:  
+4. Go to your `Brave` navigator:  
     --> `localhost:3000`: for the frontend  
     --> `localhost:5555`: for prisma studio  
 5. If you want to update the prisma schema, `make prisma` then `npx prisma migrate dev`. If you re-run the `npx prisma studio`, you should see the model updated.

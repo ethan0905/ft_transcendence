@@ -28,7 +28,7 @@ EXPOSE 3000
 # CMD ["/bin/sh", "-c", "yarn start:dev"]
 
 # ENTRYPOINT ["/bin/sh", "-c", "npm install && npx prisma migrate dev && npm run build && npx prisma migrate deploy && npm start"]
-CMD ["npm", "run" ,"start:migrate"]
+CMD ["npm", "run" ,"start"]
 
 # FROM node:14
 
