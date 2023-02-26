@@ -1,18 +1,19 @@
 # ft_transcendance
 <p align="left"> <img src="https://komarev.com/ghpvc/?username=ethan0905&label=ft_transcendance%20views&color=0e75b6&style=flat" alt="jcluzet" /> </p>
 
-> Project is in progress.. The final readme will come soon
-> From today you can use it to understand the basic concepts for the backend
+> Project is in progress.. The final readme will come soon  
+> From today you can use it to understand the basic concepts for the backend  
 > I am gonna explain progressively how to install the basic structure of the project, using NestJS, PostgreSQL, Prisma for the backend, and ReactJS for the frontend.
 
 ## ⚙️ How to run the project?
 
 1. Run the command `make up`  
-2. On a different terminal, after the project has been built, in the /project folder run `make exec` to go inside the backend service  
+2. On a different terminal, after the project has been built, in the /project folder run `make prisma` to go inside the backend service  
 3. Run the command: `npx prisma studio`    
-4. Go to your navigator:  
+4. Go to your `Brave` navigator:  
     --> `localhost:3000`: for the frontend  
     --> `localhost:5555`: for prisma studio  
+5. If you want to update the prisma schema, `make prisma` then `npx prisma migrate dev`. If you re-run the `npx prisma studio`, you should see the model updated.
 
 ## 📔 Summary
 
@@ -314,7 +315,7 @@ You can use bcrypt, but there is a problem, it is limited to the first 72 bytes.
 `yarn add argon2` --> to install packages
 
 Errors sent:  
-need to import PrismaClientKnownRequestError from `@prisma/client/runtime` if you want it work properly  
+need to import PrismaClientKnownRequestError from `@prisma/client/runtime/library` if you want it work properly  
 ForbiddenExecption is from `@nestjs/common`  
 
 Working on config env var:

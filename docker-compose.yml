@@ -17,7 +17,7 @@ services:
     environment:
       POSTGRES_USER: ethan
       POSTGRES_PASSWORD: 123
-      POSTGRES_DB: nest
+      POSTGRES_DB: mydb
     networks:
       - transcendance_ntw
     volumes:
