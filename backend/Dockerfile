@@ -1,4 +1,4 @@
-FROM node:14 AS Production
+FROM node:latest AS Production
 
 ENV NODE_ENV=production
 

@@ -315,7 +315,7 @@ You can use bcrypt, but there is a problem, it is limited to the first 72 bytes.
 `yarn add argon2` --> to install packages
 
 Errors sent:  
-need to import PrismaClientKnownRequestError from `@prisma/client/runtime` if you want it work properly  
+need to import PrismaClientKnownRequestError from `@prisma/client/runtime/library` if you want it work properly  
 ForbiddenExecption is from `@nestjs/common`  
 
 Working on config env var:

@@ -5,9 +5,6 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-
-// axios.defaults.baseURL = 'http:/' + location.hostname + ':3333';
-
 root.render(
   <React.StrictMode>
     <App />
