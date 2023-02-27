@@ -21,5 +21,21 @@ export class ChatService {
             });
             return channel;
           }
+        
+        // async updateChat(info: updateChat) {
+        //     const idchat = info.channelId;
+        //     const channel = await this.prisma.chat.update(
+        //       {
+        //         where: {
+        //           id: idchat,
+        //         }
+        //         data: {
+        //           Password : info.Password || info.newPassword,
+        //           isPassword : info.isPassword || null,
+        //           isPrivate : info.Private,
+        //         }
+        //       }
+        //     )
+        // }
 
 }

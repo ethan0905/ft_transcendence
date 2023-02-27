@@ -37,19 +37,20 @@ export class ChatGateway {
     }
   }
 
-  @SubscribeMessage('updateChat')
-  @UsePipes(new ValidationPipe())
-  async updateChat(
-    @MessageBody() data: updateChat,
-    @ConnectedSocket() client: Socket,
-  ) {
-    const user = await this.userService.findUserByEmail(data.email);
-    if (user) {
-      user
-      const chat = await this.chatService.updateChat(data);
-      if (chat) {
-        client.broadcast.emit('updateChat', chat);
-      }
-    }
-  }
+  // @SubscribeMessage('updateChat')
+  // @UsePipes(new ValidationPipe())
+  // async updateChat(
+  //   @MessageBody() data: updateChat,
+  //   @ConnectedSocket() client: Socket,
+  // ) {
+  //   try {
+
+    
+  //     await this.chatService.updateChat(data);
+  //     client.broadcast.emit('updateChat', data);
+  //   }
+  //   catch {
+  //     client.broadcast.emit('fail to updtae', data)
+  //   }
+  // }
 }

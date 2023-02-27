@@ -17,6 +17,8 @@ COPY package.json .
 
 RUN npm install @nestjs/cli 
 RUN npm install express
+RUN npm install @nestjs/websockets
+RUN npm install socket.io
 
 RUN npm install
 
