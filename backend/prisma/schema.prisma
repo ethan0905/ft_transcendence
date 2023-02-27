@@ -11,42 +11,77 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  id42      Int?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  email     String  @unique
-  username  String? @unique
-  hash      String
-  avatar    String?
-  
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  email String @unique
+  hash  String
+  firstName String?
+  lastName  String?
   bookmarks Bookmark[]
-
+  owner       Chat[] @relation("owner")
+  admin       Chat[] @relation("admin")
+  members     Chat[] @relation("members")
+  invit       Chat[] @relation("invit")
+  chanBlocked Chat[] @relation("blocked")
+  
+  msgs        Msg[]
+  mute       Mute[]
+  
   @@map("users")
-}
-
-model Message {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  text String
-
-  @@map("messages")
+  @@unique([id, email])
 }
 
 model Bookmark {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   title       String
   description String?
   link        String
-
-  userId Int
-  user   User @relation(fields: [userId], references: [id])
-
+  userId  Int
+  user    User @relation(fields: [userId], references: [id])
   @@map("bookmarks")
+}
+
+model Msg {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  msg       String
+  history   String[]
+  owner     User    @relation(fields: [userId], references: [id])
+  userId    Int
+  chat      Chat    @relation(fields: [chatId], references: [id])
+  chatId    Int
+}
+
+model Chat {
+  id         Int       @id @default(autoincrement())
+  chatName   String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  
+  isPrivate  Boolean   @default(false)
+  Password   String?
+  dm         Boolean   @default(false)
+  isPassword Boolean   @default(false)
+  msgs       Msg[]
+  owner      User[]    @relation("owner")
+  admin      User[]    @relation("admin")
+  members    User[]    @relation("members")
+  invit      User[]    @relation("invit")
+  blocked    User[]    @relation("blocked")
+  muted      Mute[]
+  @@unique([id])
+}
+
+model Mute {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  chatId    Int
+  chat      Chat      @relation(fields: [chatId], references: [id])
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id])
 }
