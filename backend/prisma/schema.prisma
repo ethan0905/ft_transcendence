@@ -11,42 +11,101 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  id42      Int?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
   email     String  @unique
-  username  String? @unique
   hash      String
-  avatar    String?
+  // username  String @unique
+  avatarUrl String?
+
+  messages  Message[]
+
+  owner   Channel[] @relation("owner")
+  admins  Channel[] @relation("admins")
+  members Channel[] @relation("members")
+  muted   Channel[] @relation("muted")
+  banned  Channel[] @relation("banned")
   
-  bookmarks Bookmark[]
+  friends Friend[]  @relation("friend")
+  blocked Blocked[] @relation("blocked")
+
+  player1 Game[] @relation("player1")
+  player2 Game[] @relation("player2")
+
 
   @@map("users")
+  @@unique([id, email])
+}
+
+model Friend {
+  createdAt DateTime @default(now())
+
+  friend    User @relation("friend", fields: [friendId], references: [id], onDelete: Cascade)
+  friendId  Int
+
+  @@id([friendId])
+}
+
+model Blocked {
+  createdAt DateTime  @default(now())
+
+  blocked    User @relation("blocked", fields: [blockedId], references: [id], onDelete: Cascade)
+  blockedId  Int
+
+  @@id([blockedId])
 }
 
 model Message {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
 
-  text String
+  message     String
 
-  @@map("messages")
+  owner       User       @relation(fields: [userId], references: [id])
+  userId      Int
+  channel     Channel    @relation(fields: [channelId], references: [id])
+  channelId   Int
 }
 
-model Bookmark {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Channel {
+  id         Int       @id @default(autoincrement())
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 
-  title       String
-  description String?
-  link        String
+  channelName String
+  password    String?
 
-  userId Int
-  user   User @relation(fields: [userId], references: [id])
+  isPassword Boolean   @default(false)
+  isDM       Boolean   @default(false)
 
-  @@map("bookmarks")
+  messages   Message[]
+
+  owner     User[]    @relation("owner")
+  admins    User[]    @relation("admins")
+  members   User[]    @relation("members")
+  banned    User[]    @relation("banned")
+  muted     User[]    @relation("muted")
+
+  @@unique([id])
 }
+
+model Game {
+  id         Int       @id @default(autoincrement())
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  duration   Int 
+
+  player1Id Int?
+  player2Id Int?
+
+  player1   User? @relation("player1", fields: [player1Id], references: [id], onDelete: SetNull)
+  player2   User? @relation("player2", fields: [player2Id], references: [id], onDelete: SetNull)
+
+  score1    Int
+  score2    Int
+
+  @@unique([id])
+}
+

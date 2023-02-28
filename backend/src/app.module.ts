@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config'; 
 import { AuthModule } from "./auth/auth.module";
 import { UserModule } from './user/user.module';
-import { BookmarkModule } from './bookmark/bookmark.module';
 import { PrismaModule } from './prisma/prisma.module';
 
 // A module is a class anotated with a @Module decorator. The module decorator provide
@@ -14,7 +13,6 @@ import { PrismaModule } from './prisma/prisma.module';
     }),
     AuthModule,
     UserModule,
-    BookmarkModule,
     PrismaModule],
 })
  
