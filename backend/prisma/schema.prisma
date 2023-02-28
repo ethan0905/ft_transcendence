@@ -15,7 +15,7 @@ model User {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
-  email     String
+  email     String  @unique
   hash      String
   // username  String @unique
   avatarUrl String?
@@ -31,12 +31,16 @@ model User {
   friends Friend[]  @relation("friend")
   blocked Blocked[] @relation("blocked")
 
+  player1 Game[] @relation("player1")
+  player2 Game[] @relation("player2")
+
+
   @@map("users")
   @@unique([id, email])
 }
 
 model Friend {
-  createdAt DateTime  @default(now())
+  createdAt DateTime @default(now())
 
   friend    User @relation("friend", fields: [friendId], references: [id], onDelete: Cascade)
   friendId  Int
@@ -86,3 +90,22 @@ model Channel {
 
   @@unique([id])
 }
+
+model Game {
+  id         Int       @id @default(autoincrement())
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  duration   Int 
+
+  player1Id Int?
+  player2Id Int?
+
+  player1   User? @relation("player1", fields: [player1Id], references: [id], onDelete: SetNull)
+  player2   User? @relation("player2", fields: [player2Id], references: [id], onDelete: SetNull)
+
+  score1    Int
+  score2    Int
+
+  @@unique([id])
+}
+

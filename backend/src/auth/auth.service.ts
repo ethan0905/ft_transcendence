@@ -41,7 +41,7 @@ export class AuthService{
 	
 	async signin(dto: AuthDto) {
 		//1. find the user by email
-		const user = await this.prisma.user.findUnique({
+		const user = await this.prisma.user.findFirstOrThrow({
 			where: {
 				email: dto.email, 
 			},
