@@ -39,6 +39,36 @@ At first, I didn't know where to start, so here are the steps to follow if you w
 Now that you have the project logic, we gonna go deeper into the building of your web application.  
 Drop a star to support my work ⭐ Thank you  
 
+## Potential mistakes!
+````bash
+Error validating field `post` in model `CategoriesOnPosts`: The relation field `post` on model `CategoriesOnPosts` is missing an opposite relation field on the model `Post`. Either run `prisma format` or add it manually.
+````
+This is coming from the prisma schema which is not well formated. Don't forget to add this line:
+````prisma
+model Post {
+  id         Int                 @id @default(autoincrement())
+  title      String
+  // categories CategoriesOnPosts[] // <-- add this line to fix the issue
+}
+
+model Category {
+  id    Int                 @id @default(autoincrement())
+  name  String
+  posts CategoriesOnPosts[]
+}
+
+model CategoriesOnPosts {
+  post       Post     @relation(fields: [postId], references: [id]) // <-- the error comes from here 
+  postId     Int // relation scalar field (used in the `@relation` attribute above)
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId Int // relation scalar field (used in the `@relation` attribute above)
+  assignedAt DateTime @default(now())
+  assignedBy String
+
+  @@id([postId, categoryId])
+}
+````
+
 ## 🔄 Dynamic reload
 ````yaml
 volumes:: // This section specifies the volumes to create for the service.
