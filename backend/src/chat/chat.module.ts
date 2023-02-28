@@ -5,8 +5,10 @@ import { ChatGateway } from './chat.gateway';
 import { ChatService } from './chat.service';
 
 @Module({
-	imports: [forwardRef(() => UserModule), forwardRef(() => PrismaModule)],
+	// imports: [forwardRef(() => UserModule)],
+	// controllers: [ChatGateway],
 	providers: [ChatService, ChatGateway],
-	exports: [ChatGateway, ChatService],
+	// exports: [ChatGateway, ChatService],
 })
+
 export class ChatModule {}

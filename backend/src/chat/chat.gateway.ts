@@ -15,6 +15,7 @@ import {
 } from './type/chat.type';
 import { UserService } from 'src/user/user.service';
 
+@UsePipes(new ValidationPipe())
 @WebSocketGateway()
 export class ChatGateway {
   @WebSocketServer()
@@ -22,11 +23,10 @@ export class ChatGateway {
 
   constructor(
     private readonly chatService: ChatService,
-    private readonly userService: UserService,
+    // private readonly userService: UserService,
   ) {}
 
   @SubscribeMessage('chat')
-  @UsePipes(new ValidationPipe())
   async chat(
     @MessageBody() data: ChatDto,
     @ConnectedSocket() client: Socket,

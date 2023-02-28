@@ -8,7 +8,7 @@ import { UserService } from 'src/user/user.service'
 export class ChatService {
     constructor(
         private readonly prisma: PrismaService,
-        private readonly serService: UserService,
+        // private readonly userService: UserService,
         ) {}
 
         async newChannel(info: ChatDto) {

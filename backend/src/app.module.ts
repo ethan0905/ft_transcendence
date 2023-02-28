@@ -4,6 +4,7 @@ import { AuthModule } from "./auth/auth.module";
 import { UserModule } from './user/user.module';
 import { BookmarkModule } from './bookmark/bookmark.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { ChatModule } from './chat/chat.module';
 
 // A module is a class anotated with a @Module decorator. The module decorator provide
 // metadata that Nest makes use of to organize the application structure
@@ -15,7 +16,8 @@ import { PrismaModule } from './prisma/prisma.module';
     AuthModule,
     UserModule,
     BookmarkModule,
-    PrismaModule],
+    PrismaModule,
+    ChatModule],
 })
  
 export class AppModule {}
