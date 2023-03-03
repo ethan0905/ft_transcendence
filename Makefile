@@ -6,7 +6,7 @@
 #    By: esafar <esafar@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/13 12:28:32 by c2h6              #+#    #+#              #
-#    Updated: 2023/02/27 15:52:41 by esafar           ###   ########.fr        #
+#    Updated: 2023/03/03 16:46:13 by esafar           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,13 +18,15 @@ up:
 install:
 	(cd ./backend ; npm install)
 	(cd ./frontend ; npm install)
-	
-schema:
-	docker exec backend_nestjs npx prisma migrate dev
+
+gotoc:
+	docker exec -it backend_nestjs bash
 
 prisma:
 	docker exec backend_nestjs npx prisma studio
 
+update:
+	docker build -t backend_nestjs ./backend
 	
 info:
 	@docker ps
