@@ -2,6 +2,8 @@ FROM node:latest AS Production
 
 ENV NODE_ENV=production
 
+COPY postgresql.ssl.conf .
+
 # WORKDIR /usr/src/backend
 WORKDIR /app
 

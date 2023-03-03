@@ -24,6 +24,7 @@ model User {
   members     Chat[] @relation("members")
   invit       Chat[] @relation("invit")
   chanBlocked Chat[] @relation("blocked")
+  //friends     Friend @relation("friends")
   
   msgs        Msg[]
   mute       Mute[]
@@ -55,6 +56,16 @@ model Msg {
   chat      Chat    @relation(fields: [chatId], references: [id])
   chatId    Int
 }
+
+// model Friend {
+//   id        Int       @id @default(autoincrement())
+//   createdAt DateTime  @default(now())
+//   updatedAt DateTime  @updatedAt
+//   friends   User      @relation("friends")
+//   user1     User[]    @relation(fields: [userId1], references: [id])
+//   userId1   Int
+// }
+
 
 model Chat {
   id         Int       @id @default(autoincrement())

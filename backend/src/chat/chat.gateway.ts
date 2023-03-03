@@ -16,7 +16,12 @@ import {
 import { UserService } from 'src/user/user.service';
 
 @UsePipes(new ValidationPipe())
-@WebSocketGateway()
+ @WebSocketGateway({
+     cors: {
+     origin: '*',
+   },
+   namespace: 'chat',
+  })
 export class ChatGateway {
   @WebSocketServer()
   server: Server;
@@ -26,7 +31,17 @@ export class ChatGateway {
     // private readonly userService: UserService,
   ) {}
 
-  @SubscribeMessage('chat')
+  async handleJoinSocket(id: number, @ConnectedSocket() client: Socket) {
+		const channels = await this.chatService.get__channelsUserIn(id);
+		await client.join('default_all');
+		if (channels)
+			for (const channel of channels) {
+				await client.join(channel);
+			}
+	}
+
+
+  @SubscribeMessage('create channel')
   async chat(
     @MessageBody() data: ChatDto,
     @ConnectedSocket() client: Socket,
