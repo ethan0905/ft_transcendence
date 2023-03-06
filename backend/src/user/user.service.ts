@@ -15,13 +15,13 @@ export class UserService {
 		const user = await this.prisma.user.create({
 			data: {
 				email,
-				username: username,
-				hash: hash,
+				username,
+				hash,
 				id42: id,
 			},
 		});
 
-		delete user.hash;
+		// delete user.hash;
 		return user;
 	}
 

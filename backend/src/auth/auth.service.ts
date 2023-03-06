@@ -92,7 +92,7 @@ export class AuthService{
 		//1. find the user by id42
 		const user = this.prisma.user.findFirst({
 			where: {
-				id: dto.id,
+				id42: dto.id,
 			},
 		});
 
@@ -112,19 +112,13 @@ export class AuthService{
 		const hash = await argon.hash(randomPassword);
 
 		//2. save user in the database
-		const user = await this.userService.createUser({
-			data: {
-				email,
-				username,
-				hash,
-				id,
-			},
-		});
+		const user = await this.userService.createUser(
+			email,
+			username,
+			hash,
+			id,
+		);
 
-		email: string,
-		username: string,
-		hash: string,
-		id = 0,
 		//3. return the saved user
 		return user;
 	}

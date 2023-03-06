@@ -26,6 +26,7 @@ export class AuthController{
 
 	@Get('42')
 	signin42() {
-		console.log('42 api called');
+		// console.log('42 api called');
+		return this.authService.testAuth();
 	}
 }
