@@ -92,13 +92,14 @@ export class AuthService{
 		//1. find the user by id42
 		const user = this.prisma.user.findFirst({
 			where: {
-				id42: dto.id,
+				id: dto.id,
 			},
 		});
 
 		//if user does not exist, create it
 		if (!user) {
 			this.create42User(dto);
+			return user;
 		}
 		else
 			return user;
@@ -120,6 +121,8 @@ export class AuthService{
 			hash,
 			id,
 		);
+
+		console.log(user);
 
 		//3. return the saved user
 		return user;

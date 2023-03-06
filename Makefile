@@ -6,7 +6,7 @@
 #    By: esafar <esafar@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/13 12:28:32 by c2h6              #+#    #+#              #
-#    Updated: 2023/03/03 16:46:13 by esafar           ###   ########.fr        #
+#    Updated: 2023/03/06 17:42:43 by esafar           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,17 @@ prisma:
 
 update:
 	docker build -t backend_nestjs ./backend
-	
+
+env:
+	$(eval OAUTH_42_CLIENT_ID=$(shell bash -c 'read -p "OAUTH client ID: " secret; echo $$secret'))
+	$(eval OAUTH_42_CLIENT_SECRET=$(shell bash -c 'read -p "OAUTH client secret (hidden): " secret; echo $$secret; echo >&2'))
+	$(eval JWT_SECRET=$(shell head -c 21 /dev/urandom | base64))
+	@echo "OAUTH_42_CLIENT_ID='$(OAUTH_42_CLIENT_ID)'" > backend/env_test/.env
+	@echo "OAUTH_42_CLIENT_SECRET='$(OAUTH_42_CLIENT_SECRET)'" >> backend/env_test/.env
+	@echo "JWT_SECRET='$(JWT_SECRET)'" >> backend/env_test/.env
+
+	@echo "`tput setaf 2`⚙ Local dev environment generated."
+
 info:
 	@docker ps
 	@echo "\n"

@@ -27,6 +27,11 @@ If you have any trouble running the project, try removing the node_modules (`mak
  - [🚀 How to install PostgreSQL database and connect it to nestjs?](#-how-to-install-postgresql-database-and-connect-it-to-nestjs)
  - [🗃️ ressources](#%EF%B8%8F-ressources)
 
+## OAuth2
+Access token, Refresh token.
+When you gonna login for the first time on the plateform, you gonna get an access token + a refresh token (for each specific user).
+The next time you gonna login on the plateform, you gonna directly use your access token to log. If the token is expired, you gonna use your refresh token to generate a new access token.
+
 ## 🏗️ How to build a web app?
 At first, I didn't know where to start, so here are the steps to follow if you want to properly build your web application. The following instructions are precious, and could save you some time. 
   

@@ -28,7 +28,6 @@ export class AuthController{
 
 	@Get('42')
 	signin42(@Body() dto: Auth42Dto) {
-		return this.authService.testAuth();
-		// return this.authService.signin42(dto);
+		return this.authService.signin42(dto);
 	}
 }
