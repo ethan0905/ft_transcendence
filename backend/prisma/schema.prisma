@@ -12,12 +12,13 @@ datasource db {
 
 model User {
   id        Int       @id @default(autoincrement())
+  id42      Int
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
   email     String  @unique
   hash      String
-  // username  String @unique
+  username  String? @unique
   avatarUrl String?
 
   messages  Message[]
@@ -109,3 +110,10 @@ model Game {
   @@unique([id])
 }
 
+model Test {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  test     String
+}

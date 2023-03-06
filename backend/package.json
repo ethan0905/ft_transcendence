@@ -31,7 +31,7 @@
     "test:e2e": "dotenv -e .env.test -- jest --watch --no-cache --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@nestjs/common": "^9.0.0",
+    "@nestjs/common": "^9.3.9",
     "@nestjs/config": "^2.3.1",
     "@nestjs/core": "^9.0.0",
     "@nestjs/jwt": "^10.0.2",
@@ -45,6 +45,7 @@
     "findup-sync": "^5.0.0",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
+    "passport-oauth2": "^1.7.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
     "swc": "^1.0.11"
