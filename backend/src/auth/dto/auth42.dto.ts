@@ -1,19 +1,19 @@
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class Auth42Dto {
-    @IsNumber()
-    @IsNotEmpty()
+    // @IsNumber()
+    // @IsNotEmpty()
     id: number;
 
-    @IsString()
-    @IsNotEmpty()
+    // @IsString()
+    // @IsNotEmpty()
     email: string;
 
-    @IsString()
-    @IsNotEmpty()
+    // @IsString()
+    // @IsNotEmpty()
     username: string;
 
-    @IsString()
-    @IsNotEmpty()
+    // @IsString()
+    // @IsNotEmpty()
     avatar: string;
 }

@@ -1,10 +1,12 @@
 import { Body, Controller, Post, Get, ParseIntPipe, HttpCode, HttpStatus } from "@nestjs/common"
 import { AuthService } from './auth.service';
-import { AuthDto } from './dto';
+import { AuthDto, Auth42Dto } from './dto';
 
 @Controller('auth')
 export class AuthController{
-	constructor(private authService: AuthService) {}
+	constructor(
+		private authService: AuthService
+	) {}
 
 	// //POST /auth/signup
 	// @Post('signup')
@@ -25,8 +27,8 @@ export class AuthController{
 	}
 
 	@Get('42')
-	signin42() {
-		// console.log('42 api called');
+	signin42(@Body() dto: Auth42Dto) {
 		return this.authService.testAuth();
+		// return this.authService.signin42(dto);
 	}
 }

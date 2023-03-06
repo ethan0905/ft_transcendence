@@ -100,6 +100,8 @@ export class AuthService{
 		if (!user) {
 			this.create42User(dto);
 		}
+		else
+			return user;
 	}
 
 	async create42User(dto: Auth42Dto) {
