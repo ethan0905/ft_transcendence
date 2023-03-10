@@ -1,45 +1,51 @@
-import styled from "styled-components";
 import { Avatar, Button, IconButton } from "@mui/material";
 import ChatIcon from "@mui/icons-material/Chat";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import SearchIcon from "@mui/icons-material/Search";
+import styled from "styled-components";
 
+export default function Sidebar() {
+	const createChat = () => {
+		const input = prompt("Enter the username to chat with");
+		if (!input)
+			return null;
+	};
 
-function Sidebar() {
 	return (
 		<Container>
 			<Header>
 				<UserAvatar />
 
 				<IconsContainer>
+					
 					<IconButton>
 						<ChatIcon />
 					</IconButton>
+
 					<IconButton>
 						<MoreVertIcon />
 					</IconButton>
+
 				</IconsContainer>
 			</Header>
 			
 			<Search>
 				<SearchIcon />
-				<SearchInput placeholder="Search in chats" />
+				<SearchInput placeholder="Search rooms" />
 			</Search>
 
-			<SidebarButton onClick={createChat}>Start a new chat</SidebarButton>
+			<SidebarButton onClick={createChat}>Create a room</SidebarButton>
 
 		</Container>
 	);
 }
-
-export default Sidebar;
 
 const SidebarButton = styled(Button)`
 	width: 100%;
 `;
 
 const Container = styled.div`
-	background-color: white;
+	background-color: #706363;
 `;
 
 const IconsContainer = styled.div`
@@ -56,13 +62,14 @@ const SearchInput = styled.input`
 	outline-width: 0;
 	border: none;
 	flex: 1;
+	background-color: #5c5c5c;
 `;
 
 const Header = styled.div`
 	display: flex;
 	position: sticky;
 	top: 0;
-	background-color: white;
+	background-color: #646161;
 	z-index: 1;
 	justify-content: space-between;
 	align-items: center;
