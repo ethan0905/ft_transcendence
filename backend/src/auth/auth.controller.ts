@@ -28,6 +28,11 @@ export class AuthController{
 
 	@Get('42')
 	signin42(@Body() dto: Auth42Dto) {
-		return this.authService.signin42(dto);
+		console.log("/auth/42 controller");
+	}
+
+	@Get('42/callback')
+	afterRedirection() {
+		return this.authService.afterRedirection();
 	}
 }

@@ -1,7 +1,8 @@
+/* eslint-disable prettier/prettier */
 import { Injectable, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthDto, Auth42Dto } from './dto';
-import * as argon from 'argon2';
+// import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
@@ -54,10 +55,10 @@ export class AuthService{
 			throw new ForbiddenException('Credentials incorrect');
 
 		//2. compare password
-		const pwMatches = await argon.verify(user.hash, dto.password);
+		// const pwMatches = await argon.verify(user.hash, dto.password);
 		//if password incorrect, throw exception
-		if (!pwMatches)
-			throw new ForbiddenException('Credentials incorrect');
+		// if (!pwMatches)
+		// 	throw new ForbiddenException('Credentials incorrect');
 
 		//3. send back the user
 		return this.signToken(user.id, user.email);
@@ -106,25 +107,35 @@ export class AuthService{
 	}
 
 	async create42User(dto: Auth42Dto) {
-		const { id, email, username, avatar } = dto;
+		// const { id, email, username, avatar } = dto;
 
-		//generate a random password
-		const randomPassword = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+		// //generate a random password
+		// const randomPassword = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 		
-		//1. generate the password hash
-		const hash = await argon.hash(randomPassword);
+		// //1. generate the password hash
+		// // const hash = await argon.hash(randomPassword);
 
-		//2. save user in the database
-		const user = await this.userService.createUser(
-			email,
-			username,
-			hash,
-			id,
-		);
+		// //2. save user in the database
+		// const user = await this.userService.createUser(
+		// 	email,
+		// 	username,
+		// 	hash,
+		// 	id,
+		// );
 
-		console.log(user);
+		// console.log(user);
 
-		//3. return the saved user
-		return user;
+		// //3. return the saved user
+		// return user;
+    return {
+			message: 'User created'
+    };
+	}
+
+	async afterRedirection() {
+
+		console.log("afterRedirection controller");
+		// return ({
+		// });
 	}
 }
