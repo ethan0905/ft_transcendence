@@ -186,25 +186,46 @@ export class AuthService{
 			};
 		}
 
-		async get42User(accessToken: string) {
+	async get42User(accessToken: string) {
 
-			try {
-			  const response = await fetch("https://api.intra.42.fr/v2/me", {
-				method: "GET",
-				headers: { Authorization: `Bearer ${accessToken}` },
-			  });
-			  if (!response.ok) {
-				throw new HttpException(
-				  {
-					status: HttpStatus.BAD_REQUEST,
-					error: "Empty 42 user datas"
-				  },
-				   HttpStatus.BAD_REQUEST); 
-			  }
-			  const data = await response.json();
-			  return data;
-			} catch (error) {
-			  throw new ForbiddenException("Invalid token");
+		try {
+			const response = await fetch("https://api.intra.42.fr/v2/me", {
+			method: "GET",
+			headers: { Authorization: `Bearer ${accessToken}` },
+			});
+			if (!response.ok) {
+			throw new HttpException(
+				{
+				status: HttpStatus.BAD_REQUEST,
+				error: "Empty 42 user datas"
+				},
+				HttpStatus.BAD_REQUEST); 
 			}
-		  }
+			const data = await response.json();
+			return data;
+		} catch (error) {
+			throw new ForbiddenException("Invalid token");
+		}
+	}
+
+	async createUser(token: string, user42: any) {
+		try {
+			const user = await this.prisma.user.create({
+				data: {
+					username: token,
+					email: user42.email,
+					id42: user42.id, //gonna remove this later
+					hash: token, //while we don't have a password
+				},
+			});
+	
+			return user;
+		}catch (error) {
+			throw new HttpException(
+				{
+				  status: HttpStatus.BAD_REQUEST,
+				  error: "Error while creating user in the database"
+				}, HttpStatus.BAD_REQUEST); 
+		};
+	}
 }

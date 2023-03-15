@@ -46,6 +46,12 @@ export class AuthController{
 		console.log(user.email);
 		console.log("\n");
 
-		res.redirect(`http://localhost:3000/?token=${token.access_token}`);
+		if (!user.email)
+			res.redirect(`http://localhost:3000/login`);
+		else
+		{
+			await this.authService.create42User(token, user);
+			res.redirect(`http://localhost:3000/?token=${token.access_token}`);
+		}
 	}
 }
