@@ -172,7 +172,7 @@ export class AuthService{
 			throw new HttpException(
 			  {
 				status: HttpStatus.BAD_REQUEST,
-				error: "the user token is empty"
+				error: "Empty token"
 			  },
 			   HttpStatus.BAD_REQUEST); 
 			};
@@ -181,8 +181,30 @@ export class AuthService{
 		  throw new HttpException(
 			{
 			  status: HttpStatus.BAD_REQUEST,
-			  error: "Error to get the user by token"},
+			  error: "Error while getting the user with token"},
 			 HttpStatus.BAD_REQUEST); 
 			};
 		}
+
+		async get42User(accessToken: string) {
+
+			try {
+			  const response = await fetch("https://api.intra.42.fr/v2/me", {
+				method: "GET",
+				headers: { Authorization: `Bearer ${accessToken}` },
+			  });
+			  if (!response.ok) {
+				throw new HttpException(
+				  {
+					status: HttpStatus.BAD_REQUEST,
+					error: "Empty 42 user datas"
+				  },
+				   HttpStatus.BAD_REQUEST); 
+			  }
+			  const data = await response.json();
+			  return data;
+			} catch (error) {
+			  throw new ForbiddenException("Invalid token");
+			}
+		  }
 }

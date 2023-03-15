@@ -36,9 +36,15 @@ export class AuthController{
 	async getToken(@Req() req: Request, @Res() res: Response) {
 		const code = req.query.code as string;
 		console.log("req.query.code = " + code);
+		console.log("\n");
 	
 		const token = await this.authService.accessToken(code);
 		console.log(token);
+		console.log("\n");
+
+		const user = await this.authService.get42User(token.access_token);
+		console.log(user.email);
+		console.log("\n");
 
 		res.redirect(`http://localhost:3000/?token=${token.access_token}`);
 	}
