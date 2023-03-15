@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
-import { Injectable, ForbiddenException } from '@nestjs/common';
+import { Injectable, ForbiddenException, Req, Res } from '@nestjs/common';
+import { Request } from 'express';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthDto, Auth42Dto } from './dto';
 // import * as argon from 'argon2';
@@ -8,6 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { User } from '@prisma/client';
 import { UserService } from '../user/user.service';
+import { HttpCode, HttpStatus, HttpException } from '@nestjs/common';
 
 @Injectable()
 export class AuthService{
@@ -134,8 +136,53 @@ export class AuthService{
 
 	async afterRedirection() {
 
-		console.log("afterRedirection controller");
+		console.log("Redirection happened! Now what?");
+
+		// retrieve the code from the url
+		// const token = await this.accessToken()
+
 		// return ({
 		// });
 	}
+
+	// async getToken(@Req() req: Request, @Res() res: Response) {
+
+	// 	// const code = req.query.code as string;
+	// 	// console.log("req.query.code = " + code);
+
+	// 	// const token = await this.accessToken(code);
+	// 	// console.log("this.accessToken = " + token);
+
+	// 	return;
+	// 	// res.redirect(`http://localhost:3000/?token=${token.access_token}`)
+	// }
+
+	async accessToken(req: string) {
+
+		try {
+		  const response = await fetch("https://api.intra.42.fr/oauth/token", {
+			method: "POST",
+			headers: { "Content-Type": "application/x-www-form-urlencoded" },
+			body: `grant_type=authorization_code&client_id=u-s4t2ud-c3680374c7c94850b80d768576ab99300705487e1f5c7f758876aaf8fbf5fbdb&client_secret=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&code=${req}&redirect_uri=http://localhost:3333/auth/42/callback`,
+		  });
+		  const data = await response.json();
+		  
+		  if (!data)
+		  {
+			throw new HttpException(
+			  {
+				status: HttpStatus.BAD_REQUEST,
+				error: "the user token is empty"
+			  },
+			   HttpStatus.BAD_REQUEST); 
+			};
+		  return data;
+		} catch (error) {
+		  throw new HttpException(
+			{
+			  status: HttpStatus.BAD_REQUEST,
+			  error: "Error to get the user by token"},
+			 HttpStatus.BAD_REQUEST); 
+			};
+		}
 }

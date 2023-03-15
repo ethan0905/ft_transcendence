@@ -1,4 +1,5 @@
-import { Body, Controller, Post, Get, ParseIntPipe, HttpCode, HttpStatus } from "@nestjs/common"
+import { Body, Controller, Post, Get, ParseIntPipe, HttpCode, HttpStatus, Req, Res } from "@nestjs/common"
+import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { AuthDto, Auth42Dto } from './dto';
 
@@ -32,7 +33,13 @@ export class AuthController{
 	}
 
 	@Get('42/callback')
-	afterRedirection() {
-		return this.authService.afterRedirection();
+	async getToken(@Req() req: Request, @Res() res: Response) {
+		const code = req.query.code as string;
+		console.log("req.query.code = " + code);
+	
+		const token = await this.authService.accessToken(code);
+		console.log(token);
+
+		res.redirect(`http://localhost:3000/?token=${token.access_token}`);
 	}
 }
