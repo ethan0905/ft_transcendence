@@ -213,9 +213,10 @@ export class AuthService{
 
 	async create42User(token: any, user42: any) {
 		try {
-			console.log("Creating user... \n");
-			console.log(token.expires_in);
-			console.log(token.refresh_token);
+			console.log("Creating user... \n");	
+
+			if (user42.email)
+				return user42;
 
 			const user = await this.prisma.user.create({
 				data: {
@@ -256,5 +257,30 @@ export class AuthService{
 		//   httpOnly: true, // for security
 		// });
 		return cookies;
+	}
+
+
+	async updateCookies(@Res() res: Response, token: any, user42: any) {
+		try {
+		  if (user42)
+		  {
+			const user = await this.prisma.user.update({where: {username: user42.login,},
+				data: { accessToken: token.access_token, },
+			});
+			return user;
+		  }
+		  else
+			return (null);
+		} catch (error)
+		{
+			throw new HttpException({
+			status: HttpStatus.BAD_REQUEST,
+			error: "Error to update the cookes"},
+			HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	async deleteCookies(@Res() res: Response) {
+		res.clearCookie("token");
 	}
 }

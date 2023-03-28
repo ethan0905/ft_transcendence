@@ -12,6 +12,13 @@ function App() {
         }}
       />
 
+      <Button 
+        text="Logout"
+        onClick={() => {
+          window.open('http://localhost:3333/auth/42/logout', "_self");
+        }}
+      />
+
     </div>
   );
 }

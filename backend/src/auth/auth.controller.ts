@@ -49,14 +49,23 @@ export class AuthController {
 
     this.authService.createCookies(res, token);
 
+    // this.authService.updateCookies(res, token, user);
+
     if (!user.email)
       res.redirect(`http://localhost:3000/login`);
     else {
+      this.authService.updateCookies(res, token, user);
       const user42 = await this.authService.create42User(token, user);
-      console.log("USER CREATED !", user42);
       res.redirect(
         `http://localhost:3000/?token=${token.access_token}`,
       );
     }
   }
+
+  @Get('42/logout')
+  async logout( @Res() res: Response) {
+    this.authService.deleteCookies(res);
+    res.redirect(`http://localhost:3000/login`);
+  }
+
 }
