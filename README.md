@@ -1,13 +1,14 @@
 # ft_transcendance
 <p align="left"> <img src="https://komarev.com/ghpvc/?username=ethan0905&label=ft_transcendance%20views&color=0e75b6&style=flat" alt="jcluzet" /> </p>
-
+  
+<div align="center">
+  <img src="transcendance_auth_process.png" width="500" height="auto" />
+</div>
+  
 > Project is in progress.. The final readme will come soon  
 > From today you can use it to understand the basic concepts for the backend  
 > I am gonna explain progressively how to install the basic structure of the project, using NestJS, PostgreSQL, Prisma for the backend, and ReactJS for the frontend.
 
-<div align="center">
-  <img src="transcendance_auth_process.png" width="500" height="auto" />
-</div>
 
 ## ⚙️ How to run the project?
 
