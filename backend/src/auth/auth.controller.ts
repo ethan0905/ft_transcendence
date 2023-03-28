@@ -47,7 +47,7 @@ export class AuthController {
     console.log(user.email);
     console.log('\n');
 
-    // this.authService.createCookies(res, token);
+    this.authService.createCookies(res, token);
 
     if (!user.email)
       res.redirect(`http://localhost:3000/login`);

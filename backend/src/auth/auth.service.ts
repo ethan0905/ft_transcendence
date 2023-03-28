@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Injectable, ForbiddenException, Req, Res } from '@nestjs/common';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthDto, Auth42Dto } from './dto';
 // import * as argon from 'argon2';
@@ -244,16 +244,17 @@ export class AuthService{
 		};
 	}
 
-	// async createCookies(@Res() res: Response, token: any) {
-	// 	const cookies = res.cookie("token", token.access_token,
-	// 	{
-	// 	  expires: new Date(new Date().getTime() + 60 * 24 * 7 * 1000), // expires in 7 days
-	// 	  httpOnly: true, // for security
-	// 	});
-	// 	const Googlecookies = res.cookie("FullToken", token,
-	// 	{
-	// 	  expires: new Date(new Date().getTime() + 60 * 24 * 7 * 1000), // expires in 7 days
-	// 	  httpOnly: true, // for security
-	// 	});
-	// }
+	async createCookies(@Res() res: Response, token: any) {
+		const cookies = res.cookie("token", token.access_token,
+		{
+		  expires: new Date(new Date().getTime() + 60 * 24 * 7 * 1000), // expires in 7 days
+		  httpOnly: true, // for security
+		});
+		// const Googlecookies = res.cookie("FullToken", token,
+		// {
+		//   expires: new Date(new Date().getTime() + 60 * 24 * 7 * 1000), // expires in 7 days
+		//   httpOnly: true, // for security
+		// });
+		return cookies;
+	}
 }
