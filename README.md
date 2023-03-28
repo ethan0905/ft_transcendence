@@ -5,6 +5,10 @@
 > From today you can use it to understand the basic concepts for the backend  
 > I am gonna explain progressively how to install the basic structure of the project, using NestJS, PostgreSQL, Prisma for the backend, and ReactJS for the frontend.
 
+<div align="center">
+  <img src="transcendance_auth_process.png" width="500" height="auto" />
+</div>
+
 ## ⚙️ How to run the project?
 
 1. Run `make install` to install node_modules
