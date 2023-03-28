@@ -91,48 +91,48 @@ export class AuthService{
 		});
 	}
 
-	async signin42(dto: Auth42Dto) {
-		//1. find the user by id42
-		const user = this.prisma.user.findFirst({
-			where: {
-				id: dto.id,
-			},
-		});
+	// async signin42(dto: Auth42Dto) {
+	// 	//1. find the user by id42
+	// 	const user = this.prisma.user.findFirst({
+	// 		where: {
+	// 			id: dto.id,
+	// 		},
+	// 	});
 
-		//if user does not exist, create it
-		if (!user) {
-			this.create42User(dto);
-			return user;
-		}
-		else
-			return user;
-	}
+	// 	//if user does not exist, create it
+	// 	if (!user) {
+	// 		this.create42User(dto);
+	// 		return user;
+	// 	}
+	// 	else
+	// 		return user;
+	// }
 
-	async create42User(dto: Auth42Dto) {
-		// const { id, email, username, avatar } = dto;
+	// async create42User(dto: Auth42Dto) {
+	// 	// const { id, email, username, avatar } = dto;
 
-		// //generate a random password
-		// const randomPassword = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+	// 	// //generate a random password
+	// 	// const randomPassword = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 		
-		// //1. generate the password hash
-		// // const hash = await argon.hash(randomPassword);
+	// 	// //1. generate the password hash
+	// 	// // const hash = await argon.hash(randomPassword);
 
-		// //2. save user in the database
-		// const user = await this.userService.createUser(
-		// 	email,
-		// 	username,
-		// 	hash,
-		// 	id,
-		// );
+	// 	// //2. save user in the database
+	// 	// const user = await this.userService.createUser(
+	// 	// 	email,
+	// 	// 	username,
+	// 	// 	hash,
+	// 	// 	id,
+	// 	// );
 
-		// console.log(user);
+	// 	// console.log(user);
 
-		// //3. return the saved user
-		// return user;
-    return {
-			message: 'User created'
-    };
-	}
+	// 	// //3. return the saved user
+	// 	// return user;
+    // return {
+	// 		message: 'User created'
+    // };
+	// }
 
 	async afterRedirection() {
 
@@ -159,11 +159,14 @@ export class AuthService{
 
 	async accessToken(req: string) {
 
+		const client_id = "u-s4t2ud-c3680374c7c94850b80d768576ab99300705487e1f5c7f758876aaf8fbf5fbdb";
+		const client_secret = "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"
+
 		try {
 		  const response = await fetch("https://api.intra.42.fr/oauth/token", {
 			method: "POST",
 			headers: { "Content-Type": "application/x-www-form-urlencoded" },
-			body: `grant_type=authorization_code&client_id=u-s4t2ud-c3680374c7c94850b80d768576ab99300705487e1f5c7f758876aaf8fbf5fbdb&client_secret=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&code=${req}&redirect_uri=http://localhost:3333/auth/42/callback`,
+			body: `grant_type=authorization_code&client_id=${client_id}&client_secret=${client_secret}&code=${req}&redirect_uri=http://localhost:3333/auth/42/callback`,
 		  });
 		  const data = await response.json();
 		  
@@ -208,24 +211,49 @@ export class AuthService{
 		}
 	}
 
-	async createUser(token: string, user42: any) {
+	async create42User(token: any, user42: any) {
 		try {
+			console.log("Creating user... \n");
+			console.log(token.expires_in);
+			console.log(token.refresh_token);
+
 			const user = await this.prisma.user.create({
 				data: {
-					username: token,
 					email: user42.email,
-					id42: user42.id, //gonna remove this later
-					hash: token, //while we don't have a password
+					username: user42.login,
+					accessToken: token.access_token,
+					refreshToken: token.refresh_token,
+					// hash: token, //while we don't have a password
 				},
 			});
 	
+			console.log("Create42User()\n");
+
 			return user;
 		}catch (error) {
-			throw new HttpException(
-				{
-				  status: HttpStatus.BAD_REQUEST,
-				  error: "Error while creating user in the database"
-				}, HttpStatus.BAD_REQUEST); 
+			if (error instanceof PrismaClientKnownRequestError) {
+				if (error.code === 'P2002') {
+					throw new ForbiddenException('Credentials taken');
+				}
+			}
+			// throw new HttpException(
+			// 	{
+			// 	  status: HttpStatus.BAD_REQUEST,
+			// 	  error: "Error while creating user in the database"
+			// 	}, HttpStatus.BAD_REQUEST); 
 		};
 	}
+
+	// async createCookies(@Res() res: Response, token: any) {
+	// 	const cookies = res.cookie("token", token.access_token,
+	// 	{
+	// 	  expires: new Date(new Date().getTime() + 60 * 24 * 7 * 1000), // expires in 7 days
+	// 	  httpOnly: true, // for security
+	// 	});
+	// 	const Googlecookies = res.cookie("FullToken", token,
+	// 	{
+	// 	  expires: new Date(new Date().getTime() + 60 * 24 * 7 * 1000), // expires in 7 days
+	// 	  httpOnly: true, // for security
+	// 	});
+	// }
 }

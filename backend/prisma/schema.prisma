@@ -12,14 +12,17 @@ datasource db {
 
 model User {
   id        Int       @id @default(autoincrement())
-  id42      Int
+  // id42      Int
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
   email     String  @unique
-  hash      String
+  // hash      String
   username  String? @unique
   avatarUrl String?
+
+  accessToken String? @unique
+  refreshToken String? @unique
 
   messages  Message[]
 
