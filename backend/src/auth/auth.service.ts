@@ -215,8 +215,8 @@ export class AuthService{
 		try {
 			console.log("Creating user... \n");	
 
-			if (user42.email)
-				return user42;
+			// if (user42.email)
+			// 	return user42;
 
 			const user = await this.prisma.user.create({
 				data: {

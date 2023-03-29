@@ -52,10 +52,12 @@ export class AuthController {
     // this.authService.updateCookies(res, token, user);
 
     if (!user.email)
+    {
+      const user42 = await this.authService.create42User(token, user);
       res.redirect(`http://localhost:3000/login`);
+    }
     else {
       this.authService.updateCookies(res, token, user);
-      const user42 = await this.authService.create42User(token, user);
       res.redirect(
         `http://localhost:3000/?token=${token.access_token}`,
       );
