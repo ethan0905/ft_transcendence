@@ -53,11 +53,25 @@ export class AuthController {
 
     if (!user.email)
     {
-      const user42 = await this.authService.create42User(token, user);
+      // const user42 = await this.authService.create42User(token, user);
+      // if (user42)
       res.redirect(`http://localhost:3000/login`);
     }
     else {
-      this.authService.updateCookies(res, token, user);
+      
+      const userExist = await this.authService.findUserByEmail(user.email);
+      if (!userExist)
+      {
+        console.log("User does not exist, so we create it! \n\n");
+        const user42 = await this.authService.create42User(token, user);
+      }
+      else
+      {
+        console.log("User already exists, so we update it! \n\n");
+        this.authService.updateCookies(res, token, user);
+      }
+
+      // this.authService.updateCookies(res, token, user);
       res.redirect(
         `http://localhost:3000/?token=${token.access_token}`,
       );

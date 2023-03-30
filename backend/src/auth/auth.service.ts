@@ -245,6 +245,24 @@ export class AuthService{
 		};
 	}
 
+	async findUserByEmail(user42: any) {
+		try {
+			const user = await this.prisma.user.findFirst({
+				where: {
+					email: user42.email,
+				},
+			});
+			return user;
+		} catch (error) {
+			throw new HttpException(
+				{
+
+				status: HttpStatus.BAD_REQUEST,
+				error: "Error while finding user in the database"
+				}, HttpStatus.BAD_REQUEST);
+		};
+	}
+
 	async createCookies(@Res() res: Response, token: any) {
 		const cookies = res.cookie("token", token.access_token,
 		{
@@ -264,8 +282,13 @@ export class AuthService{
 		try {
 		  if (user42)
 		  {
-			const user = await this.prisma.user.update({where: {username: user42.login,},
-				data: { accessToken: token.access_token, },
+			const user = await this.prisma.user.update({
+				where: {
+				username: user42.login,
+			},
+				data: {
+					accessToken: token.access_token,
+				},
 			});
 			return user;
 		  }
