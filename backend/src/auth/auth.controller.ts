@@ -84,4 +84,9 @@ export class AuthController {
     res.redirect(`http://localhost:3000/login`);
   }
 
+  @Get('2fa')
+  async enable2FA(@Req() req: Request) {
+    return this.authService.enable2FA(req);
+  }
+
 }

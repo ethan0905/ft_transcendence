@@ -306,4 +306,39 @@ export class AuthService{
 	async deleteCookies(@Res() res: Response) {
 		res.clearCookie("token");
 	}
+
+	async enable2FA(@Req() req: Request) {
+		const user = req.user;
+
+		console.log("printing user from enable2fa() : " + user);
+		// const tokenIsValid = await this.get42User(token);
+
+		// if (tokenIsValid)
+		// {
+		// 	console.log("token = " + token);
+		// }
+		// else
+		// {	
+		// 	console.log("INVALID TOKEN");
+		// }
+		// const user = await this.prisma.user.findFirst({
+		// 	where: {
+		// 		accessToken: token,
+		// 	},
+		// });
+		// if (user)
+		// {
+		// 	const user2FA = await this.prisma.user.update({
+		// 		where: {
+		// 			accessToken: token,
+		// 		},
+		// 		data: {
+		// 			twoFAIsEnabled: true,
+		// 		},
+		// 	});
+		// 	return user2FA;
+		// }
+		// else
+		// 	return (null);
+	}
 }
