@@ -25,19 +25,15 @@ function App() {
     setChecked(event.target.checked);
 
     // console.log("token: ", token);
-    // console.log("status: ", !checked);
+    console.log("status: ", !checked);
     axios.post('http://localhost:3333/auth/2fa/enable', { token, twoFactorAuth: !checked }).then(response => {
 
     // console.log(response);
     setQrcodeDataUrl(response.data);
-    // setOtpAuthUrl(response.data.otpauthUrl);
-    // console.log("otpAuthUrl: ", otpAuthUrl);
-    // setQrcodeDataUrl(qrDataUrl);
-    // console.log("!!!!!!qrcodeDataUrl: ", qrDataUrl.qrcodeDataUrl);
-  })
-  .catch(error => {
-    console.error(error);
-  });
+    console.log("qrcodeDataUrl: ", response.data);
+  }).catch(error => {
+      console.error(error);
+    });
   };
 
   return (
@@ -69,6 +65,8 @@ function App() {
 
       {checked && (
         <div>
+          {/* <p>data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAMAAACahl6sAAAAElBMVEX///8AAABVwtN+AAAAAnRSTlMAAHaTzTgAAAENJREFUeNrs2QENACAIA0B8Y6U1F6EBZmABASmKMHKInuAV7yaOwFIUGyC7VmuL4X3qOz4AQAAAAAAAAAAAAAAAAAAAACASzCGAAH1Q2gBAAAAAElFTkSuQmCC</p> */}
+          <p>{qrcodeDataUrl}</p>
           {qrcodeDataUrl &&
             // <p>hey hey</p>
             <QRCode value="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAMAAACahl6sAAAAElBMVEX///8AAABVwtN+AAAAAnRSTlMAAHaTzTgAAAENJREFUeNrs2QENACAIA0B8Y6U1F6EBZmABASmKMHKInuAV7yaOwFIUGyC7VmuL4X3qOz4AQAAAAAAAAAAAAAAAAAAAACASzCGAAH1Q2gBAAAAAElFTkSuQmCC" />
