@@ -5,6 +5,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import React from 'react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import QRCode from 'react-qr-code';
 
 function App() {
 
@@ -68,7 +69,10 @@ function App() {
 
       {checked && (
         <div>
-          <p>{qrcodeDataUrl}</p>
+          {qrcodeDataUrl &&
+            // <p>hey hey</p>
+            <QRCode value={qrcodeDataUrl} />
+          }
         </div>
       )}
 
