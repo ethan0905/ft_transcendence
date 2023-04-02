@@ -264,17 +264,18 @@ export class AuthService{
 	}
 
 	async createCookies(@Res() res: Response, token: any) {
+		console.log("Creating cookies with: [" + token.access_token + "]\n");
 		const cookies = res.cookie("token", token.access_token,
 		{
 		  expires: new Date(new Date().getTime() + 60 * 24 * 7 * 1000), // expires in 7 days
-		  httpOnly: true, // for security
+		//   httpOnly: true, // for security
+		  httpOnly: false, // for security
 		});
 		// const Googlecookies = res.cookie("FullToken", token,
 		// {
 		//   expires: new Date(new Date().getTime() + 60 * 24 * 7 * 1000), // expires in 7 days
 		//   httpOnly: true, // for security
 		// });
-		return cookies;
 	}
 
 
@@ -308,37 +309,19 @@ export class AuthService{
 	}
 
 	async enable2FA(@Req() req: Request) {
-		const user = req.user;
 
-		console.log("printing user from enable2fa() : " + user);
-		// const tokenIsValid = await this.get42User(token);
+		// console.log("Getting my Token from req.body.token: ", req.body.twoFactorAuth);
+		// console.log("Getting my Token from req.cookies.token: ", req.body.token);
 
-		// if (tokenIsValid)
-		// {
-		// 	console.log("token = " + token);
-		// }
-		// else
-		// {	
-		// 	console.log("INVALID TOKEN");
-		// }
-		// const user = await this.prisma.user.findFirst({
-		// 	where: {
-		// 		accessToken: token,
-		// 	},
-		// });
-		// if (user)
-		// {
-		// 	const user2FA = await this.prisma.user.update({
-		// 		where: {
-		// 			accessToken: token,
-		// 		},
-		// 		data: {
-		// 			twoFAIsEnabled: true,
-		// 		},
-		// 	});
-		// 	return user2FA;
-		// }
-		// else
-		// 	return (null);
+		const response = await this.prisma.user.update({
+			where: {
+				accessToken: req.body.token,
+			},
+			data: {
+				twoFactorAuth: req.body.twoFactorAuth,
+			},
+		});
+
+		return response;
 	}
 }

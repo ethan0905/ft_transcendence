@@ -1,3 +1,4 @@
+import { PrismaService } from './../prisma/prisma.service';
 import { Body, Controller, Post, Get, ParseIntPipe, HttpCode, HttpStatus, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
@@ -5,7 +6,8 @@ import { AuthDto, Auth42Dto } from './dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService,
+              private prismaService: PrismaService) {}
 
   // //POST /auth/signup
   // @Post('signup')
@@ -47,7 +49,11 @@ export class AuthController {
     console.log(user.email);
     console.log('\n');
 
-    this.authService.createCookies(res, token);
+    if (token)
+    {
+      console.log("Token exists, so we create cookies! \n\n");
+      this.authService.createCookies(res, token);
+    }
 
     // this.authService.updateCookies(res, token, user);
 
@@ -75,7 +81,22 @@ export class AuthController {
       res.redirect(
         `http://localhost:3000/?token=${token.access_token}`,
       );
+      return token;
     }
+  }
+
+  @Get('token')
+  async getToken2( @Req() req: Request, @Res() res: Response) {
+    // const user = await this.prismaService.user.findUnique({
+    //   where: {
+    //     email: req.body.email,
+    //   },
+    // })
+
+    const test = req.cookies.token;
+    
+    console.log("Inside get token2 fucntion: ", test);
+    return;
   }
 
   @Get('42/logout')
@@ -84,7 +105,7 @@ export class AuthController {
     res.redirect(`http://localhost:3000/login`);
   }
 
-  @Get('2fa')
+  @Post('2fa/enable')
   async enable2FA(@Req() req: Request) {
     return this.authService.enable2FA(req);
   }
