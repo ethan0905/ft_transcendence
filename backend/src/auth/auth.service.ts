@@ -10,6 +10,8 @@ import { ConfigService } from '@nestjs/config';
 import { User } from '@prisma/client';
 import { UserService } from '../user/user.service';
 import { HttpCode, HttpStatus, HttpException } from '@nestjs/common';
+import { authenticator } from 'otplib';
+import { toDataURL } from 'qrcode';
 
 @Injectable()
 export class AuthService{
@@ -313,7 +315,7 @@ export class AuthService{
 		// console.log("Getting my Token from req.body.token: ", req.body.twoFactorAuth);
 		// console.log("Getting my Token from req.cookies.token: ", req.body.token);
 
-		const response = await this.prisma.user.update({
+		const user = await this.prisma.user.update({
 			where: {
 				accessToken: req.body.token,
 			},
@@ -322,6 +324,45 @@ export class AuthService{
 			},
 		});
 
-		return response;
+		if (user.twoFactorAuth == true)
+		{
+			const secret = authenticator.generateSecret();
+			console.log("Secret: ", secret);
+
+			const otpauthUrl = authenticator.keyuri(user.email, 'Pong Pong', secret);
+			console.log("otpauthUrl: ", otpauthUrl);
+
+			await this.prisma.user.update({
+				where: {
+					accessToken: req.body.token,
+				},
+				data: {
+					twoFactorSecret: secret,
+				},
+			});
+
+			const qrCodeDataURL = await this.generateQrCodeDataURL(otpauthUrl);
+			console.log("qrCodeDataURL: ", qrCodeDataURL);
+
+			return qrCodeDataURL;
+		}
 	}
+
+	async generateQrCodeDataURL(otpAuthUrl: string): Promise<string> {
+		return toDataURL(otpAuthUrl);
+	}
+
+	async isTwoFactorAuthenticationCodeValid(user: any, twoFactorAuthenticationCode: string) {
+		
+		// const user = await this.prisma.user.findFirst({
+		// 	where: {
+		// 		accessToken: req.body.token,
+		// 	},
+		// });
+
+		return authenticator.verify({
+		  token: twoFactorAuthenticationCode, // surement le code entré par l'utilisateur
+		  secret: user.twoFactorSecret,
+		});
+	  }
 }

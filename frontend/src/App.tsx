@@ -9,6 +9,8 @@ import axios from 'axios';
 function App() {
 
   const [checked, setChecked] = React.useState(false);
+  // const [otpAuthUrl, setOtpAuthUrl] = React.useState('');
+  const [qrcodeDataUrl, setQrcodeDataUrl] = React.useState('');
   const [token, setToken] = useState('');
 
   useEffect(() => {
@@ -24,13 +26,18 @@ function App() {
     // console.log("token: ", token);
     // console.log("status: ", !checked);
     axios.post('http://localhost:3333/auth/2fa/enable', { token, twoFactorAuth: !checked }).then(response => {
-    console.log(response.data);
+
+    // console.log(response);
+    setQrcodeDataUrl(response.data);
+    // setOtpAuthUrl(response.data.otpauthUrl);
+    // console.log("otpAuthUrl: ", otpAuthUrl);
+    // setQrcodeDataUrl(qrDataUrl);
+    // console.log("!!!!!!qrcodeDataUrl: ", qrDataUrl.qrcodeDataUrl);
   })
   .catch(error => {
     console.error(error);
   });
   };
-
 
   return (
     <div className="App">
@@ -58,6 +65,12 @@ function App() {
       } label="Enable 2FA" />
 
       <p>Token: {token}</p>
+
+      {checked && (
+        <div>
+          <p>{qrcodeDataUrl}</p>
+        </div>
+      )}
 
     </div>
   );

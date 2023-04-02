@@ -110,4 +110,9 @@ export class AuthController {
     return this.authService.enable2FA(req);
   }
 
+  @Get('2fa/qrcode')
+  async generateQrCodeDataURL(otpAuthUrl: any) {
+    return this.authService.generateQrCodeDataURL(otpAuthUrl);
+  }
+
 }
