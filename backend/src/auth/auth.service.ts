@@ -12,6 +12,7 @@ import { UserService } from '../user/user.service';
 import { HttpCode, HttpStatus, HttpException } from '@nestjs/common';
 import { authenticator } from 'otplib';
 import { toDataURL } from 'qrcode';
+import { speakeasy } from 'speakeasy';
 
 @Injectable()
 export class AuthService{
@@ -327,10 +328,25 @@ export class AuthService{
 		if (user.twoFactorAuth == true)
 		{
 			const secret = authenticator.generateSecret();
-			console.log("Secret: ", secret);
+			// const middleIndex = Math.floor(secret.length / 8);
+			// const firstQuarter = secret.substr(0, middleIndex);
+			// console.log("Secret: ", secret);
 
 			const otpauthUrl = authenticator.keyuri(user.email, 'Pong Pong', secret);
 			console.log("otpauthUrl: ", otpauthUrl);
+
+			// const speakeasy = require('speakeasy');
+
+			// const otpauthUrl = speakeasy.otpauthURL({
+			// 	secret: secret,
+			// 	label: 'Pong ping',
+			// 	algorithm: 'sha512',
+			// 	encoding: 'base32'
+			// });
+			console.log("otpauthUrl: ", otpauthUrl);
+
+			// console.log(otpauthUrl);
+
 
 			await this.prisma.user.update({
 				where: {

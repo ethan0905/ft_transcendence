@@ -12,15 +12,14 @@
   
 ## ⚙️ How to run the project?
 
-1. Run `make install` to install node_modules
-2. Then run the command `make up`  
-3. On a different terminal, after the project has been built, in the /project folder run `make prisma` to run prisma studio
-4. Go to your `Brave` navigator:  
-    --> `localhost:3000`: for the frontend  
+1. Run `make` to install node_modules + to build the dockerized app
+2. On a different terminal, after the project has been built, in the /project folder run `make gotoc` to go inside the backend container.
+3. Run `npx prisma migrate dev` to push the current database models, and run `npx prisma studio` to run the viewer for db.
+4. Go to your navigator:  
+    --> `localhost:3000`: for the frontend 
     --> `localhost:5555`: for prisma studio  
-5. If you want to update the prisma schema use the command `make schema`.
 
-If you have any trouble running the project, try removing the node_modules (`make clean_modules`) then rebuild the docker.
+If you have any trouble running the project, try `Ctrl^C` + removing the node_modules (`make clean_modules`) then rebuild the docker.
 
 ## 📔 Summary
 
@@ -436,3 +435,7 @@ go on the `localhost:5555` and it should be good
 
 #### how to switch from yarn package manager to npm?
 https://stackoverflow.com/questions/51239726/react-native-switch-from-yarn-to-npm  
+
+#### qr-code
+could not display the qr code on my page because of len overflow (too much data stored). So i managed to open a new window to show it.  
+https://ourcodeworld.com/articles/read/682/what-does-the-not-allowed-to-navigate-top-frame-to-data-url-javascript-exception-means-in-google-chrome  
