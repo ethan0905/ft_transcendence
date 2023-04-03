@@ -325,7 +325,7 @@ export class AuthService{
 			},
 		});
 
-		if (user.twoFactorAuth == true)
+		if (req.body.twoFactorAuth == true)
 		{
 			// if (user.twoFactorSecret == null)
 			// {
