@@ -382,7 +382,7 @@ export class AuthService{
 		return toDataURL(otpAuthUrl);
 	}
 
-	async verify2FA(@Req() req: Request, code: string) {
+	async verify2FA(@Req() req: Request) {
 		
 		const user = await this.prisma.user.findFirst({
 			where: {

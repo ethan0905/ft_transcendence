@@ -86,6 +86,8 @@ function App() {
       body: JSON.stringify({ twoFACode: twoFACode })
     });
     const data = await response.json();
+    if (data)
+      window.location.href = "http://localhost:3000/mainpage";
     console.log(data);
     return data;
   }

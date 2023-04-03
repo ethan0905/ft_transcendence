@@ -116,7 +116,7 @@ export class AuthController {
   }
 
   @Post('2fa/verify')
-  async verify2FA(@Req() req: Request, @Body() { code }: { code: string }) {
-    return this.authService.verify2FA(req, code);
+  async verify2FA(@Req() req: Request) {
+    return this.authService.verify2FA(req);
   }
 }
