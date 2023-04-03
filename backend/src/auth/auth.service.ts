@@ -313,8 +313,8 @@ export class AuthService{
 
 	async enable2FA(@Req() req: Request, @Res() res: Response) {
 
-		// console.log("Getting my Token from req.body.token: ", req.body.twoFactorAuth);
-		// console.log("Getting my Token from req.cookies.token: ", req.body.token);
+		console.log("Getting my Token from req.body.twoFactorAuth: ", req.body.twoFactorAuth);
+		console.log("Getting my Token from req.cookies.token: ", req.body.token);
 
 		const user = await this.prisma.user.update({
 			where: {
@@ -325,12 +325,14 @@ export class AuthService{
 			},
 		});
 
+		console.log("Getting my user: ", user.email);
+
 		if (req.body.twoFactorAuth == true)
 		{
 			// if (user.twoFactorSecret == null)
 			// {
-				if (user.twoFactorSecret != null)
-					return {message: "2FA already enabled"};
+				// if (user.twoFactorSecret != null)
+				// 	return {message: "2FA already enabled"};
 
 				const secret = authenticator.generateSecret();
 				await this.prisma.user.update({
