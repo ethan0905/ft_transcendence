@@ -327,12 +327,23 @@ export class AuthService{
 
 		if (user.twoFactorAuth == true)
 		{
-			const secret = authenticator.generateSecret();
+			if (user.twoFactorSecret == null)
+			{
+				const secret = authenticator.generateSecret();
+				await this.prisma.user.update({
+					where: {
+						accessToken: req.body.token,
+					},
+					data: {
+						twoFactorSecret: secret,
+					},
+				});
+			}
 			// const middleIndex = Math.floor(secret.length / 8);
 			// const firstQuarter = secret.substr(0, middleIndex);
 			// console.log("Secret: ", secret);
 
-			const otpauthUrl = authenticator.keyuri(user.email, 'Pong Pong', secret);
+			const otpauthUrl = authenticator.keyuri(user.email, 'Pong Pong', user.twoFactorSecret);
 			console.log("otpauthUrl: ", otpauthUrl);
 
 			// const speakeasy = require('speakeasy');
@@ -343,19 +354,19 @@ export class AuthService{
 			// 	algorithm: 'sha512',
 			// 	encoding: 'base32'
 			// });
-			console.log("otpauthUrl: ", otpauthUrl);
+			// console.log("otpauthUrl: ", otpauthUrl);
 
 			// console.log(otpauthUrl);
 
 
-			await this.prisma.user.update({
-				where: {
-					accessToken: req.body.token,
-				},
-				data: {
-					twoFactorSecret: secret,
-				},
-			});
+			// await this.prisma.user.update({
+			// 	where: {
+			// 		accessToken: req.body.token,
+			// 	},
+			// 	data: {
+			// 		twoFactorSecret: secret,
+			// 	},
+			// });
 
 			const qrCodeDataURL = await this.generateQrCodeDataURL(otpauthUrl);
 			console.log("qrCodeDataURL: ", qrCodeDataURL);
