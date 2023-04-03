@@ -12,7 +12,7 @@ import { UserService } from '../user/user.service';
 import { HttpCode, HttpStatus, HttpException } from '@nestjs/common';
 import { authenticator } from 'otplib';
 import { toDataURL } from 'qrcode';
-import { speakeasy } from 'speakeasy';
+import { Body } from '@nestjs/common';
 
 @Injectable()
 export class AuthService{
@@ -311,7 +311,7 @@ export class AuthService{
 		res.clearCookie("token");
 	}
 
-	async enable2FA(@Req() req: Request) {
+	async enable2FA(@Req() req: Request, @Res() res: Response) {
 
 		// console.log("Getting my Token from req.body.token: ", req.body.twoFactorAuth);
 		// console.log("Getting my Token from req.cookies.token: ", req.body.token);
@@ -368,10 +368,13 @@ export class AuthService{
 			// 	},
 			// });
 
-			const qrCodeDataURL = await this.generateQrCodeDataURL(otpauthUrl);
-			console.log("qrCodeDataURL: ", qrCodeDataURL);
+			// const qrCodeDataURL = await this.generateQrCodeDataURL(otpauthUrl);
+			// console.log("qrCodeDataURL: ", qrCodeDataURL);
 
-			return qrCodeDataURL;
+			// return qrCodeDataURL;
+			return res.json(
+				await this.generateQrCodeDataURL(otpauthUrl)
+			);
 		}
 	}
 
@@ -379,16 +382,19 @@ export class AuthService{
 		return toDataURL(otpAuthUrl);
 	}
 
-	async isTwoFactorAuthenticationCodeValid(user: any, twoFactorAuthenticationCode: string) {
+	async verify2FA(@Req() req: Request, code: string) {
 		
-		// const user = await this.prisma.user.findFirst({
-		// 	where: {
-		// 		accessToken: req.body.token,
-		// 	},
-		// });
+		const user = await this.prisma.user.findFirst({
+			where: {
+				accessToken: req.body.token,
+			},
+		});
+
+		console.log("user:  ", user.email);
+		console.log("authCode:  ", req.body.twoFACode);
 
 		return authenticator.verify({
-		  token: twoFactorAuthenticationCode, // surement le code entré par l'utilisateur
+		  token: req.body.twoFACode, // the code the user enters
 		  secret: user.twoFactorSecret,
 		});
 	  }

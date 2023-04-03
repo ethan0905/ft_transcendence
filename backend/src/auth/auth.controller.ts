@@ -106,8 +106,8 @@ export class AuthController {
   }
 
   @Post('2fa/enable')
-  async enable2FA(@Req() req: Request) {
-    return this.authService.enable2FA(req);
+  async enable2FA(@Req() req: Request, @Res() res: Response) {
+    return this.authService.enable2FA(req, res);
   }
 
   @Get('2fa/qrcode')
@@ -115,4 +115,8 @@ export class AuthController {
     return this.authService.generateQrCodeDataURL(otpAuthUrl);
   }
 
+  @Post('2fa/verify')
+  async verify2FA(@Req() req: Request, @Body() { code }: { code: string }) {
+    return this.authService.verify2FA(req, code);
+  }
 }

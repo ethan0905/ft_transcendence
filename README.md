@@ -443,3 +443,5 @@ to understand the logic:
 https://dev.to/hahnmatthieu/2fa-with-nestjs-passeport-using-google-authenticator-1l32  
 then could not display the qr code on my page because of len overflow (too much data stored). So i managed to open a new window to show it.  
 https://ourcodeworld.com/articles/read/682/what-does-the-not-allowed-to-navigate-top-frame-to-data-url-javascript-exception-means-in-google-chrome  
+input field for the code:  
+https://www.npmjs.com/package/react-auth-code-input?activeTab=readme  
