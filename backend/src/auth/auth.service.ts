@@ -327,8 +327,11 @@ export class AuthService{
 
 		if (user.twoFactorAuth == true)
 		{
-			if (user.twoFactorSecret == null)
-			{
+			// if (user.twoFactorSecret == null)
+			// {
+				if (user.twoFactorSecret != null)
+					return {message: "2FA already enabled"};
+
 				const secret = authenticator.generateSecret();
 				await this.prisma.user.update({
 					where: {
@@ -338,13 +341,32 @@ export class AuthService{
 						twoFactorSecret: secret,
 					},
 				});
-			}
+
+				const twoFactorSecret = await this.prisma.user.findFirst({
+					where: {
+						accessToken: req.body.token,
+					},
+					select: {
+						twoFactorSecret: true,
+					},
+				});
+
+				console.log("User.twofactorsecret : ", twoFactorSecret.twoFactorSecret);
+
+				if (twoFactorSecret.twoFactorSecret == null)
+					return {message: "Error while enabling 2FA"};
+
+				const otpauthUrl = authenticator.keyuri(user.email, 'Pong Pong', twoFactorSecret.twoFactorSecret);
+				console.log("otpauthUrl: ", otpauthUrl);
+
+				return res.json(
+					await this.generateQrCodeDataURL(otpauthUrl)
+				);
+			// }
 			// const middleIndex = Math.floor(secret.length / 8);
 			// const firstQuarter = secret.substr(0, middleIndex);
 			// console.log("Secret: ", secret);
 
-			const otpauthUrl = authenticator.keyuri(user.email, 'Pong Pong', user.twoFactorSecret);
-			console.log("otpauthUrl: ", otpauthUrl);
 
 			// const speakeasy = require('speakeasy');
 
@@ -372,9 +394,6 @@ export class AuthService{
 			// console.log("qrCodeDataURL: ", qrCodeDataURL);
 
 			// return qrCodeDataURL;
-			return res.json(
-				await this.generateQrCodeDataURL(otpauthUrl)
-			);
 		}
 	}
 
