@@ -90,6 +90,36 @@ function App() {
     }
   }
 
+  async function activate2FA(): Promise<any> {
+    const response = await fetch('http://localhost:3333/auth/2fa/verify', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ twoFACode: twoFACode })
+    });
+    const data = await response.json();
+    if (data)
+    {
+      // setChecked(true);
+      setTwoFAActivated(true);
+      // axios.post('http://localhost:3333/auth/2fa/enable', { token, twoFactorAuth: twoFAActivated }).then(response => {
+      // setQrcodeDataUrl(response.data);
+      // console.log("qrcodeDataUrl: ", response.data);
+  
+      // }
+  
+      // console.log(response);
+    // }).catch(error => {
+        // console.error(error);
+      // });
+      window.location.href = "http://localhost:3000/mainpage";
+    }
+    console.log(data);
+    return data;
+  }
+  
+  //submit2FACode function is not used right now, but keeping it..
   async function submit2FACode(): Promise<any> {
     const response = await fetch('http://localhost:3333/auth/2fa/verify', {
       method: 'POST',
@@ -178,7 +208,7 @@ function App() {
           allowedCharacters='numeric'
           onChange={handleOnChange}
         />
-        <button onClick={submit2FACode}>Submit code</button>
+        <button onClick={activate2FA}>Submit code</button>
       </>
 
       </>
