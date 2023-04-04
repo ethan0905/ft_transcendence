@@ -19,15 +19,22 @@ function App() {
   const [twoFACode, setTwoFACode] = React.useState('');
 
   useEffect(() => {
+    if (token !== ''){
+      console.log("token: ", token);
+      check2FAStatus(token).then((status:any) => status.json()).then((status:any) => {
+        console.log("status: ", status);
+        setChecked(status.twoFactorAuth);
+      });
+    }
     let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
     if (cookieToken) {
       setToken(cookieToken);
     }
-    if (!checked && qrcodeDataUrl) {
-      console.log("hereeeeeee\n");
-      debugBase64(qrcodeDataUrl);
-    }
-  }, []);
+    // if (!checked && qrcodeDataUrl) {
+    //   console.log("hereeeeeee\n");
+    //   debugBase64(qrcodeDataUrl);
+    // }
+  }, [token]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
@@ -50,8 +57,8 @@ function App() {
   };
 
   /**
- * Display a base64 URL inside an iframe in another window.
- */
+  ** Display a base64 URL inside an iframe in another window.
+  **/
   function debugBase64(base64URL: string){
     var win = window.open();
     if (win)
@@ -82,53 +89,85 @@ function App() {
     console.log(data);
     return data;
   }
+
+  async function check2FAStatus(accessToken: string): Promise<any>{
+    try {
+      const response = await fetch('http://localhost:3333/auth/2fa/status', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `${accessToken}`
+        },
+      });
+      // const response = await axios.get('http://localhost:3333/auth/2fa/status'
+      return response;
+    } catch (error) {
+
+      console.error(error);
+      // handle error
+    }
+  }
   
-  return (
-    <div className="App">
-
-      <Button 
-        text="Log in with 42"
-        onClick={() => {
-          window.open('https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-c3680374c7c94850b80d768576ab99300705487e1f5c7f758876aaf8fbf5fbdb&redirect_uri=http%3A%2F%2Flocalhost%3A3333%2Fauth%2F42%2Fcallback&response_type=code', "_self");
-        }}
-      />
-
-      <Button 
-        text="Logout"
-        onClick={() => {
-          window.open('http://localhost:3333/auth/42/logout', "_self");
-        }}
-      />
-
-      <FormControlLabel control={
-        <Switch
-          checked={checked}
-          onChange={handleChange}
-          inputProps={{ "aria-label": "controlled" }}
+  if (token && !checked) {
+    return (
+      <div className="App">
+      <>
+         <Button 
+          text="Logout"
+          onClick={() => {
+            window.open('http://localhost:3333/auth/42/logout', "_self");
+          }}
         />
-      } label="Enable 2FA" />
 
-      {token && (
-        <div>
-          <p>Token: {token}</p>
-        </div>
-      )}
+         <FormControlLabel control={
+          <Switch
+            checked={checked}
+            onChange={handleChange}
+            inputProps={{ "aria-label": "controlled" }}
+          />
+        } label="Enable 2FA" />
 
-      {checked && (
-        <div>
+        <p>Token: {token}</p>
+
+        {checked && (
+          <div>
+          {qrcodeDataUrl && (
+            <div>
+                <p>{qrcodeDataUrl}</p>
+            </div>
+          )}
+          </div>
+          )
+        }
+
         {qrcodeDataUrl && (
           <div>
-              <p>{qrcodeDataUrl}</p>
-              <Button
-                text="Get QR"
-                onClick={debugBase64(qrcodeDataUrl)}/>
-              {/* <div onLoad={handleQRCodeLoad}>QR Code Loaded!</div> */}
-            </div>
-        )}
-        </div>
-        )
-      }
+            <button onClick={() => debugBase64(qrcodeDataUrl)}>Get QR</button>
+             {/* <Button
+                  text="Get QR"
+                  onClick={debugBase64(qrcodeDataUrl)}/> */}
+          </div>
+          )
+        }
 
+      </>
+
+{/* 
+      {checked && (
+          <div>
+          {qrcodeDataUrl && (
+            <div>
+                <p>{qrcodeDataUrl}</p>
+            </div>
+          )}
+          </div>
+          )
+        } */}
+    </div>
+    );
+  }
+  else if(token && checked) {
+    return (
       <>
         <AuthCode
           allowedCharacters='numeric'
@@ -136,9 +175,103 @@ function App() {
         />
         <button onClick={submit2FACode}>Submit code</button>
       </>
+    )
+  }
+  else {
+    return (
+            <>
+              <Button 
+              text="Log in with 42"
+              onClick={() => {
+                window.open('https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-c3680374c7c94850b80d768576ab99300705487e1f5c7f758876aaf8fbf5fbdb&redirect_uri=http%3A%2F%2Flocalhost%3A3333%2Fauth%2F42%2Fcallback&response_type=code', "_self");
+              }}
+              />
+            </>
+    );
+  }
+  // return (
+  //   <div className="App">
 
-    </div>
-  );
+  //   {!token && (
+  //     <>
+  //       <Button 
+  //       text="Log in with 42"
+  //       onClick={() => {
+  //         window.open('https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-c3680374c7c94850b80d768576ab99300705487e1f5c7f758876aaf8fbf5fbdb&redirect_uri=http%3A%2F%2Flocalhost%3A3333%2Fauth%2F42%2Fcallback&response_type=code', "_self");
+  //       }}
+  //       />
+  //     </>
+  //     )
+  //   }
+
+  //   {token && (
+  //     <>
+  //       <Button 
+  //         text="Logout"
+  //         onClick={() => {
+  //           window.open('http://localhost:3333/auth/42/logout', "_self");
+  //         }}
+  //       />
+
+  //       <FormControlLabel control={
+  //         <Switch
+  //           checked={checked}
+  //           onChange={handleChange}
+  //           inputProps={{ "aria-label": "controlled" }}
+  //         />
+  //       } label="Enable 2FA" />
+
+  //       <p>Token: {token}</p>
+
+  //       {checked && (
+  //         <div>
+  //         {qrcodeDataUrl && (
+  //           <div>
+  //               <p>{qrcodeDataUrl}</p>
+  //           </div>
+  //         )}
+  //         </div>
+  //         )
+  //       }
+
+  //       {qrcodeDataUrl && (
+  //         <div>
+  //            <Button
+  //                 text="Get QR"
+  //                 onClick={debugBase64(qrcodeDataUrl)}/>
+  //         </div>
+  //         )
+  //       }
+
+  //     </>
+  //     )
+  //   }
+
+  //   {token && (
+  //     <>
+  //     {!checked && (
+  //       <>
+  //         <AuthCode
+  //           allowedCharacters='numeric'
+  //           onChange={handleOnChange}
+  //         />
+  //         <button onClick={submit2FACode}>Submit code</button>
+  //       </>
+  //       )
+  //     }
+  //     </>
+  //   )
+  //   }
+  //     <>
+  //       {/* <AuthCode
+  //         allowedCharacters='numeric'
+  //         onChange={handleOnChange}
+  //       />
+  //       <button onClick={submit2FACode}>Submit code</button> */}
+  //     </>
+
+  //   </div>
+  // );
 }
 
 export default App;

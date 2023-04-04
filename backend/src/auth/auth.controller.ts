@@ -81,7 +81,7 @@ export class AuthController {
       res.redirect(
         `http://localhost:3000/?token=${token.access_token}`,
       );
-      return token;
+      return { token: token, user: user };
     }
   }
 
@@ -103,6 +103,11 @@ export class AuthController {
   async logout( @Res() res: Response) {
     this.authService.deleteCookies(res);
     res.redirect(`http://localhost:3000/login`);
+  }
+
+  @Get('2fa/status')
+  async get2FAStatus(@Req() req: Request) {
+    return this.authService.get2FAStatus(req);
   }
 
   @Post('2fa/enable')

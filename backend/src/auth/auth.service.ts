@@ -311,6 +311,29 @@ export class AuthService{
 		res.clearCookie("token");
 	}
 
+	async get2FAStatus(@Req() req: Request) {
+		try {
+			console.log("123123 req: [", req.headers.authorization);
+			
+			const status = await this.prisma.user.findFirst({
+				where: {
+					accessToken: req.headers.authorization,
+				},
+				select: {
+					twoFactorAuth: true,
+				},
+			});
+
+			console.log("123123 status: [", status);
+			return status;
+		} catch (error) {
+			throw new HttpException({
+				status: HttpStatus.BAD_REQUEST,
+				error: "Error to get the 2FA status"},
+				HttpStatus.BAD_REQUEST);
+		}
+	}
+
 	async enable2FA(@Req() req: Request, @Res() res: Response) {
 
 		console.log("Getting my Token from req.body.twoFactorAuth: ", req.body.twoFactorAuth);
