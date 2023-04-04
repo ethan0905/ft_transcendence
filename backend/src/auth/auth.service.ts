@@ -23,31 +23,6 @@ export class AuthService{
 		private config: ConfigService,
 	) {}
 
-	// async signup(dto: AuthDto) {
-	// 	//1. generate the password hash
-	// 	const hash = await argon.hash(dto.password);
-	// 	//2. save user in the database
-
-	// 	try {
-	// 		const user = await this.prisma.user.create({
-	// 			data: {
-	// 				email: dto.email,
-	// 				hash,
-	// 			},
-	// 		});
-	// 		 //3. return the saved user (signed token)
-	// 		return this.signToken(user.id, user.email);
-	// 	} catch(error) {
-	// 		if (error instanceof PrismaClientKnownRequestError) {
-	// 			if (error.code === 'P2002')
-	// 				throw new ForbiddenException(
-	// 					'Credential taken',
-	// 				);
-	// 		}
-	// 		throw error;
-	// 	}
-	// }
-	
 	async signin(dto: AuthDto) {
 		//1. find the user by email
 		const user = await this.prisma.user.findFirstOrThrow({
@@ -94,71 +69,10 @@ export class AuthService{
 		});
 	}
 
-	// async signin42(dto: Auth42Dto) {
-	// 	//1. find the user by id42
-	// 	const user = this.prisma.user.findFirst({
-	// 		where: {
-	// 			id: dto.id,
-	// 		},
-	// 	});
-
-	// 	//if user does not exist, create it
-	// 	if (!user) {
-	// 		this.create42User(dto);
-	// 		return user;
-	// 	}
-	// 	else
-	// 		return user;
-	// }
-
-	// async create42User(dto: Auth42Dto) {
-	// 	// const { id, email, username, avatar } = dto;
-
-	// 	// //generate a random password
-	// 	// const randomPassword = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-		
-	// 	// //1. generate the password hash
-	// 	// // const hash = await argon.hash(randomPassword);
-
-	// 	// //2. save user in the database
-	// 	// const user = await this.userService.createUser(
-	// 	// 	email,
-	// 	// 	username,
-	// 	// 	hash,
-	// 	// 	id,
-	// 	// );
-
-	// 	// console.log(user);
-
-	// 	// //3. return the saved user
-	// 	// return user;
-    // return {
-	// 		message: 'User created'
-    // };
-	// }
-
 	async afterRedirection() {
 
 		console.log("Redirection happened! Now what?");
-
-		// retrieve the code from the url
-		// const token = await this.accessToken()
-
-		// return ({
-		// });
 	}
-
-	// async getToken(@Req() req: Request, @Res() res: Response) {
-
-	// 	// const code = req.query.code as string;
-	// 	// console.log("req.query.code = " + code);
-
-	// 	// const token = await this.accessToken(code);
-	// 	// console.log("this.accessToken = " + token);
-
-	// 	return;
-	// 	// res.redirect(`http://localhost:3000/?token=${token.access_token}`)
-	// }
 
 	async accessToken(req: string) {
 
@@ -227,6 +141,7 @@ export class AuthService{
 					username: user42.login,
 					accessToken: token.access_token,
 					refreshToken: token.refresh_token,
+					twoFactorAuth: false,
 					// hash: token, //while we don't have a password
 				},
 			});

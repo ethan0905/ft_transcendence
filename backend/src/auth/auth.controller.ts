@@ -77,10 +77,22 @@ export class AuthController {
         this.authService.updateCookies(res, token, user);
       }
 
+      const updatedUser = await this.authService.findUserByEmail(user.email);
+
       // this.authService.updateCookies(res, token, user);
-      res.redirect(
-        `http://localhost:3000/?token=${token.access_token}`,
-      );
+      if (updatedUser.twoFactorAuth === false)
+      {
+        res.redirect(
+          `http://localhost:3000/homepage`,
+          );
+      }
+      else
+      {
+        res.redirect(
+          `http://localhost:3000/2fa/verification`,
+          );
+      }
+
       return { token: token, user: user };
     }
   }
