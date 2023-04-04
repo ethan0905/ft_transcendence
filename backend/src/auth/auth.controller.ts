@@ -115,6 +115,16 @@ export class AuthController {
     return this.authService.enable2FA(req, res);
   }
 
+  // @Post('2fa/disable')
+  // async disable2FA(@Req() req: Request, @Res() res: Response) {
+  //   return this.authService.disable2FA(req, res);
+  // }
+
+  @Post('2fa/generate')
+  async generate2FA(@Req() req: Request, @Res() res: Response) {
+    return this.authService.generate2FA(req, res);
+  }
+
   @Get('2fa/qrcode')
   async generateQrCodeDataURL(otpAuthUrl: any) {
     return this.authService.generateQrCodeDataURL(otpAuthUrl);

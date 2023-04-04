@@ -348,77 +348,134 @@ export class AuthService{
 			},
 		});
 
-		console.log("Getting my user: ", user.email);
+		console.log("2fa has been SWITCHED! status: ", req.body.twoFactorAuth);
 
-		if (req.body.twoFactorAuth == true)
+		// if (req.body.twoFactorAuth == true)
+		// {
+		// 	// if (user.twoFactorSecret == null)
+		// 	// {
+		// 		// if (user.twoFactorSecret != null)
+		// 		// 	return {message: "2FA already enabled"};
+
+		// 		const secret = authenticator.generateSecret();
+		// 		await this.prisma.user.update({
+		// 			where: {
+		// 				accessToken: req.body.token,
+		// 			},
+		// 			data: {
+		// 				twoFactorSecret: secret,
+		// 			},
+		// 		});
+
+		// 		const twoFactorSecret = await this.prisma.user.findFirst({
+		// 			where: {
+		// 				accessToken: req.body.token,
+		// 			},
+		// 			select: {
+		// 				twoFactorSecret: true,
+		// 			},
+		// 		});
+
+		// 		console.log("User.twofactorsecret : ", twoFactorSecret.twoFactorSecret);
+
+		// 		if (twoFactorSecret.twoFactorSecret == null)
+		// 			return {message: "Error while enabling 2FA"};
+
+		// 		const otpauthUrl = authenticator.keyuri(user.email, 'Pong Pong', twoFactorSecret.twoFactorSecret);
+		// 		console.log("otpauthUrl: ", otpauthUrl);
+
+		// 		return res.json(
+		// 			await this.generateQrCodeDataURL(otpauthUrl)
+		// 		);
+		// 	// }
+		// 	// const middleIndex = Math.floor(secret.length / 8);
+		// 	// const firstQuarter = secret.substr(0, middleIndex);
+		// 	// console.log("Secret: ", secret);
+
+
+		// 	// const speakeasy = require('speakeasy');
+
+		// 	// const otpauthUrl = speakeasy.otpauthURL({
+		// 	// 	secret: secret,
+		// 	// 	label: 'Pong ping',
+		// 	// 	algorithm: 'sha512',
+		// 	// 	encoding: 'base32'
+		// 	// });
+		// 	// console.log("otpauthUrl: ", otpauthUrl);
+
+		// 	// console.log(otpauthUrl);
+
+
+		// 	// await this.prisma.user.update({
+		// 	// 	where: {
+		// 	// 		accessToken: req.body.token,
+		// 	// 	},
+		// 	// 	data: {
+		// 	// 		twoFactorSecret: secret,
+		// 	// 	},
+		// 	// });
+
+		// 	// const qrCodeDataURL = await this.generateQrCodeDataURL(otpauthUrl);
+		// 	// console.log("qrCodeDataURL: ", qrCodeDataURL);
+
+		// 	// return qrCodeDataURL;
+		// }
+	}
+
+	// async disable2FA(@Req() req: Request, @Res() res: Response) {
+
+	// 	await this.prisma.user.update({
+	// 		where: {
+	// 			accessToken: req.body.token,
+	// 		},
+	// 		data: {
+	// 			twoFactorAuth: false,
+	// 		},
+	// 	});
+
+	// 	console.log("Two factor Boolean has been disabled!");
+	// }
+
+	async generate2FA(@Req() req: Request, @Res() res: Response) {
+		
+		const user = await this.prisma.user.findFirst({
+			where: {
+				accessToken: req.body.token,
+			},
+		});
+
+		if (user.twoFactorAuth == true)
 		{
-			// if (user.twoFactorSecret == null)
-			// {
-				// if (user.twoFactorSecret != null)
-				// 	return {message: "2FA already enabled"};
+			const secret = authenticator.generateSecret();
+			await this.prisma.user.update({
+				where: {
+					accessToken: req.body.token,
+				},
+				data: {
+					twoFactorSecret: secret,
+				},
+			});
 
-				const secret = authenticator.generateSecret();
-				await this.prisma.user.update({
-					where: {
-						accessToken: req.body.token,
-					},
-					data: {
-						twoFactorSecret: secret,
-					},
-				});
+			const twoFactorSecret = await this.prisma.user.findFirst({
+				where: {
+					accessToken: req.body.token,
+				},
+				select: {
+					twoFactorSecret: true,
+				},
+			});
 
-				const twoFactorSecret = await this.prisma.user.findFirst({
-					where: {
-						accessToken: req.body.token,
-					},
-					select: {
-						twoFactorSecret: true,
-					},
-				});
+			console.log("User.twofactorsecret : ", twoFactorSecret.twoFactorSecret);
 
-				console.log("User.twofactorsecret : ", twoFactorSecret.twoFactorSecret);
+			if (twoFactorSecret.twoFactorSecret == null)
+				return {message: "Error while enabling 2FA"};
 
-				if (twoFactorSecret.twoFactorSecret == null)
-					return {message: "Error while enabling 2FA"};
+			const otpauthUrl = authenticator.keyuri(user.email, 'Pong Pong', twoFactorSecret.twoFactorSecret);
+			console.log("otpauthUrl: ", otpauthUrl);
 
-				const otpauthUrl = authenticator.keyuri(user.email, 'Pong Pong', twoFactorSecret.twoFactorSecret);
-				console.log("otpauthUrl: ", otpauthUrl);
-
-				return res.json(
-					await this.generateQrCodeDataURL(otpauthUrl)
-				);
-			// }
-			// const middleIndex = Math.floor(secret.length / 8);
-			// const firstQuarter = secret.substr(0, middleIndex);
-			// console.log("Secret: ", secret);
-
-
-			// const speakeasy = require('speakeasy');
-
-			// const otpauthUrl = speakeasy.otpauthURL({
-			// 	secret: secret,
-			// 	label: 'Pong ping',
-			// 	algorithm: 'sha512',
-			// 	encoding: 'base32'
-			// });
-			// console.log("otpauthUrl: ", otpauthUrl);
-
-			// console.log(otpauthUrl);
-
-
-			// await this.prisma.user.update({
-			// 	where: {
-			// 		accessToken: req.body.token,
-			// 	},
-			// 	data: {
-			// 		twoFactorSecret: secret,
-			// 	},
-			// });
-
-			// const qrCodeDataURL = await this.generateQrCodeDataURL(otpauthUrl);
-			// console.log("qrCodeDataURL: ", qrCodeDataURL);
-
-			// return qrCodeDataURL;
+			return res.json(
+				await this.generateQrCodeDataURL(otpauthUrl)
+			);
 		}
 	}
 

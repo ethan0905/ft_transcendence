@@ -6,14 +6,13 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 // import QRCode from 'react-qr-code';
-import AuthCode, { AuthCodeRef } from 'react-auth-code-input';
-import { useRef } from 'react';
+import AuthCode from 'react-auth-code-input';
+// import { useRef } from 'react';
 
 function App() {
   
-  const AuthInputRef = useRef<AuthCodeRef>(null);
-
   const [checked, setChecked] = React.useState(false);
+  const [twoFAActivated, setTwoFAActivated] = React.useState(false);
   const [qrcodeDataUrl, setQrcodeDataUrl] = React.useState('');
   const [token, setToken] = useState('');
   const [twoFACode, setTwoFACode] = React.useState('');
@@ -30,27 +29,23 @@ function App() {
     if (cookieToken) {
       setToken(cookieToken);
     }
-    // if (!checked && qrcodeDataUrl) {
-    //   console.log("hereeeeeee\n");
-    //   debugBase64(qrcodeDataUrl);
-    // }
+
   }, [token]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
-    setChecked(event.target.checked);
-    console.log("status: ", !checked);
+    // if (!checked === true){
+      setChecked(event.target.checked);
+      console.log("status: ", !checked);
+    // }
 
-    // console.log("token: ", token);
-    // if (!checked)
-    // {
       axios.post('http://localhost:3333/auth/2fa/enable', { token, twoFactorAuth: !checked }).then(response => {
-      setQrcodeDataUrl(response.data);
-      console.log("qrcodeDataUrl: ", response.data);
+      // setQrcodeDataUrl(response.data);
+      // console.log("qrcodeDataUrl: ", response.data);
 
     // }
 
-    // console.log(response);
+    console.log(response);
   }).catch(error => {
       console.error(error);
     });
@@ -75,6 +70,26 @@ function App() {
     console.log("2fa code: ", code);
   };
 
+  async function generateQRCode(): Promise<any> {
+    try {
+      const response = await fetch('http://localhost:3333/auth/2fa/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ token: token })
+      });
+      const data = await response.json();
+      console.log(data);
+      setQrcodeDataUrl(data);
+      debugBase64(data);
+      return data;
+    } catch (error) {
+      console.error(error);
+      // handle error
+    }
+  }
+
   async function submit2FACode(): Promise<any> {
     const response = await fetch('http://localhost:3333/auth/2fa/verify', {
       method: 'POST',
@@ -85,7 +100,21 @@ function App() {
     });
     const data = await response.json();
     if (data)
+    {
+      // setChecked(true);
+      setTwoFAActivated(true);
+      axios.post('http://localhost:3333/auth/2fa/enable', { token, twoFactorAuth: twoFAActivated }).then(response => {
+      setQrcodeDataUrl(response.data);
+      console.log("qrcodeDataUrl: ", response.data);
+  
+      // }
+  
+      // console.log(response);
+    }).catch(error => {
+        console.error(error);
+      });
       window.location.href = "http://localhost:3000/mainpage";
+    }
     console.log(data);
     return data;
   }
@@ -108,7 +137,7 @@ function App() {
     }
   }
   
-  if (token && !checked) {
+  if (token) {
     return (
       <div className="App">
       <>
@@ -140,15 +169,17 @@ function App() {
           )
         }
 
-        {qrcodeDataUrl && (
-          <div>
-            <button onClick={() => debugBase64(qrcodeDataUrl)}>Get QR</button>
-             {/* <Button
-                  text="Get QR"
-                  onClick={debugBase64(qrcodeDataUrl)}/> */}
-          </div>
-          )
-        }
+        <>
+          <button onClick={generateQRCode}>Generate QR code</button>
+        </>
+
+      <>
+        <AuthCode
+          allowedCharacters='numeric'
+          onChange={handleOnChange}
+        />
+        <button onClick={submit2FACode}>Submit code</button>
+      </>
 
       </>
 
@@ -166,9 +197,18 @@ function App() {
     </div>
     );
   }
-  else if(token && checked) {
+  else if(token && twoFAActivated) {
     return (
       <>
+        {qrcodeDataUrl && (
+          <div>
+            <button onClick={() => debugBase64(qrcodeDataUrl)}>Get QR</button>
+             {/* <Button
+                  text="Get QR"
+                  onClick={debugBase64(qrcodeDataUrl)}/> */}
+          </div>
+          )
+        }
         <AuthCode
           allowedCharacters='numeric'
           onChange={handleOnChange}
