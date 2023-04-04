@@ -6,7 +6,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import AuthCode from 'react-auth-code-input';
-import verify2FA from './components/2fa-verify';
+import Verify2FA from './components/2fa-verify';
 import LoginPage from './components/login';
 import HomePage from './components/homepage';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
@@ -20,7 +20,7 @@ function App() {
           <Routes>
             <Route path="/" element={<LoginPage/>}/>
             <Route path="/login" element={<LoginPage/>}/>
-            {/* <Route path="/2fa/verification" element={<verify2FA/>}/> */}
+            <Route path="/2fa/verification" element={<Verify2FA/>}/>
             <Route path="/homepage" element={<HomePage/>}/>
           </Routes>
         </div>
