@@ -182,7 +182,7 @@ export class AuthService{
 	}
 
 	async createCookies(@Res() res: Response, token: any) {
-		console.log("Creating cookies with: [" + token.access_token + "]\n");
+		// console.log("Creating cookies with: [" + token.access_token + "]\n");
 		const cookies = res.cookie("token", token.access_token,
 		{
 		  expires: new Date(new Date().getTime() + 60 * 24 * 7 * 1000), // expires in 7 days
@@ -228,7 +228,7 @@ export class AuthService{
 
 	async get2FAStatus(@Req() req: Request) {
 		try {
-			console.log("123123 req: [", req.headers.authorization);
+			// console.log("123123 req: [", req.headers.authorization);
 			
 			const status = await this.prisma.user.findFirst({
 				where: {
@@ -239,7 +239,7 @@ export class AuthService{
 				},
 			});
 
-			console.log("123123 status: [", status);
+			// console.log("123123 status: [", status);
 			return status;
 		} catch (error) {
 			throw new HttpException({
@@ -251,8 +251,8 @@ export class AuthService{
 
 	async enable2FA(@Req() req: Request, @Res() res: Response) {
 
-		console.log("Getting my Token from req.body.twoFactorAuth: ", req.body.twoFactorAuth);
-		console.log("Getting my Token from req.cookies.token: ", req.body.token);
+		// console.log("Getting my Token from req.body.twoFactorAuth: ", req.body.twoFactorAuth);
+		// console.log("Getting my Token from req.cookies.token: ", req.body.token);
 
 		const user = await this.prisma.user.update({
 			where: {
@@ -263,7 +263,7 @@ export class AuthService{
 			},
 		});
 
-		console.log("2fa has been SWITCHED! status: ", req.body.twoFactorAuth);
+		// console.log("2fa has been SWITCHED! status: ", req.body.twoFactorAuth);
 
 		// if (req.body.twoFactorAuth == true)
 		// {
@@ -380,13 +380,13 @@ export class AuthService{
 				},
 			});
 
-			console.log("User.twofactorsecret : ", twoFactorSecret.twoFactorSecret);
+			// console.log("User.twofactorsecret : ", twoFactorSecret.twoFactorSecret);
 
 			if (twoFactorSecret.twoFactorSecret == null)
 				return {message: "Error while enabling 2FA"};
 
 			const otpauthUrl = authenticator.keyuri(user.email, 'Pong Pong', twoFactorSecret.twoFactorSecret);
-			console.log("otpauthUrl: ", otpauthUrl);
+			// console.log("otpauthUrl: ", otpauthUrl);
 
 			return res.json(
 				await this.generateQrCodeDataURL(otpauthUrl)

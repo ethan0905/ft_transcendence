@@ -83,7 +83,7 @@ function HomePage() {
 		headers: {
 		  'Content-Type': 'application/json'
 		},
-		body: JSON.stringify({ twoFACode: twoFACode })
+		body: JSON.stringify({ token, twoFACode: twoFACode })
 	  });
 	  const data = await response.json();
 	  if (data)
