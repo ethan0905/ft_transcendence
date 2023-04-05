@@ -95,22 +95,22 @@ function HomePage() {
 	}
   
 	//submit2FACode function is not used right now, but keeping it..
-	async function submit2FACode(): Promise<any> {
-	  const response = await fetch('http://localhost:3333/auth/2fa/verify', {
-		method: 'POST',
-		headers: {
-		  'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({ twoFACode: twoFACode })
-	  });
-	  const data = await response.json();
-	  if (data)
-	  {
-		window.location.href = "http://localhost:3000/SUCCESS";
-	  }
-	  console.log(data);
-	  return data;
-	}
+	// async function submit2FACode(): Promise<any> {
+	//   const response = await fetch('http://localhost:3333/auth/2fa/verify', {
+	// 	method: 'POST',
+	// 	headers: {
+	// 	  'Content-Type': 'application/json'
+	// 	},
+	// 	body: JSON.stringify({ twoFACode: twoFACode })
+	//   });
+	//   const data = await response.json();
+	//   if (data)
+	//   {
+	// 	window.location.href = "http://localhost:3000/SUCCESS";
+	//   }
+	//   console.log(data);
+	//   return data;
+	// }
   
 	async function check2FAStatus(accessToken: string): Promise<any>{
 	  try {

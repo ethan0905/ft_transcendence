@@ -1,11 +1,11 @@
 import './App.css';
-import { Button } from './components/button';
-import Switch from '@mui/material/Switch';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import React from 'react';
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import AuthCode from 'react-auth-code-input';
+// import { Button } from './components/button';
+// import Switch from '@mui/material/Switch';
+// import FormControlLabel from '@mui/material/FormControlLabel';
+// import React from 'react';
+// import { useState, useEffect } from 'react';
+// import axios from 'axios';
+// import AuthCode from 'react-auth-code-input';
 import Verify2FA from './components/2fa-verify';
 import LoginPage from './components/login';
 import HomePage from './components/homepage';
