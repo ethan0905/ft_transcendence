@@ -81,6 +81,7 @@ function HomePage() {
 		const data = await response.json();
 		console.log(data);
 		setQrcodeDataUrl(data);
+		setTwoFAActivated(false);
 		debugBase64(data);
 		return data;
 	  } catch (error) {
@@ -191,11 +192,20 @@ function HomePage() {
 
         <button onClick={generateQRCode}>Generate QR code</button>
 
-		<AuthCode
-		allowedCharacters='numeric'
-		onChange={handleOnChange}
-		/>
-		<button onClick={activate2FA}>Submit code</button>
+		{checked && (
+			<div>
+				{!twoFAActivated && (
+					<div>
+						<AuthCode
+						allowedCharacters='numeric'
+						onChange={handleOnChange}
+						/>
+						<button onClick={activate2FA}>Submit code</button>
+					</div>
+					)
+				}
+			</div>
+		)}
 
     </div>
 	);
