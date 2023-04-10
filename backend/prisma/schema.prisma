@@ -23,6 +23,7 @@ model User {
   refreshToken String? @unique
 
   twoFactorAuth Boolean @default(false)
+  twoFactorActivated Boolean @default(false)
   twoFactorSecret String?
 
   messages  Message[]

@@ -80,17 +80,23 @@ export class AuthController {
       const updatedUser = await this.authService.findUserByEmail(user.email);
 
       // this.authService.updateCookies(res, token, user);
-      if (updatedUser.twoFactorAuth === false)
+      if (updatedUser.twoFactorActivated === false)
       {
+        console.log("Hello brotha\n");
         res.redirect(
           `http://localhost:3000/homepage`,
           );
       }
-      else
+      else if (updatedUser.twoFactorActivated === true)
       {
+        console.log("Hello 2\n");
         res.redirect(
           `http://localhost:3000/2fa/verification`,
           );
+      }
+      else
+      {
+        console.log("Hello 3\n");
       }
 
       return { token: token, user: user };
@@ -125,6 +131,11 @@ export class AuthController {
   @Post('2fa/enable')
   async enable2FA(@Req() req: Request, @Res() res: Response) {
     return this.authService.enable2FA(req, res);
+  }
+
+  @Post('2fa/activated')
+  async activate2FA(@Req() req: Request, @Res() res: Response) {
+    return this.authService.activate2FA(req, res);
   }
 
   // @Post('2fa/disable')

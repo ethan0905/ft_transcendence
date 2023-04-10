@@ -142,6 +142,7 @@ export class AuthService{
 					accessToken: token.access_token,
 					refreshToken: token.refresh_token,
 					twoFactorAuth: false,
+					twoFactorActivated: false,
 					// hash: token, //while we don't have a password
 				},
 			});
@@ -236,6 +237,7 @@ export class AuthService{
 				},
 				select: {
 					twoFactorAuth: true,
+					twoFactorActivated: true,
 				},
 			});
 
@@ -335,6 +337,21 @@ export class AuthService{
 
 		// 	// return qrCodeDataURL;
 		// }
+	}
+
+	async activate2FA(@Req() req: Request, @Res() res: Response) {
+
+		console.log("99998888---> ", req.body.twoFactorActivated);
+		// console.log("Getting my Token from req.cookies.token: ", req.body.token);
+
+		const user = await this.prisma.user.update({
+			where: {
+				accessToken: req.body.token,
+			},
+			data: {
+				twoFactorActivated: req.body.twoFactorActivated,
+			},
+		});
 	}
 
 	// async disable2FA(@Req() req: Request, @Res() res: Response) {

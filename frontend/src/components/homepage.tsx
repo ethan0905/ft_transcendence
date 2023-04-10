@@ -21,6 +21,7 @@ function HomePage() {
 		check2FAStatus(token).then((status:any) => status.json()).then((status:any) => {
 		  console.log("status: ", status);
 		  setChecked(status.twoFactorAuth);
+		  setTwoFAActivated(status.twoFactorActivated);
 		});
 	  }
 	  let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
@@ -34,6 +35,17 @@ function HomePage() {
   
 	  setChecked(event.target.checked);
 	  console.log("status: ", !checked);
+	  if (!checked === false)
+	  {
+		setTwoFAActivated(false);
+		fetch('http://localhost:3333/auth/2fa/activated', {
+			method: 'POST',
+			headers: {
+			  'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ token, twoFactorActivated: false })
+		  });
+	  }
   
 	  axios.post('http://localhost:3333/auth/2fa/enable', { token, twoFactorAuth: !checked }).then(response => {
   
@@ -89,7 +101,21 @@ function HomePage() {
 	  if (data)
 	  {
 		setTwoFAActivated(true);
+
 		console.log("DATA = ", data);
+		const res = await fetch('http://localhost:3333/auth/2fa/activated', {
+			method: 'POST',
+			headers: {
+			  'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ token, twoFactorActivated: true })
+		  });
+		// await axios.post('http://localhost:3333/auth/2fa/activated', { token, twoFactorActivated: twoFAActivated }).then(response => {
+  
+		// console.log(response);
+	  	// }).catch(error => {
+		//   console.error(error);
+		// });
 	  }
 	  return data;
 	}
