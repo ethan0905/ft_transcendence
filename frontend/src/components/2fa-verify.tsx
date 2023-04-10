@@ -8,7 +8,7 @@ function Verify2FA() {
                 setTwoFACode(code);
         };
 
-        async function activate2FA(): Promise<any> {
+        async function check2FACode(): Promise<any> {
                 const response = await fetch('http://localhost:3333/auth/2fa/verify', {
                         method: 'POST',
                         headers: {
@@ -31,7 +31,7 @@ function Verify2FA() {
                         allowedCharacters='numeric'
                         onChange={handleOnChange}
                         />
-                        <button onClick={activate2FA}>Submit code</button>
+                        <button onClick={check2FACode}>Submit code</button>
 
                 </div>
 	);

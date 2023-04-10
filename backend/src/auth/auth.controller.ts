@@ -36,8 +36,8 @@ export class AuthController {
   async getToken( @Req() req: Request, @Res() res: Response) {
 
     const code = req.query.code as string;
-    console.log('req.query.code = ' + code);
-    console.log('\n');
+    // console.log('req.query.code = ' + code);
+    // console.log('\n');
 
     const token = await this.authService.accessToken(code);
     console.log(token);
@@ -46,12 +46,12 @@ export class AuthController {
     const user = await this.authService.get42User(
       token.access_token,
     );
-    console.log(user.email);
-    console.log('\n');
+    // console.log(user.email);
+    // console.log('\n');
 
     if (token)
     {
-      console.log("Token exists, so we create cookies! \n\n");
+      // console.log("Token exists, so we create cookies! \n\n");
       this.authService.createCookies(res, token);
     }
 
@@ -82,21 +82,21 @@ export class AuthController {
       // this.authService.updateCookies(res, token, user);
       if (updatedUser.twoFactorActivated === false)
       {
-        console.log("Hello brotha\n");
+        // console.log("Hello 1\n");
         res.redirect(
           `http://localhost:3000/homepage`,
           );
       }
       else if (updatedUser.twoFactorActivated === true)
       {
-        console.log("Hello 2\n");
+        // console.log("Hello 2\n");
         res.redirect(
           `http://localhost:3000/2fa/verification`,
           );
       }
       else
       {
-        console.log("Hello 3\n");
+        // console.log("Hello 3\n");
       }
 
       return { token: token, user: user };
