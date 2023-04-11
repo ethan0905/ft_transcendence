@@ -10,39 +10,66 @@
   display: flex;
   flex-direction: row;
   background-image: url("https://static.vecteezy.com/ti/vecteur-libre/t2/16082586-icones-au-neon-raquette-de-ping-pong-tennis-de-table-ensemble-d-iconesles-neon-rouge-bleu-jaune-sur-fond-sombre-vectoriel.jpg");
-  background-position: center;
+  background-position: right;
+  background-repeat: no-repeat;
+  background-color: rgb(13, 13, 19);
   border-bottom: solid 5px white;
-  color: white;
-  max-height: fit-content;
 }
-
 .ProfilePicture {
   position: relative;
 }
+.ProfilePage_header h1 {
+  color: white;
+  text-shadow: #03d3fc 1px 2px 3px;
+  margin-bottom: 14px;
+  margin-top: 0px;
+}
 
 .ProfilePage_info {
-  padding-left: 15px;
-}
-
-.Preview {
-  height: auto;
-  width: 100%;
-}
-
-.ProfilePage_stats {
   display: flex;
-  flex-direction: row;
-  margin-top: 10px;
-  justify-content: space-between;
-  width: 50vw;
   color: white;
-  font: bolder;
-  font-size: 25px;
+  flex-direction: column;
+  justify-content: center;
+  width: 30vw;
+}
+.ProfilePage_info .Info {
+  /* text-shadow: #03d3fc 1px 2px 3px; */
+  font-size: 23px;
+  display: flex;
+  margin-bottom: 10px;
 }
 
-.ProfilePage_achiev {
+.Match_history {
   display: flex;
+  width: 100wv;
+  align-items: center;
+}
+.Match_history .Info {
+  flex-grow: 1;
+  font: bolder;
+  font-size: 20px;
+}
+
+.Achievements {
+  display: flex;
+  flex-direction: column;
   background-color: #5616cf;
   color: white;
   max-height: fit-content;
+}
+
+.Achiev_list {
+  display: flex;
+}
+
+.Achiev {
+  display: flex;
+  flex-direction: column;
+}
+
+.Achiev_image {
+  height: 150px;
+  width: auto;
+  opacity: 0.5;
+  position: relative;
 }

@@ -26,6 +26,8 @@ model User {
   twoFactorActivated Boolean @default(false)
   twoFactorSecret String?
 
+  status    Status? @default(OFFLINE)
+
   messages  Message[]
 
   owner   Channel[] @relation("owner")
@@ -35,25 +37,33 @@ model User {
   banned  Channel[] @relation("banned")
   invited Channel[] @relation("invited")
   
-  friends Friend[]  @relation("friend")
+  friends Int[]
   blocked Blocked[] @relation("blocked")
 
-  player1 Game[] @relation("player1")
-  player2 Game[] @relation("player2")
+  // player1 Game[] @relation("player1")
+  // player2 Game[] @relation("player2")
+
+  games Game[] @relation("player")
 
 
   @@map("users")
   @@unique([id, email])
 }
 
-model Friend {
-  createdAt DateTime @default(now())
-
-  friend    User @relation("friend", fields: [friendId], references: [id], onDelete: Cascade)
-  friendId  Int
-
-  @@id([friendId])
+enum Status {
+  ONLINE
+  OFFLINE
+  PLAYING
 }
+
+// model Friend {
+//   createdAt DateTime @default(now())
+
+//   friend    User @relation("friend", fields: [friendId], references: [id], onDelete: Cascade)
+//   friendId  Int
+
+//   @@id([friendId])
+// }
 
 model Blocked {
   createdAt DateTime  @default(now())
@@ -106,22 +116,24 @@ model Game {
   updatedAt  DateTime  @updatedAt
   duration   Int 
 
-  player1Id Int?
-  player2Id Int?
+  // player1Id Int?
+  // player2Id Int?
 
-  player1   User? @relation("player1", fields: [player1Id], references: [id], onDelete: SetNull)
-  player2   User? @relation("player2", fields: [player2Id], references: [id], onDelete: SetNull)
+  status    GameStatus @default(WAITING)
 
-  score1    Int
-  score2    Int
+  // player1   User? @relation("player1", fields: [player1Id], references: [id], onDelete: SetNull)
+  // player2   User? @relation("player2", fields: [player2Id], references: [id], onDelete: SetNull)
+
+  players  User[] @relation("player")
+  score Int[]
+  // score1    Int
+  // score2    Int
 
   @@unique([id])
 }
 
-model Test {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-
-  test     String
+enum GameStatus {
+  WAITING
+  PLAYING
+  FINISHED
 }
