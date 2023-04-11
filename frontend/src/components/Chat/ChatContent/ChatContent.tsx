@@ -35,7 +35,7 @@ export default class ChatContent extends Component<Props, State> {
     {
       key: 1,
       image:
-        "https://pbs.twimg.com/profile_images/1116431270697766912/-NfnQHvh_400x400.jpg",
+        "https://avatars.githubusercontent.com/u/8985933?v=4",
       type: "",
       msg: "Hi Tim, How are you?",
     },
@@ -56,7 +56,7 @@ export default class ChatContent extends Component<Props, State> {
     {
       key: 4,
       image:
-        "https://pbs.twimg.com/profile_images/1116431270697766912/-NfnQHvh_400x400.jpg",
+        "https://avatars.githubusercontent.com/u/8985933?v=4",
       type: "",
       msg: "Awesome these days.",
     },
@@ -70,7 +70,7 @@ export default class ChatContent extends Component<Props, State> {
     {
       key: 6,
       image:
-        "https://pbs.twimg.com/profile_images/1116431270697766912/-NfnQHvh_400x400.jpg",
+        "https://avatars.githubusercontent.com/u/8985933?v=4",
       type: "",
       msg: "what plan mate?",
     },
@@ -82,55 +82,55 @@ export default class ChatContent extends Component<Props, State> {
       msg: "I'm taliking about the tutorial",
     },
     {
-      key: 4,
+      key: 8,
       image:
-        "https://pbs.twimg.com/profile_images/1116431270697766912/-NfnQHvh_400x400.jpg",
+        "https://avatars.githubusercontent.com/u/8985933?v=4",
       type: "",
       msg: "Awesome these days.",
     },
     {
-      key: 5,
+      key: 9,
       image:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
       type: "other",
       msg: "Finally. What's the plan?",
     },
     {
-      key: 6,
+      key: 10,
       image:
-        "https://pbs.twimg.com/profile_images/1116431270697766912/-NfnQHvh_400x400.jpg",
+        "https://avatars.githubusercontent.com/u/8985933?v=4",
       type: "",
       msg: "what plan mate?",
     },
     {
-      key: 7,
+      key: 11,
       image:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
       type: "other",
       msg: "I'm taliking about the tutorial",
     }, {
-      key: 4,
+      key: 12,
       image:
-        "https://pbs.twimg.com/profile_images/1116431270697766912/-NfnQHvh_400x400.jpg",
+        "https://avatars.githubusercontent.com/u/8985933?v=4",
       type: "",
       msg: "Awesome these days.",
     },
     {
-      key: 5,
+      key: 13,
       image:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
       type: "other",
       msg: "Finally. What's the plan?",
     },
     {
-      key: 6,
+      key: 14,
       image:
-        "https://pbs.twimg.com/profile_images/1116431270697766912/-NfnQHvh_400x400.jpg",
+        "https://avatars.githubusercontent.com/u/8985933?v=4",
       type: "",
       msg: "what plan mate?",
     },
     {
-      key: 7,
+      key: 15,
       image:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
       type: "other",
@@ -161,7 +161,7 @@ export default class ChatContent extends Component<Props, State> {
             type: "",
             msg: this.state.msg,
             image:
-              "https://pbs.twimg.com/profile_images/1116431270697766912/-NfnQHvh_400x400.jpg",
+              "https://avatars.githubusercontent.com/u/8985933?v=4",
           });
           this.setState({ chat: [...this.chatItms] });
           this.scrollToBottom();
