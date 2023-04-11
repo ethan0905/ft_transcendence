@@ -1,0 +1,48 @@
+.ProfilePage{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background-color: #8fa9d4;
+}
+
+.ProfilePage_header {
+  display: flex;
+  flex-direction: row;
+  background-image: url("https://static.vecteezy.com/ti/vecteur-libre/t2/16082586-icones-au-neon-raquette-de-ping-pong-tennis-de-table-ensemble-d-iconesles-neon-rouge-bleu-jaune-sur-fond-sombre-vectoriel.jpg");
+  background-position: center;
+  border-bottom: solid 5px white;
+  color: white;
+  max-height: fit-content;
+}
+
+.ProfilePicture {
+  position: relative;
+}
+
+.ProfilePage_info {
+  padding-left: 15px;
+}
+
+.Preview {
+  height: auto;
+  width: 100%;
+}
+
+.ProfilePage_stats {
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
+  justify-content: space-between;
+  width: 50vw;
+  color: white;
+  font: bolder;
+  font-size: 25px;
+}
+
+.ProfilePage_achiev {
+  display: flex;
+  background-color: #5616cf;
+  color: white;
+  max-height: fit-content;
+}

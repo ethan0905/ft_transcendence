@@ -19,7 +19,7 @@ function Verify2FA() {
                 const data = await response.json();
                 if (data)
                 {
-                        window.location.href = "http://localhost:3000/homepage";
+                        window.location.href = "http://localhost:3000/myProfile";
                 }
                 return data;
         }
