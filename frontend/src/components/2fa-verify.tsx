@@ -16,9 +16,11 @@ function Verify2FA() {
                         },
                         body: JSON.stringify({ twoFACode: twoFACode })
                 });
+                // console.log(response);
                 const data = await response.json();
-                if (data)
+                if (data === true)
                 {
+                        // console.log("SUCCESS");
                         window.location.href = "http://localhost:3000/myProfile";
                 }
                 return data;
