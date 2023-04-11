@@ -1,8 +1,15 @@
+
 .main__chatbody{
+    background-size: cover;
+    background-image: url("/public/maxresdefault.jpg");
+    background-repeat: no-repeat;
     width: 100%;
     display: inline-flex;
-   background-color: #a0bdf680;
     border-radius: 10px;
+}
+
+.background {
+    background-color: rgba(31, 33, 29, 0.344);
 }
 
 @media (max-width:1000px){

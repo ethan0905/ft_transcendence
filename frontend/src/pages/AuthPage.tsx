@@ -1,6 +1,5 @@
-// import { Button } from '../components/button/button';
 import Sidebar from '../components/Sidebar/Sidebar';
-import { Button } from '../components/button';
+import { Button } from '../components/button/button'
 
 export default function Auth() {
 	return (

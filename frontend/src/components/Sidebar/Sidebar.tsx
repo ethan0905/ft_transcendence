@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import ChatIcon from '@mui/icons-material/Chat';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import ProfileIcon from '@mui/icons-material/AccountCircle';
-import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 // import GroupIcon from '@mui/icons-material/Group';
 import LogoutIcon from '@mui/icons-material/Logout';
 import React from 'react';
@@ -24,11 +23,6 @@ const SidebarData = [
         title: 'Game',
         icon: <SportsEsportsIcon />,
         link: '/Game',
-    },
-    {
-      title: 'Leaderboard',
-      icon: <LeaderboardIcon />,
-      link: '/Leaderboard',
     },
     {
       title: 'Logout',

@@ -8,9 +8,9 @@ export default class ChatBody extends Component {
   render() {
     return (
       <div className='main__chatbody'>
-          <ChatList />
-          <ChatContent />
-          <UserList />
+            <ChatList />
+            <ChatContent />
+            <UserList />
       </div>
     );
   }

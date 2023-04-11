@@ -1,0 +1,84 @@
+.ProfilePage{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-image: url("/public/profile.jpg");
+  background-repeat: no-repeat;
+}
+
+.ProfilePage_header {
+  display: flex;
+  flex-direction: row;
+  background-color: rgba(13, 13, 19, 0.568);
+
+}
+.ProfilePicture {
+  position: relative;
+}
+.ProfilePage_header h1 {
+  color: white;
+  text-shadow: #03d3fc 1px 2px 3px;
+  margin-bottom: 14px;
+  margin-top: 0px;
+}
+
+.ProfilePage_info {
+  display: flex;
+  color: white;
+  flex-direction: column;
+  justify-content: center;
+  width: 50vw;
+}
+.ProfilePage_info .Info {
+  /* text-shadow: #03d3fc 1px 2px 3px; */
+  font-size: 23px;
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.Match_history {
+  display: flex;
+  width: 100wv;
+  align-items: center;
+}
+.Match_history .Info {
+  flex-grow: 1;
+  font: bolder;
+  font-size: 20px;
+}
+
+.Achievements {
+  display: flex;
+  flex-direction: column;
+  color: white;
+  max-height: fit-content;
+  background-color: rgba(13, 13, 19, 0.568);
+}
+
+.Achiev_list {
+  display: flex;
+}
+
+.Achiev {
+  display: flex;
+  flex-direction: column;
+}
+
+.Achiev_image {
+  height: 150px;
+  width: auto;
+  opacity: 0.5;
+  position: relative;
+}
+
+.Profile_tabs {
+  background-color: rgba(13, 13, 19, 0.568);
+  display: flex;
+  color: white;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  height: 70vh;
+}

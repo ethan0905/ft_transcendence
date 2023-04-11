@@ -15,13 +15,12 @@
 import './App.css';
 import { Routes, Route } from "react-router-dom"
 import AuthPage from "./pages/AuthPage"
-import ProfilePage from "./pages/ProfilePage"
+import ProfilePage from "./pages/ProfilePage/ProfilePage"
 import ChatPage from "./pages/ChatPage"
 import GamePage from "./pages/GamePage"
-import LeaderboardPage from "./pages/LeaderboardPage"
 import ErrorPage from "./pages/ErrorPage"
 import UserPage from "./pages/UserPage"
-import Verify2FA from "./components/2fa-verify"
+import Verify2FA from "./components/2FA/2fa-verify"
 import HomePage from "./components/homepage"
 
 function App() {
@@ -50,7 +49,6 @@ function App() {
           <Route path='/Profile/:id' element={<UserPage/>} />
           <Route path='/Chat' element={<ChatPage/>} />
           <Route path='/Game' element={<GamePage/>} />
-          <Route path='/Leaderboard' element={<LeaderboardPage/>} />
           <Route path='/*' element={<ErrorPage/>} />
         </Routes>
       </div>
