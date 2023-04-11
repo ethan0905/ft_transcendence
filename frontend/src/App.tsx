@@ -15,7 +15,7 @@
 import './App.css';
 import { Routes, Route } from "react-router-dom"
 import AuthPage from "./pages/AuthPage"
-import ProfilePage from "./pages/ProfilePage"
+// import ProfilePage from "./pages/ProfilePage"
 import ChatPage from "./pages/ChatPage"
 import GamePage from "./pages/GamePage"
 import LeaderboardPage from "./pages/LeaderboardPage"
