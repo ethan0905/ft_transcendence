@@ -5,7 +5,7 @@ import { Button } from '../components/button';
 export default function Auth() {
 	return (
 	<>
-		<Sidebar />
+		{/* <Sidebar /> */}
 		<div className='AuthPage' style={{
 			width: '100%',
 			height: '100vh',
