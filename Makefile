@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: c2h6 <c2h6@student.42.fr>                  +#+  +:+       +#+         #
+#    By: esafar <esafar@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/13 12:28:32 by c2h6              #+#    #+#              #
-#    Updated: 2023/04/10 14:50:20 by c2h6             ###   ########.fr        #
+#    Updated: 2023/04/11 16:43:29 by esafar           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -49,7 +49,7 @@ info:
 down:
 	docker-compose -f docker-compose.yml down
 
-fclean: down clean_modules
+fclean: down
 	docker rmi -f $$(docker images -qa);\
 	docker volume rm $$(docker volume ls -q);\
 	docker system prune -a --force

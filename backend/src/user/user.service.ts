@@ -38,4 +38,12 @@ export class UserService {
 		// delete user.hash;
 		return user;
 	}
+
+	async getUser(User: string) {
+		return this.prisma.user.findUnique({
+			where: {
+				email: User,
+			},
+		});
+	}
 }
