@@ -21,7 +21,7 @@ const allChatUsers : ChanUser[] = [
 },
 {
   image:
-    "https://pbs.twimg.com/profile_images/1055263632861343745/vIqzOHXj.jpg",
+    "https://avatars.githubusercontent.com/u/8985933?v=4",
   id: 2,
   name: "Ayub Rossi",
   active: false,
