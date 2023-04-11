@@ -1,6 +1,7 @@
 import {useState, ChangeEventHandler} from 'react';
 import Sidebar from '../components/Sidebar/Sidebar';
 import './profilePage.css';
+import React from 'react';
 import { ChangeEvent } from 'react';
 import EditableText from '../components/EditableText';
 import ProfilePicture from '../components/ProfilePicture';
@@ -55,6 +56,6 @@ export default function ProfilePage() {
 
 
 			</div>
-	</>
+		</>
 	);
 };
