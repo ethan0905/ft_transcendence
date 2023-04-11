@@ -18,8 +18,8 @@ services:
     networks:
       - transcendance_ntw
     volumes:
+      # - ./database:/var/lib/postgresql/data
       - data:/var/lib/postgresql/data
-      # - ./postgres-db:/var/lib/postgresql/data
 
   backend:
     container_name: backend_nestjs
@@ -27,13 +27,15 @@ services:
     image: transcendance-api:1.0.0
     build:
       context: backend
-      # target: production
+      target: development
       dockerfile: Dockerfile
     ports:
       - 3333:3333
       - 5555:5555
       # debugging port
       - 9229:9229
+    environment:
+      NODE_OPTIONS: --trace-deprecation
     networks:
       - transcendance_ntw
     volumes:
@@ -47,7 +49,7 @@ services:
     image: transcendance-client:1.0.0
     build:
       context: frontend
-      # target: production
+      target: development
       dockerfile: Dockerfile
     volumes:
       - ./frontend:/app

@@ -1,0 +1,42 @@
+.main__chatbody{
+    width: 100%;
+    display: inline-flex;
+   background-color: #a0bdf680;
+    border-radius: 10px;
+}
+
+@media (max-width:1000px){
+    .main__chatbody {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* display: block; */
+        display: flex;
+        overflow: auto;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        flex-direction: row;
+    }
+
+    .content__footer{
+        height:100px;
+    }
+
+    .main__chatlist {
+        min-width: 50%;
+        height: 100%;
+        scroll-snap-align: start;
+    }
+    
+    .main__chatcontent {
+        min-width:95%;
+        height: 100%;
+        scroll-snap-align: center;
+    }
+    
+    .main__userlist{
+        min-width: 50%;
+        height: 100%;
+        scroll-snap-align: start;
+    }
+}

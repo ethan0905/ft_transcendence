@@ -9,15 +9,15 @@ export class UserService {
 	async createUser(
 		email: string,
 		username: string,
-		hash: string,
+		// hash: string,
 		id = 0,
 	) {
 		const user = await this.prisma.user.create({
 			data: {
 				email,
 				username,
-				hash,
-				id42: id,
+				// hash,
+				// id42: id,
 			},
 		});
 
@@ -35,7 +35,15 @@ export class UserService {
 			},
 		});
 
-		delete user.hash;
+		// delete user.hash;
 		return user;
+	}
+
+	async getUser(User: string) {
+		return this.prisma.user.findUnique({
+			where: {
+				email: User,
+			},
+		});
 	}
 }

@@ -12,14 +12,19 @@ datasource db {
 
 model User {
   id        Int       @id @default(autoincrement())
-  id42      Int
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
   email     String  @unique
-  hash      String
   username  String? @unique
   avatarUrl String?
+
+  accessToken String? @unique
+  refreshToken String? @unique
+
+  twoFactorAuth Boolean @default(false)
+  twoFactorActivated Boolean @default(false)
+  twoFactorSecret String?
 
   messages  Message[]
 
@@ -28,6 +33,7 @@ model User {
   members Channel[] @relation("members")
   muted   Channel[] @relation("muted")
   banned  Channel[] @relation("banned")
+  invited Channel[] @relation("invited")
   
   friends Friend[]  @relation("friend")
   blocked Blocked[] @relation("blocked")
@@ -80,6 +86,7 @@ model Channel {
 
   isPassword Boolean   @default(false)
   isDM       Boolean   @default(false)
+  isPrivate  Boolean   @default(false)
 
   messages   Message[]
 
@@ -88,6 +95,7 @@ model Channel {
   members   User[]    @relation("members")
   banned    User[]    @relation("banned")
   muted     User[]    @relation("muted")
+  invited   User[]    @relation("invited")
 
   @@unique([id])
 }

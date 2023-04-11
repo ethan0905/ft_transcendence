@@ -1,46 +1,27 @@
-FROM node:latest AS Production
+# FROM node:latest AS Production
 
-ENV NODE_ENV=production
-
-# WORKDIR /usr/src/backend
-WORKDIR /app
-
-COPY package.json .
-# COPY tsconfig.json .
-
-# RUN yarn add -D prisma @types/passport-jwt pactum dotenv-cli @nestjs/cli @prisma/client class-validator class-transformer argon2 @nestjs/config @nestjs/passport passport @nestjs/jwt passport-jwt
-
-# # missing package when running the docker?
-# RUN yarn add -D @node-rs/xxhash-linux-arm64-gnu
-
-# RUN yarn install
-
-RUN npm install @nestjs/cli 
-RUN npm install express
-
-RUN npm install
-
-COPY . .
-
-# RUN npm run build
-
-EXPOSE 3000
-# CMD ["/bin/sh", "-c", "yarn start:dev"]
-
-# ENTRYPOINT ["/bin/sh", "-c", "npm install && npx prisma migrate dev && npm run build && npx prisma migrate deploy && npm start"]
-# CMD ["/bin/sh", "-c", "npm start && sleep 2 && npx prisma migrate deploy"]
-CMD ["/bin/sh", "-c", "npm run start:debug ; npx prisma migrate deploy"]
-
-# CMD ["/bin/bash"]
-
-# FROM node:14
-
-# COPY ./     /app/
+# ENV NODE_ENV=production
 
 # WORKDIR /app
 
-# RUN  yarn install
+# EXPOSE 3000
 
-# EXPOSE 3333
+# # ENTRYPOINT ["/bin/sh", "-c", "npm install && npx prisma migrate dev && npm run build && npx prisma migrate deploy && npm start"]
+# # CMD ["/bin/sh", "-c", "npm start && sleep 2 && npx prisma migrate deploy"]
+# CMD ["/bin/sh", "-c", "npm run start:debug ; npx prisma migrate deploy"]
 
-# CMD ["yarn", "start:dev"]
+FROM node:latest AS development
+
+ENV NODE_ENV=development
+
+WORKDIR /app
+
+EXPOSE 3000
+
+# ENTRYPOINT ["/bin/sh", "-c", "npm install && npx prisma migrate dev && npm run build && npx prisma migrate deploy && npm start"]
+# CMD ["/bin/sh", "-c", "npm start && sleep 2 && npx prisma migrate deploy"]
+
+# use this if you want to run the app in debug mode
+# CMD ["/bin/sh", "-c", "npm run start:debug ; npx prisma migrate deploy"]
+# use this if you want to run the app in production mode
+CMD ["/bin/sh", "-c", "npx prisma db push && npm run start ; npx prisma migrate deploy"]
