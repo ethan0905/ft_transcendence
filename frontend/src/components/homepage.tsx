@@ -6,6 +6,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import axios from 'axios';
 import AuthCode from 'react-auth-code-input';
 import { useEffect } from 'react';
+import Sidebar from './Sidebar/Sidebar';
 
 function HomePage() {
 
@@ -158,56 +159,64 @@ function HomePage() {
 	}
 
 	return (
-      <div className='App'>
+      <>
+		<Sidebar/>
+		<div style={{
+			display: "flex",
+			justifyContent: "center",
+			alignItems: "center",
+			height: "100vh",
+			width:"100%",
+			flexDirection: "column",
+		}}>
+			<Button 
+			text="Logout"
+			onClick={() => {
+				window.open('http://localhost:3333/auth/42/logout', "_self");
+				}}
+				/>
 
-        <Button 
-          text="Logout"
-          onClick={() => {
-            window.open('http://localhost:3333/auth/42/logout', "_self");
-          }}
-        />
+			<p>Is 2FA activated ? {twoFAActivated}</p>
 
-        <p>Is 2FA activated ? {twoFAActivated}</p>
+			<FormControlLabel control={
+				<Switch
+				checked={checked}
+				onChange={handleChange}
+				inputProps={{ "aria-label": "controlled" }}
+				/>
+			} label="Enable 2FA" />
 
-         <FormControlLabel control={
-          <Switch
-            checked={checked}
-            onChange={handleChange}
-            inputProps={{ "aria-label": "controlled" }}
-          />
-        } label="Enable 2FA" />
+			<p>Token: {token}</p>
 
-        <p>Token: {token}</p>
-
-        {checked && (
-          <div>
-          {qrcodeDataUrl && (
-            <div>
-                <p>{qrcodeDataUrl}</p>
-            </div>
-          )}
-          </div>
-          )
-        }
-
-        <button onClick={generateQRCode}>Generate QR code</button>
-
-		{checked && (
-			<div>
-				{!twoFAActivated && (
-					<div>
-						<AuthCode
-						allowedCharacters='numeric'
-						onChange={handleOnChange}
-						/>
-						<button onClick={activate2FA}>Submit code</button>
-					</div>
-					)
-				}
+			{checked && (
+				<div>
+			{qrcodeDataUrl && (
+				<div>
+					<p>{qrcodeDataUrl}</p>
+				</div>
+			)}
 			</div>
-		)}
+			)
+			}
 
-    </div>
+			<button onClick={generateQRCode}>Generate QR code</button>
+
+			{checked && (
+				<div>
+					{!twoFAActivated && (
+						<div>
+							<AuthCode
+							allowedCharacters='numeric'
+							onChange={handleOnChange}
+							/>
+							<button onClick={activate2FA}>Submit code</button>
+						</div>
+						)
+					}
+				</div>
+			)}
+		</div>
+    </>
 	);
   }
   
