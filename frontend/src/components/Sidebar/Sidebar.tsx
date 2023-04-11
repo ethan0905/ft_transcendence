@@ -33,7 +33,8 @@ const SidebarData = [
     {
       title: 'Logout',
       icon: <LogoutIcon />,
-      link: '/',
+      onClick: () => { window.open('http://localhost:3333/auth/42/logout', "_self");},
+      link: '/login',
     },
 
 ]
@@ -51,7 +52,7 @@ export default function Sidebar () {
             return (
               <React.Fragment key={key}>
                 <Link to={val.link} className='SidebarLink'>
-                  <li className='row' id={window.location.pathname === val.link ? "active" : ""}>
+                  <li className='row' id={window.location.pathname === val.link ? "active" : ""} onClick={val.onClick}>
                     <div id="icon">{val.icon}</div>
                     <div id="title">{val.title}</div>
                   </li>
