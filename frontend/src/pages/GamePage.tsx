@@ -94,10 +94,13 @@ export default function GamePage() {
 				backgroundRepeat: 'no-repeat',
 			}}>
 
-			<h1 style={{color: 'black'}}>Play</h1>
-			{<div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',}}>
-			{getTable({ data })}
-			</div>}
+				<h1 style={{color: 'black'}}>Play</h1>
+			
+				{<div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',}}>
+					{getTable({ data })}
+				</div>}
+
+				<img src="/pongball.png" />
 			</div>
 			}
 		</>

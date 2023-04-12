@@ -203,7 +203,7 @@ export default function ProfilePage() {
 					<ProfilePicture profilePicture={profilePicture} handleUpload={handleUpload} />
 					<div className='ProfilePage_info'>
 						<EditableText text={name} onSubmit={setName} />
-						<div className='Info'>Rank : 1 / 100</div>
+						<div className='Info'>Rank: 1</div>
 						{/* <SwitchButton /> */}
 						<FormControlLabel control={
 							<Switch
@@ -220,47 +220,41 @@ export default function ProfilePage() {
 						</div>
 
 						{checked && (
-							<div>
-								{!twoFAActivated && (
-									<div>
-										<AuthCode
-											allowedCharacters='numeric'
-											onChange={handleOnChange}
-										/>
+								// {!twoFAActivated && (
+									<div className='Auth_block'>
+										<AuthCode allowedCharacters='numeric' onChange={handleOnChange}	inputClassName='Authcode_input'/>
 										<button onClick={activate2FA}>Submit code</button>
 									</div>
 								)}
-							</div>
-						)}
+
+						{/* )} */}
 					</div>
 				</div>
 
 				<div className='Achievements'>
-					<h2 style={{color: "#2596be"}}>Achievements</h2>
+					<h2 style={{color: "#06b1ba", marginLeft: '15px', textShadow: '1px 1px 1px black'}}>Achievements</h2>
 					<div className='Achiev_list'>
-						<div className='Achiev'>
-						<a><img className='Achiev_image' src='match.svg' alt='Achiev'/></a>
-							{/* <a>
-								<img className='Achiev_image' src='https://cdn-icons-png.flaticon.com/512/7909/7909999.png' alt='Achiev' />
-							</a>
-							<span>Win a game</span> */}
+						<div className="tooltip">
+							<img className='Achiev_image' src='match.svg' alt='Achiev'/>
+							<span className="tooltiptext">1st Game</span>
 						</div>
 
-						<div className='Achiev'>
-						<a><img className='Achiev_image' src='win.svg' alt='Achiev'/></a>
-
-							{/* <img className='Achiev_image' src='https://cdn-icons-png.flaticon.com/512/7909/7909976.png' alt='Achiev' /> */}
+						<div className="tooltip">
+							<img className='Achiev_image' src='win.svg' alt='Achiev'/>
+							<span className="tooltiptext">1st Win</span>
 						</div>
-						<a><img className='Achiev_image' src='friend.svg' alt='Achiev'/></a>
 
-						{/* <img className='Achiev_image' src='https://cdn-icons-png.flaticon.com/512/7910/7910022.png' alt='Achiev' /> */}
+						<div className="tooltip">
+							<img className='Achiev_image' src='friend.svg' alt='Achiev'/>
+							<span className="tooltiptext">1st Friend</span>
+						</div>
 					</div>
-				</div>
 
-				<div className='Profile_tabs'>
-					<FriendList data={friends} />
-					<GameHistory data={games} />
 				</div>
+					<div className='Profile_tabs'>
+						<FriendList data={friends} />
+						<GameHistory data={games} />
+					</div>
 
 			</div>
 		</>
