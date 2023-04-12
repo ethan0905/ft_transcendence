@@ -30,6 +30,8 @@
   max-height: 80vh;
   min-height: 25vh;
   width: 95%;
+  background-color: grey;
+  opacity: .7;
 }
 
 .userlist__item {

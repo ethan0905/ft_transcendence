@@ -11,8 +11,9 @@
 .ProfilePage_header {
   display: flex;
   flex-direction: row;
-  background-color: rgba(13, 13, 19, 0.568);
-
+  /* background-color: rgba(13, 13, 19, 0.568);
+  opacity: .5; */
+  background-color: rgba(132, 132, 139, 0.568); 
 }
 .ProfilePicture {
   position: relative;
@@ -54,7 +55,10 @@
   flex-direction: column;
   color: white;
   max-height: fit-content;
-  background-color: rgba(13, 13, 19, 0.568);
+  /* background-color: rgba(13, 13, 19, 0.568);
+  opacity: .5; */
+  background-color: rgba(132, 132, 139, 0.568); 
+
 }
 
 .Achiev_list {
@@ -74,9 +78,10 @@
 }
 
 .Profile_tabs {
-  background-color: rgba(13, 13, 19, 0.568);
+  background-color: rgba(132, 132, 139, 0.568); 
+  /* opacity: .8;  */
   display: flex;
-  color: white;
+  color: black;
   flex-direction: row;
   justify-content: space-around;
   align-items: center;

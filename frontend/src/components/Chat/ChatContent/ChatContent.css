@@ -102,7 +102,7 @@
     transform-origin: left;
   }
   .chat__item.other .chat__item__content {
-    background-color: #fff;
+    background-color: #21af6a;
     color: #000;
     border-radius: 10px 10px 10px 0;
     max-width: 50%;

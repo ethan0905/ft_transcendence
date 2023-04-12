@@ -17,7 +17,7 @@ interface TableProps {
 		<table style={{ borderCollapse: 'collapse', width: '100%', height:'100%' }}>
 		  <thead style={{ position: 'sticky', top: '0' }}>
 		  <tr>
-            <th colSpan={5} style={{ backgroundColor: 'black', textAlign: 'center', padding: '10px' }}>Game history</th>
+            <th colSpan={5} style={{ backgroundColor: 'black', color: 'white', textAlign: 'center', padding: '10px' }}>Game history</th>
           </tr>
 		  <tr>
 			<th style={{ backgroundColor: 'grey'}}></th>
@@ -27,11 +27,11 @@ interface TableProps {
 		  	<th style={{ backgroundColor: 'grey', textAlign: 'left'}}>matches: 0</th>
           </tr>
 			<tr>
-			<th style={{ backgroundColor: 'black', textAlign: 'left'}}>#</th>
-			<th style={{ backgroundColor: 'black', textAlign: 'left'}}>Player1</th>
-			<th style={{ backgroundColor: 'black', textAlign: 'left'}}>Player2</th>
-		  	<th style={{ backgroundColor: 'black', textAlign: 'left'}}>Score</th>
-		  	<th style={{ backgroundColor: 'black', textAlign: 'left'}}>Date</th>
+			<th style={{ backgroundColor: 'black', color: 'white', textAlign: 'left'}}>#</th>
+			<th style={{ backgroundColor: 'black', color: 'white',textAlign: 'left'}}>Player1</th>
+			<th style={{ backgroundColor: 'black', color: 'white',textAlign: 'left'}}>Player2</th>
+		  	<th style={{ backgroundColor: 'black', color: 'white',textAlign: 'left'}}>Score</th>
+		  	<th style={{ backgroundColor: 'black', color: 'white',textAlign: 'left'}}>Date</th>
 			</tr>
 		  </thead>
 		  <tbody style={{ paddingTop: '100px' }}>

@@ -45,6 +45,8 @@
   max-height: 100vh;
   min-height: 25vh;
   width: 90%;
+  opacity: .8;
+  background-color: grey;
 }
 
 .chatlist__item {
@@ -104,7 +106,7 @@
 .Box-button-newchannel{
   width:90%;
   height:47px;
-  background-color: #fff;
+  background-color: rgb(207, 189, 27);
   border-radius: 5px;
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.02);
   display: inline-flex;

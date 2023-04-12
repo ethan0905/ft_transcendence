@@ -150,32 +150,17 @@ export default function ProfilePage() {
 	};
 
 	const friends = [
-		{ name: 'John', status: 'online' },
-		{ name: 'Jane', status: 'offline' },
-		{ name: 'Bob', status: 'online' },
-		{ name: 'Mary', status: 'online' },
-		{ name: 'Alice', status: 'offline' },
+		{ name: 'Alex', status: 'online' },
+		{ name: 'Mika', status: 'offline' },
+		{ name: 'Ethan', status: 'online' },
+		{ name: 'Kenny', status: 'online' },
+		{ name: 'Clement', status: 'offline' },
 		{ name: 'Tom', status: 'online' },
 		{ name: 'Kate', status: 'offline' },
+		{ name: 'Sam', status: 'playing' },
 		{ name: 'Sam', status: 'online' },
 		{ name: 'Sam', status: 'online' },
-		{ name: 'Sam', status: 'online' },
-		{ name: 'Sam', status: 'online' },
-		{ name: 'Sam', status: 'online' },
-		{ name: 'Sam', status: 'online' },
-		{ name: 'Mike', status: 'offline' },
-		{ name: 'Lisa', status: 'online' },
-		{ name: 'Lisa', status: 'online' },
-		{ name: 'Lisa', status: 'online' },
-		{ name: 'Lisa', status: 'playing' },
-		{ name: 'Lisa', status: 'online' },
-		{ name: 'Lisa', status: 'online' },
-		{ name: 'Lisa', status: 'online' },
-		{ name: 'Lisa', status: 'online' },
-		{ name: 'Lisa', status: 'online' },
-		{ name: 'Lisa', status: 'online' },
-		{ name: 'Lisa', status: 'online' },
-		{ name: 'Lisa', status: 'online' },
+
 	];
 
 	const games = [
@@ -251,20 +236,24 @@ export default function ProfilePage() {
 				</div>
 
 				<div className='Achievements'>
-					<h2>Achievements</h2>
+					<h2 style={{color: "#2596be"}}>Achievements</h2>
 					<div className='Achiev_list'>
 						<div className='Achiev'>
-							<a>
+						<a><img className='Achiev_image' src='match.svg' alt='Achiev'/></a>
+							{/* <a>
 								<img className='Achiev_image' src='https://cdn-icons-png.flaticon.com/512/7909/7909999.png' alt='Achiev' />
 							</a>
-							<span>Win a game</span>
+							<span>Win a game</span> */}
 						</div>
 
 						<div className='Achiev'>
-							<img className='Achiev_image' src='https://cdn-icons-png.flaticon.com/512/7909/7909976.png' alt='Achiev' />
-						</div>
+						<a><img className='Achiev_image' src='win.svg' alt='Achiev'/></a>
 
-						<img className='Achiev_image' src='https://cdn-icons-png.flaticon.com/512/7910/7910022.png' alt='Achiev' />
+							{/* <img className='Achiev_image' src='https://cdn-icons-png.flaticon.com/512/7909/7909976.png' alt='Achiev' /> */}
+						</div>
+						<a><img className='Achiev_image' src='friend.svg' alt='Achiev'/></a>
+
+						{/* <img className='Achiev_image' src='https://cdn-icons-png.flaticon.com/512/7910/7910022.png' alt='Achiev' /> */}
 					</div>
 				</div>
 
