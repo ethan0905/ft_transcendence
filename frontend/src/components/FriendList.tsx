@@ -15,12 +15,12 @@ const FriendList = (props: TableProps) => {
 		<table style={{ borderCollapse: 'collapse', width: '100%', height:'100%' }}>
 		  <thead style={{ position: 'sticky', top: '0' }}>
 		  <tr>
-            <th colSpan={3} style={{ backgroundColor: '#f2f2f2', borderBottom: '1px solid #ddd', textAlign: 'center', padding: '10px' }}>Friends</th>
+            <th colSpan={3} style={{ backgroundColor: 'black', textAlign: 'center', padding: '10px' }}>Friends</th>
           </tr>
 			<tr>
-			<th style={{ backgroundColor: '#f2f2f2', borderBottom: '1px solid #ddd', textAlign: 'left'}}>#</th>
-			<th style={{ backgroundColor: '#f2f2f2', borderBottom: '1px solid #ddd', textAlign: 'left'}}>Name</th>
-		  <th style={{ backgroundColor: '#f2f2f2', borderBottom: '1px solid #ddd',textAlign: 'left'}}>Status</th>
+			<th style={{ backgroundColor: 'black', borderBottom: '1px solid #ddd', textAlign: 'left'}}>#</th>
+			<th style={{ backgroundColor: 'black', borderBottom: '1px solid #ddd', textAlign: 'left'}}>Name</th>
+		  <th style={{ backgroundColor: 'black', borderBottom: '1px solid #ddd',textAlign: 'left'}}>Status</th>
 			</tr>
 		  </thead>
 		  <tbody>

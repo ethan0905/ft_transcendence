@@ -17,27 +17,27 @@ interface TableProps {
 		<table style={{ borderCollapse: 'collapse', width: '100%', height:'100%' }}>
 		  <thead style={{ position: 'sticky', top: '0' }}>
 		  <tr>
-            <th colSpan={5} style={{ backgroundColor: '#f2f2f2', borderBottom: '1px solid #ddd', textAlign: 'center', padding: '10px' }}>Game history</th>
+            <th colSpan={5} style={{ backgroundColor: 'black', textAlign: 'center', padding: '10px' }}>Game history</th>
           </tr>
 		  <tr>
-			<th style={{ backgroundColor: '#f2f2f2'}}></th>
-			<th style={{ backgroundColor: '#f2f2f2', borderBottom: '1px solid #ddd', textAlign: 'left'}}>Win rate: 0%</th>
-			<th style={{ backgroundColor: '#f2f2f2', borderBottom: '1px solid #ddd', textAlign: 'left'}}>Wins: 0</th>
-		  <th style={{ backgroundColor: '#f2f2f2', borderBottom: '1px solid #ddd',textAlign: 'left'}}>Loses: 0</th>
-		  <th style={{ backgroundColor: '#f2f2f2', borderBottom: '1px solid #ddd',textAlign: 'left'}}>matches: 0</th>
+			<th style={{ backgroundColor: 'grey'}}></th>
+			<th style={{ backgroundColor: 'grey', textAlign: 'left'}}>Win rate: 0%</th>
+			<th style={{ backgroundColor: 'grey', textAlign: 'left'}}>Wins: 0</th>
+		  	<th style={{ backgroundColor: 'grey', textAlign: 'left'}}>Loses: 0</th>
+		  	<th style={{ backgroundColor: 'grey', textAlign: 'left'}}>matches: 0</th>
           </tr>
 			<tr>
-			<th style={{ backgroundColor: '#f2f2f2', borderBottom: '1px solid #ddd', textAlign: 'left'}}>#</th>
-			<th style={{ backgroundColor: '#f2f2f2', borderBottom: '1px solid #ddd', textAlign: 'left'}}>Player1</th>
-			<th style={{ backgroundColor: '#f2f2f2', borderBottom: '1px solid #ddd', textAlign: 'left'}}>Player2</th>
-		  <th style={{ backgroundColor: '#f2f2f2', borderBottom: '1px solid #ddd',textAlign: 'left'}}>Score</th>
-		  <th style={{ backgroundColor: '#f2f2f2', borderBottom: '1px solid #ddd',textAlign: 'left'}}>Date</th>
+			<th style={{ backgroundColor: 'black', textAlign: 'left'}}>#</th>
+			<th style={{ backgroundColor: 'black', textAlign: 'left'}}>Player1</th>
+			<th style={{ backgroundColor: 'black', textAlign: 'left'}}>Player2</th>
+		  	<th style={{ backgroundColor: 'black', textAlign: 'left'}}>Score</th>
+		  	<th style={{ backgroundColor: 'black', textAlign: 'left'}}>Date</th>
 			</tr>
 		  </thead>
 		  <tbody style={{ paddingTop: '100px' }}>
 			{data.map((item, index) => (
 			  <tr key={index}>
-				  <td style={{ borderBottom: '1px solid #ddd' }}>{index + 1}</td>
+				<td style={{ borderBottom: '1px solid #ddd' }}>{index + 1}</td>
 				<td style={{ borderBottom: '1px solid #ddd' }}>{item.player1}</td>
 				<td style={{ borderBottom: '1px solid #ddd' }}>{item.player2}</td>
 				<td style={{ borderBottom: '1px solid #ddd' }}>{item.score}</td>
