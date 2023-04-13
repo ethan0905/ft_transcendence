@@ -40,11 +40,11 @@
 
 .SidebarList .row:hover {
   cursor: pointer;
-  background: #135695;
+  background: #3684cd;
 }
 
 .SidebarList #active {
-  background: #135695;
+  background: #3684cd;
 }
 
 .row #icon {
