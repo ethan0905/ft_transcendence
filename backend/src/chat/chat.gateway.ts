@@ -111,6 +111,7 @@ export class ChatGateway implements OnGatewayConnection {
     )
     const chat = await this.chatService.newMsg(data, user.id);
     console.log("cMsg added");
+    
   }
 
   @SubscribeMessage('sendMsgtoC')

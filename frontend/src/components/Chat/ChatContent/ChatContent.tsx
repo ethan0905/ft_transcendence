@@ -1,9 +1,14 @@
-import React, { useState, Component, createRef} from "react";
+import React, { useState, Component, createRef, useContext} from "react";
 import ChatItem from "./ChatItem";
 import { Avatar, AvatarGroup } from "@mui/material";
 import "./ChatContent.css";
+import { SocketContext } from "../../../pages/ChatPage";
 
-
+interface message{
+  chatId:number,
+  mail: string,
+  msg: string
+};
 
 const FormButton = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -168,7 +173,7 @@ export default class ChatContent extends Component<Props, State> {
       msg: "I'm taliking about the tutorial",
     },
   ];
-
+  
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -205,7 +210,7 @@ export default class ChatContent extends Component<Props, State> {
   onStateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ msg: e.target.value });
   };
-
+  
   render() {
     return (
       <div className="main__chatcontent">

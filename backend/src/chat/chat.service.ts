@@ -351,15 +351,26 @@ export class ChatService {
           try {
             const source = await this.prisma.channel.findMany({
               where: {
-                members : {
-                  every: {
-                    username : username,
+                OR: [
+                  {isPrivate: false},
+                  {
+                    members: {
+                      some: {
+                        username: username
+                      },
+                            }
                   },
-                },
+                  {
+                    invited: {
+                      some: {
+                        username: username
+                  }}
+               } ]
               },
               select: {
                 id : true,
                 channelName: true,
+                password: true,
               },
             });
             return source;
