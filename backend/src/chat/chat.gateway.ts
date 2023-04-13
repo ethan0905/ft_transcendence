@@ -150,7 +150,7 @@ export class ChatGateway implements OnGatewayConnection {
     @ConnectedSocket() client : Socket,
   ) {
     
-    await this.chatService.quit_Chan(data.Token, data.chatId);
+    await this.chatService.quit_Chan(data.username, data.chatId);
     console.log("chan quitted");
   }
 
@@ -160,7 +160,7 @@ export class ChatGateway implements OnGatewayConnection {
     @ConnectedSocket() client : Socket,
   ) {
     
-    await this.chatService.invit_Chan(data.Token, data.chatId);
+    await this.chatService.invit_Chan(data.username, data.chatId);
     console.log("user invited");
   }
 
@@ -170,7 +170,7 @@ export class ChatGateway implements OnGatewayConnection {
     @ConnectedSocket() client : Socket,
   ) {
     
-    await this.chatService.ban_Chan(data.Token, data.chatId);
+    await this.chatService.ban_Chan(data.username, data.chatId);
     console.log("chan banned");
   }
 
@@ -180,7 +180,7 @@ export class ChatGateway implements OnGatewayConnection {
     @ConnectedSocket() client : Socket,
   ) {
     
-    await this.chatService.kick_Chan(data.Token, data.chatId);
+    await this.chatService.kick_Chan(data.username, data.chatId);
     console.log("chan kicked");
   }
 
@@ -190,7 +190,7 @@ export class ChatGateway implements OnGatewayConnection {
     @ConnectedSocket() client : Socket,
   ) {
     
-    const res : boolean = await this.chatService.isBan_Chan(data.Token, data.chatId);
+    const res : boolean = await this.chatService.isBan_Chan(data.username, data.chatId);
     if (res == true)
       console.log("user is banned");
     else
