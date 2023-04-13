@@ -23,7 +23,7 @@ export class ChatService {
             if (info.isPassword === undefined)
               info.isPassword = false;
             console.log(info.isPrivate)
-            const user = await this.userService.getUser(info.email);
+            const user = await this.userService.getUser(info.username);
             const channel = await this.prisma.channel.create({
               data: {
                 channelName: info.chatName,
@@ -32,17 +32,17 @@ export class ChatService {
                 isPassword: info.isPassword,
                 owner: {
                   connect: {
-                    email : info.email,
+                    username : info.username,
                   }
                 },
                 admins: {
                   connect: {
-                    email : info.email,
+                    username : info.username,
                   }
                 },
                 members: {
                   connect: {
-                    email : info.email,
+                    username : info.username,
                   }
                 }
             }
@@ -304,13 +304,13 @@ export class ChatService {
           return (message);
         }
 
-        async get__channelsUserIn(Token: string) {
+        async get__channelsUserIn(username: string) {
           try {
             const source = await this.prisma.channel.findMany({
               where: {
                 members : {
                   every: {
-                    accessToken : Token,
+                    username : username,
                   },
                 },
               },
@@ -322,6 +322,22 @@ export class ChatService {
             return source;
           } catch (error) {
             console.log('get__channels error:', error);
+          }
+        }
+
+        async get__allUserInchan(id : number) {
+          try {
+            const source = await this.prisma.channel.findMany({
+              where: {
+                id : id,
+                },
+              select: {
+                members : true,
+              },
+            });
+            return source;
+          } catch (error) {
+            console.log('get__user error:', error);
           }
         }
 

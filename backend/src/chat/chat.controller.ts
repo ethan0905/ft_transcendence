@@ -46,6 +46,7 @@ export class ChatController {
 	//@UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
 	async create_one(@Body()dto: ChannelCreateDto)
     {
+		console.log(dto);
         const chat = await this.chat_service.newChannel(dto);
         console.log("channel created");
     }
@@ -66,10 +67,10 @@ export class ChatController {
         console.log("cMsg added");
     }
 
-	@Get('/channels/:token')
-	async take_all_channel(@Param("token") Token: string)
+	@Get('/channels/:username')
+	async take_all_channel(@Param("username") username: string)
 	{
-		const channel = await this.chat_service.get__channelsUserIn(Token);
+		const channel = await this.chat_service.get__channelsUserIn(username);
 		console.log("channel : ", channel);
 		return channel;
 	}
