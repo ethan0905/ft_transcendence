@@ -18,7 +18,8 @@
     "react-qr-code": "^2.0.11",
     "react-router-dom": "^6.10.0",
     "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "webpack-dev-middleware": "^6.0.2"
   },
   "scripts": {
     "start": "react-scripts start",

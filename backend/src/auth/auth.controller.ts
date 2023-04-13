@@ -1,9 +1,10 @@
 import { PrismaService } from './../prisma/prisma.service';
-import { Body, Controller, Post, Get, ParseIntPipe, HttpCode, HttpStatus, Req, Res } from '@nestjs/common';
+import { Body, Controller, Post, Get, ParseIntPipe, HttpCode, HttpStatus, Req, Res, Injectable } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { AuthDto, Auth42Dto } from './dto';
 
+@Injectable()
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService,
