@@ -7,7 +7,7 @@ async function createNewChannel(name:string, password:string, isPrivate:boolean)
   
   let data = JSON.stringify({
     "chatName": name,
-    "username": "chduong",
+    "username": "cmenasse",
     "isPrivate":isPrivate,
     "password":password
   });
@@ -109,11 +109,11 @@ const FormButton = () => {
             <span className="close" onClick={() => setIsOpen(false)}>&times;</span>
             <form onSubmit={handleSubmit}>
             <div className="form-group">
-                <label htmlFor="name">Name:</label>
+                <label>Name:</label>
                 <input type="text" id="name" name="name" value={name} onChange={handleInputChange} className="channel_input" maxLength={20} />
               </div>
               <div className="form-group">
-                <label htmlFor="email">Password:</label>
+                <label>Password:</label>
                 <input type="password" id="password" name="password" value={password} onChange={handleInputChange} className="channel_input" maxLength={10}/>
               </div>
               <div >
@@ -142,7 +142,7 @@ export default function ChanList() {
 
   
   useEffect(() => {    
-    getAllChannels("chduong").then((value: any) => {
+    getAllChannels("cmenasse").then((value: any) => {
       setAllChannels(value);
     })
 

@@ -18,11 +18,11 @@ const GameTable = (props: TableProps) => {
 	<div className='tableau'>
 	  <table>
 			<thead>
-				<th colSpan={6} className='maintitleTab'>Pong Matches</th>
+				<th colSpan={6} className='maintitleTab'>Live Matches</th>
 				<tr className='titlesTab'>
 					<th>#</th>
 					<th className='cellPlayer'></th>
-					<th>Match</th>
+					<th className='cellPlayer'></th>
 					<th className='cellPlayer'></th>
 					<th>Score</th>
 					<th>Watch</th>

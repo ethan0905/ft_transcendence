@@ -58,7 +58,7 @@ export default function UserList() {
   //const allUsers = allChatUsers;
     
   useEffect(() => {    
-    getAllUserInChat(5).then((value: any) => { // MODIFIER ID du channel
+    getAllUserInChat(2).then((value: any) => { // **** MODIFIER ID DU CHANNEL ****
       setAllUsers(value);
     })
 

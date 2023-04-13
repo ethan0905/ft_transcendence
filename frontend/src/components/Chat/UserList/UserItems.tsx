@@ -1,51 +1,47 @@
-import React, { useState, useEffect, useRef,  Component} from 'react';
+import React, { useState, useEffect, useRef, Component } from 'react';
 import UserAvatar from "./UserAvatar";
 import "./UserList.css";
 
-type DropdownOption = {
-  label: string;
-  value: string;
-};
 
-const dropdownOptions: DropdownOption[] = [
-  { label: 'Kick', value: 'kick' },
-  { label: 'Ban', value: 'ban' },
-  { label: 'Mute', value: 'mute' },
-];
+interface Pop {
+  buttonText: string;
+}
 
-const KickBanMuteButton: React.FC = () => {
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<DropdownOption | null>(null);
+const PopupButton: React.FC<Pop> = ({ buttonText }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const popupRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
   const handleButtonClick = () => {
-    setShowDropdown(!showDropdown);
-  };
+    setIsOpen(!isOpen);
+  }
 
-  const handleOptionSelect = (option: DropdownOption) => {
-    setSelectedOption(option);
-    setShowDropdown(false);
-    // Call to action (kick, ban or mute)
-  };
 
   return (
     <div>
       <i className="fa fa-ellipsis-h" aria-hidden="true" onClick={handleButtonClick}></i>
-      {showDropdown && (
-        <ul>
-          {dropdownOptions.map((option) => (
-            <li key={option.value} 
-            onMouseEnter={() => setSelectedOption(option)}
-            onMouseLeave={() => setSelectedOption(null)}
-            onClick={() => handleOptionSelect(option)} 
-            style={{ backgroundColor: selectedOption === option ? 'gray' : 'white', color: 'black' }}>
-              {option.label}
-            </li>
-          ))}
-        </ul>
+      {isOpen && (
+        <div className="popup" >
+          <button onClick={() => console.log('kick')}>Kick</button>
+          <button onClick={() => console.log('ban')}>Ban</button>
+          <button onClick={() => console.log('mute')}>Mute</button>
+        </div>
       )}
     </div>
   );
-};
+}
+
 
 interface Props {
   animationDelay: number;
@@ -54,32 +50,23 @@ interface Props {
   isOnline: string;
   name: string;
 }
-
-export default class UserItems extends Component<Props> {
-    selectChat = (e: React.MouseEvent<HTMLDivElement>) => {
-      for (
-        let index = 0;
-        index < e.currentTarget.parentNode!.children.length;
-        index++
-      ) {
-        (e.currentTarget.parentNode!.children[index] as HTMLElement).classList.remove("active");
-      }
-      e.currentTarget.classList.add("active");
-    };
-  
-    render() {
-      return (
-        <div style={{ animationDelay: `0.${this.props.animationDelay}s` }}
-          onClick={this.selectChat}
-          className={`userlist__item ${ this.props.active ? this.props.active : "" } `}
-        >
-          <div className='id_user'>
-            <UserAvatar image={this.props.image ? this.props.image : "http://placehold.it/80x80"}/>
-            {this.props.name}
-          </div>
-
-          <KickBanMuteButton/>
-        </div>
-      );
+const UserItems = ({ active, animationDelay, image, name }: Props) => {
+  const selectChat = (e: React.MouseEvent<HTMLDivElement>) => {
+    for (let index = 0; index < e.currentTarget.parentNode!.children.length; index++) {
+      (e.currentTarget.parentNode!.children[index] as HTMLElement).classList.remove("active");
     }
-  }
+    e.currentTarget.classList.add("active");
+  };
+
+  return (
+    <div style={{ animationDelay: `0.${animationDelay}s` }} className={`userlist__item ${active ? active : ""} `}>
+      <div className='id_user'>
+        <UserAvatar image={image ? image : "http://placehold.it/80x80"} />
+        {name}
+      </div>
+      <PopupButton buttonText="Open Popup" />
+    </div>
+  );
+};
+
+export default UserItems;

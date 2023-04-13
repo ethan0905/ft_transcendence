@@ -4,14 +4,16 @@ import ChatContent from './ChatContent/ChatContent';
 import UserList from './UserList/UserList';
 import './ChatBody.css';
 
-export default class ChatBody extends Component {
-  render() {
-    return (
-      <div className='main__chatbody'>
-            <ChatList />
-            <ChatContent />
-            <UserList />
-      </div>
-    );
-  }
-}
+
+
+const ChatBody: React.FC = () => {
+  return (
+    <div className='main__chatbody'>
+      <ChatList />
+      <ChatContent />
+      <UserList />
+    </div>
+  );
+};
+
+export default ChatBody;

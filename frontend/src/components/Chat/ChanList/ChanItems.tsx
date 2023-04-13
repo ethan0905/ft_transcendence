@@ -9,8 +9,14 @@ interface Props {
   name: string;
 }
 
-export default class ChanItems extends Component<Props> {
-  selectChat = (e: React.MouseEvent<HTMLDivElement>) => {
+interface Props {
+  name: string;
+  active?: string;
+  animationDelay: number;
+}
+
+const ChatItems: React.FC<Props> = ({ name, active, animationDelay }) => {
+  const selectChat = (e: React.MouseEvent<HTMLDivElement>) => {
     for (
       let index = 0;
       index < e.currentTarget.parentNode!.children.length;
@@ -23,21 +29,21 @@ export default class ChanItems extends Component<Props> {
     e.currentTarget.classList.add("active");
   };
 
-  render() {
-    return (
-      <div style={{ animationDelay: `0.${this.props.animationDelay}s` }}
-        onClick={this.selectChat}
-        className={`chatlist__item ${this.props.active ? this.props.active : ""} `}
-      >
-        <div className="userMeta">
-          <p>{this.props.name}</p>
-        </div>
-        <div className="QuitButton">
-          <DisabledByDefaultIcon id='DisabledByDefaultIcon' sx={{ fontSize: 15 }}
-            onClick={() => {}}
-          />
-        </div>
+  return (
+    <div style={{ animationDelay: `0.${animationDelay}s` }}
+      onClick={selectChat}
+      className={`chatlist__item ${active ? active : ""} `}
+    >
+      <div className="userMeta">
+        <p>{name}</p>
       </div>
-    );
-  }
-}
+      <div className="QuitButton">
+        <DisabledByDefaultIcon id='DisabledByDefaultIcon' sx={{ fontSize: 15 }}
+          onClick={() => {}}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default ChatItems;

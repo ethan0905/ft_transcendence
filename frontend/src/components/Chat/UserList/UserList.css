@@ -110,3 +110,11 @@
   justify-content: space-between;
   flex-wrap: wrap;
 }
+
+.popup {
+  position: absolute;
+  right:0;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+}
