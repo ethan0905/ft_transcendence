@@ -30,7 +30,7 @@
     }
 
     .main__chatlist {
-        min-width: 50%;
+        min-width: 26%;
         height: 100%;
         scroll-snap-align: start;
     }

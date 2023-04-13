@@ -46,19 +46,6 @@ const FormButton = () => {
   );
 }
 
-
-const ChatAvatar: React.FC = () => {
-	return (
-		<AvatarGroup max={3} sx={{
-			'& .MuiAvatar-root': { width: 50, height: 50, fontSize: 25 }}}>
-			<Avatar src="https://randomuser.me/api/portraits/women/79.jpg" alt="Alice" sx={{ width: 35, height: 35 }}/>
-			<Avatar src="https://randomuser.me/api/portraits/men/51.jpg" alt="John" sx={{ width: 35, height: 35 }}/>
-			<Avatar sx={{ bgcolor: 'primary.light', width: 35, height: 35 }}>DK</Avatar>
-			<Avatar sx={{ bgcolor: 'success.light', width: 35, height: 35 }}>CK</Avatar>
-		</AvatarGroup>
-	);
-}
-
 type ChatItm = {
   key: number;
   image: string;
@@ -225,16 +212,10 @@ export default class ChatContent extends Component<Props, State> {
         
         <div className="content__header">
           <div className="blocks">
-            <div className="current-chatting-user">
-              <ChatAvatar />
-              <p>Channel 1</p>
-            </div>
+              <h2>Channel 1</h2>
           </div>
           <div className="blocks">
-            <div className="settings">
               <FormButton/>
-
-            </div>
           </div>
         </div>
 
