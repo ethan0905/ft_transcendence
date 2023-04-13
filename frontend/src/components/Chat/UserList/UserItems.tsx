@@ -29,7 +29,7 @@ const KickBanMuteButton: React.FC = () => {
 
   return (
     <div>
-      <button  className="fa fa-ellipsis-h" onClick={handleButtonClick}></button>
+      <i className="fa fa-ellipsis-h" aria-hidden="true" onClick={handleButtonClick}></i>
       {showDropdown && (
         <ul>
           {dropdownOptions.map((option) => (
@@ -75,10 +75,7 @@ export default class UserItems extends Component<Props> {
         >
           <div className='id_user'>
             <UserAvatar image={this.props.image ? this.props.image : "http://placehold.it/80x80"}/>
-    
-            <div className="userMeta">
-              <p>{this.props.name}</p>
-            </div>
+            {this.props.name}
           </div>
 
           <KickBanMuteButton/>

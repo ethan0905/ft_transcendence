@@ -1,15 +1,9 @@
-
 .main__chatbody{
     background-size: cover;
     background-image: url("/public/maxresdefault.jpg");
     background-repeat: no-repeat;
     width: 100%;
     display: inline-flex;
-    border-radius: 10px;
-}
-
-.background {
-    background-color: rgba(31, 33, 29, 0.344);
 }
 
 @media (max-width:1000px){
@@ -36,13 +30,13 @@
     }
     
     .main__chatcontent {
-        min-width:95%;
+        min-width: 50%;
         height: 100%;
         scroll-snap-align: center;
     }
     
     .main__userlist{
-        min-width: 50%;
+        min-width: 26%;
         height: 100%;
         scroll-snap-align: start;
     }

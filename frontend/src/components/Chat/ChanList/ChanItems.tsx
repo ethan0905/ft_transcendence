@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import DisabledByDefaultIcon from '@mui/icons-material/DisabledByDefault';
 
 interface Props {
   animationDelay: number;
@@ -24,15 +25,17 @@ export default class ChanItems extends Component<Props> {
 
   render() {
     return (
-      <div
-        style={{ animationDelay: `0.${this.props.animationDelay}s` }}
+      <div style={{ animationDelay: `0.${this.props.animationDelay}s` }}
         onClick={this.selectChat}
-        className={`chatlist__item ${
-          this.props.active ? this.props.active : ""
-        } `}
+        className={`chatlist__item ${this.props.active ? this.props.active : ""} `}
       >
         <div className="userMeta">
           <p>{this.props.name}</p>
+        </div>
+        <div className="QuitButton">
+          <DisabledByDefaultIcon id='DisabledByDefaultIcon' sx={{ fontSize: 15 }}
+            onClick={() => {}}
+          />
         </div>
       </div>
     );

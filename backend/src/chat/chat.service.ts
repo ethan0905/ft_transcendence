@@ -362,7 +362,7 @@ export class ChatService {
                 members: true,
               },
             });
-            return source;
+            return source
           } catch (error) {
             console.log('get__channels error:', error);
           }

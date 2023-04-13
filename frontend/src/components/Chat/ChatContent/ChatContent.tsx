@@ -1,9 +1,6 @@
 import React, { useState, Component, createRef} from "react";
 import ChatItem from "./ChatItem";
-import { Avatar, AvatarGroup } from "@mui/material";
 import "./ChatContent.css";
-
-
 
 const FormButton = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -65,107 +62,39 @@ export default class ChatContent extends Component<Props, State> {
   chatItms = [
     {
       key: 1,
-      image:
-        "https://avatars.githubusercontent.com/u/8985933?v=4",
+      image:"https://avatars.githubusercontent.com/u/8985933?v=4",
       type: "",
       msg: "Hi Tim, How are you?",
     },
     {
       key: 2,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
+      image:"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
       type: "other",
       msg: "I am fine.",
     },
     {
       key: 3,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
+      image:"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
       type: "other",
       msg: "What about you?",
     },
     {
       key: 4,
-      image:
-        "https://avatars.githubusercontent.com/u/8985933?v=4",
+      image:"https://avatars.githubusercontent.com/u/8985933?v=4",
       type: "",
       msg: "Awesome these days.",
     },
     {
       key: 5,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
+      image:"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
       type: "other",
       msg: "Finally. What's the plan?",
     },
     {
       key: 6,
-      image:
-        "https://avatars.githubusercontent.com/u/8985933?v=4",
+      image:"https://avatars.githubusercontent.com/u/8985933?v=4",
       type: "",
       msg: "what plan mate?",
-    },
-    {
-      key: 7,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
-      type: "other",
-      msg: "I'm taliking about the tutorial",
-    },
-    {
-      key: 8,
-      image:
-        "https://avatars.githubusercontent.com/u/8985933?v=4",
-      type: "",
-      msg: "Awesome these days.",
-    },
-    {
-      key: 9,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
-      type: "other",
-      msg: "Finally. What's the plan?",
-    },
-    {
-      key: 10,
-      image:
-        "https://avatars.githubusercontent.com/u/8985933?v=4",
-      type: "",
-      msg: "what plan mate?",
-    },
-    {
-      key: 11,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
-      type: "other",
-      msg: "I'm taliking about the tutorial",
-    }, {
-      key: 12,
-      image:
-        "https://avatars.githubusercontent.com/u/8985933?v=4",
-      type: "",
-      msg: "Awesome these days.",
-    },
-    {
-      key: 13,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
-      type: "other",
-      msg: "Finally. What's the plan?",
-    },
-    {
-      key: 14,
-      image:
-        "https://avatars.githubusercontent.com/u/8985933?v=4",
-      type: "",
-      msg: "what plan mate?",
-    },
-    {
-      key: 15,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
-      type: "other",
-      msg: "I'm taliking about the tutorial",
     },
   ];
 
@@ -220,7 +149,6 @@ export default class ChatContent extends Component<Props, State> {
         </div>
 
         <div className="content__body">
-          <div className="chat__items">
             {this.state.chat.map((itm, index) => {
               return (
                 <ChatItem
@@ -233,7 +161,6 @@ export default class ChatContent extends Component<Props, State> {
               );
             })}
             <div ref={this.messagesEndRef} />
-          </div>
         </div>
 
         <div className="content__footer">

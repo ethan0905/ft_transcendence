@@ -52,23 +52,20 @@ async function getAllBanUserInChat(id: number){
   return (value);
 }
 
-
 export default function UserList() {
   const [allUsers, setAllUsers] = useState<ChanUser[]>([]);
   const [allbannUsers, setAllbanUsers] = useState<ChanUser[]>([]);
   //const allUsers = allChatUsers;
-
-
     
   useEffect(() => {    
-    getAllUserInChat(1).then((value: any) => {
+    getAllUserInChat(5).then((value: any) => { // MODIFIER ID du channel
       setAllUsers(value);
     })
 
   }, []);    
 
   useEffect(() => {    
-    getAllBanUserInChat(1).then((value: any) => {
+    getAllBanUserInChat(1).then((value: any) => { // MODIFIER ID
       setAllbanUsers(value);
     })
 
@@ -78,7 +75,7 @@ export default function UserList() {
       <div className="main__userlist">
 
         <div className="userlist__heading">
-          <p>Users of the channel</p>
+          <h2>Users</h2>
         </div>
 
         <div className="userlist__items">

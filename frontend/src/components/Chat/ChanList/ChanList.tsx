@@ -7,7 +7,7 @@ async function createNewChannel(name:string, password:string, isPrivate:boolean)
   
   let data = JSON.stringify({
     "chatName": name,
-    "username": "mderome",
+    "username": "chduong",
     "isPrivate":isPrivate,
     "password":password
   });
@@ -38,6 +38,26 @@ async function getAllChannels(username:string){
     method: 'get',
     maxBodyLength: Infinity,
     url: 'http://localhost:3333/chat/channels/'+username,
+    headers: { }
+  };
+  
+  const value = axios.request(config)
+  .then((response) => {
+    return response.data;
+  })
+  .catch((error) => {
+    console.log(error);
+    return [];
+  });
+
+  return (value);
+}
+
+async function getme(username:string){
+  let config = {
+    method: 'get',
+    maxBodyLength: Infinity,
+    url: 'http://localhost:3333/users/me'+username,
     headers: { }
   };
   
@@ -122,7 +142,7 @@ export default function ChanList() {
 
   
   useEffect(() => {    
-    getAllChannels("mderome").then((value: any) => {
+    getAllChannels("chduong").then((value: any) => {
       setAllChannels(value);
     })
 
@@ -132,7 +152,7 @@ export default function ChanList() {
       <div className="main__chatlist">
         
         <div className="chatlist__heading">
-          <h1>Chat</h1>
+          <h2>Channels</h2>
         </div>
 
         <FormButton />
