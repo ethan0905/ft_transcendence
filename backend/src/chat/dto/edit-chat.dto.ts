@@ -55,7 +55,7 @@ export class JoinChanDto{
 
     //@IsUser()
     @IsString()
-    Token?: string;
+    username?: string;
 
     // @IsTrue()
     // @IsOptional()

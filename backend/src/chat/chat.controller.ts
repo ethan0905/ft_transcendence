@@ -80,7 +80,16 @@ export class ChatController {
 	{
 		const idChan : number = parseInt(id); 
 		const users = await this.chat_service.get__UserIn(idChan);
-		console.log("users int channel : ", users);
+		console.log("users in channel : ", users);
+		return users;
+	}
+
+	@Get('/channels/users/ban/:id')
+	async take_all_ban_user(@Param("id") id : string)
+	{
+		const idChan : number = parseInt(id); 
+		const users = await this.chat_service.get__UserBanIn(idChan);
+		console.log("users's ban in channel : ", users);
 		return users;
 	}
 

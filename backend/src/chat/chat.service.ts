@@ -23,6 +23,7 @@ export class ChatService {
             if (info.isPassword === undefined)
               info.isPassword = false;
             console.log(info.isPrivate)
+            console.log(info.Password)
             const user = await this.userService.getUser(info.username);
             const channel = await this.prisma.channel.create({
               data: {
@@ -158,8 +159,8 @@ export class ChatService {
           })
           const isPriv = chan.isPrivate.valueOf()
           const isPass = chan.isPassword.valueOf()
-          const isban = chan.banned.find(banned => banned.accessToken == data.Token)
-          const isinvit = chan.invited.find(invited => invited.accessToken == data.Token)
+          const isban = chan.banned.find(banned => banned.username == data.username)
+          const isinvit = chan.invited.find(invited => invited.username == data.username)
           if (isPriv || isban)
           {
             if (isPriv && !isinvit)
@@ -178,7 +179,7 @@ export class ChatService {
               data : {
                 members : {
                   connect : {
-                    accessToken : data.Token,
+                    username : data.username,
                   },
                 },
               },
@@ -358,7 +359,6 @@ export class ChatService {
                 id : id,
               },
               select: {
-                id: true,
                 members: true,
               },
             });
@@ -367,6 +367,25 @@ export class ChatService {
             console.log('get__channels error:', error);
           }
         }
+
+        async get__UserBanIn(id : number) {
+          try {
+            const source = await this.prisma.channel.findMany({
+              where: {
+                id : id,
+              },
+              select: {
+                banned: true,
+              },
+            });
+            return source;
+          } catch (error) {
+            console.log('get__channels error:', error);
+          }
+        }
+
+        
+
         
         async update_chan(info: EditChannelCreateDto) {
 

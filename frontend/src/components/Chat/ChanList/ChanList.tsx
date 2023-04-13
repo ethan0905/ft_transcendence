@@ -1,19 +1,71 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './ChanList.css';
 import ChanItems from './ChanItems';
+import axios from 'axios';
+
+async function createNewChannel(name:string, password:string, isPrivate:boolean){
+  
+  let data = JSON.stringify({
+    "chatName": name,
+    "username": "mderome",
+    "isPrivate":isPrivate,
+    "password":password
+  });
+
+  
+  let config = {
+    method: 'post',
+    maxBodyLength: Infinity,
+    url: 'http://localhost:3333/chat/newchat',
+    headers: { 
+      'Content-Type': 'application/json'
+    },
+    data : data
+  };
+
+  axios.request(config)
+  .then((response:any) => {
+    return JSON.stringify(response.data);
+  })
+  .catch((error:any) => {
+    console.log(error);
+  });
+  return [];
+}
+
+async function getAllChannels(username:string){
+  let config = {
+    method: 'get',
+    maxBodyLength: Infinity,
+    url: 'http://localhost:3333/chat/channels/'+username,
+    headers: { }
+  };
+  
+  const value = axios.request(config)
+  .then((response) => {
+    return response.data;
+  })
+  .catch((error) => {
+    console.log(error);
+    return [];
+  });
+
+  return (value);
+}
 
 const FormButton = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [isPrivate, setIsPrivate] = useState(false);
-
+  
   const handleSubmit = (e: any) => {
     e.preventDefault();
     console.log(`Name: ${name}, Password: ${password}, Private: ${isPrivate}`);
+    createNewChannel(name, password, isPrivate);
     setIsOpen(false);
   }
-
+  
   const handleInputChange = (e: any) => {
     const { name, value, checked} = e.target;
     if (name === 'name') {
@@ -21,10 +73,10 @@ const FormButton = () => {
     } else if (name === 'password') {
       setPassword(value);
     } else if (name === 'isPrivate') {
-        setIsPrivate(checked);
+      setIsPrivate(checked);
     }
   }
-
+  
   return (
     <div  >
       <button  onClick={() => setIsOpen(true)}>New Channel</button>
@@ -56,48 +108,23 @@ const FormButton = () => {
 
 interface Channel {
   id: number;
-  name: string;
+  channelName: string;
   active: boolean;
   isOnline: boolean;
 }
 
-const ALL_CHAN: Channel[] = [
-  {
-    id: 1,
-    name: "Channel 1",
-    active: true,
-    isOnline: true,
-  },
-  {
-    id: 2,
-    name: "Channel 2",
-    active: false,
-    isOnline: true,
-  },
-  {
-    id: 3,
-    name: "Channel 3",
-    active: false,
-    isOnline: true,
-  },
-  {
-    id: 4,
-    name: "Channel 4",
-    active: false,
-    isOnline: true,
-  },
-  {
-    id: 5,
-    name: "Channel 5",
-    active: false,
-    isOnline: true,
-  },
-];
-
 export default function ChanList() {
-  // const [allChannels, setAllChannels] = useState<Channel[]>(ALL_CHAN)
-  const allChannels = ALL_CHAN;
+  const [allChannels, setAllChannels] = useState<Channel[]>([])
+  //const allChannels = ALL_CHAN;
 
+  
+  useEffect(() => {    
+    getAllChannels("mderome").then((value: any) => {
+      setAllChannels(value);
+    })
+
+  }, []);
+  
     return (
       <div className="main__chatlist">
         
@@ -123,9 +150,10 @@ export default function ChanList() {
 
         <div className="chatlist__items">
             {allChannels.map((item, index) => {
+              console.log(item.channelName);
               return (
                 <ChanItems
-                  name={item.name}
+                  name={item.channelName}
                   key={item.id}
                   animationDelay={index + 1}
                   active={item.active ? "active" : ""}
