@@ -80,8 +80,8 @@ export class ChatController {
 	{
 		const idChan : number = parseInt(id); 
 		const users = await this.chat_service.get__UserIn(idChan);
-		console.log("users in channel : ", users);
-		return users;
+		console.log("test users in channel : ", users[0].members);
+		return users[0].members;
 	}
 
 	@Get('/channels/users/ban/:id')
@@ -89,8 +89,8 @@ export class ChatController {
 	{
 		const idChan : number = parseInt(id); 
 		const users = await this.chat_service.get__UserBanIn(idChan);
-		console.log("users's ban in channel : ", users);
-		return users;
+		console.log("users's ban in channel : ", users[0].banned);
+		return users[0].banned;
 	}
 
 	// @Post('/channel/quit')

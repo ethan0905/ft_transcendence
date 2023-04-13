@@ -6,7 +6,7 @@ import axios from 'axios';
 interface ChanUser {
   image: string;
   id: number;
-  name: string;
+  username: string;
   active: boolean;
   isOnline: boolean;
 }
@@ -73,8 +73,8 @@ export default function UserList() {
     })
 
   }, []);
-
-    return (
+  allUsers.map((item:any, index) => console.log(item));
+  return (
       <div className="main__userlist">
 
         <div className="userlist__heading">
@@ -85,7 +85,7 @@ export default function UserList() {
             {allUsers.map((item, index) => {
               return (
                 <UserItems
-                  name={item.name}
+                  name={item.username}
                   key={item.id}
                   animationDelay={index + 1}
                   active={item.active ? "active" : ""}

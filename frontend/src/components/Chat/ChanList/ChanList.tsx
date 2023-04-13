@@ -140,6 +140,7 @@ export default function ChanList() {
         <div className="chatlist__items">
             {allChannels.map((item, index) => {
               console.log(item.channelName);
+              console.log(item.id);
               return (
                 <ChanItems
                   name={item.channelName}

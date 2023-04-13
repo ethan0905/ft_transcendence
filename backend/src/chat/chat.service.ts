@@ -316,7 +316,7 @@ export class ChatService {
                 },
               },
               select: {
-                id: true,
+                id : true,
                 channelName: true,
               },
             });
@@ -328,7 +328,7 @@ export class ChatService {
 
         async get__allUserInchan(id : number) {
           try {
-            const source = await this.prisma.channel.findMany({
+            const source = await this.prisma.channel.findUnique({
               where: {
                 id : id,
                 },
@@ -336,7 +336,7 @@ export class ChatService {
                 members : true,
               },
             });
-            return source;
+            return source.members;
           } catch (error) {
             console.log('get__user error:', error);
           }
