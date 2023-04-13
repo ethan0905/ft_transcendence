@@ -1,18 +1,49 @@
-import React, { Component, createRef} from "react";
+import React, { useState, Component, createRef} from "react";
 import ChatItem from "./ChatItem";
 import { Avatar, AvatarGroup } from "@mui/material";
 import "./ChatContent.css";
 
-const ChatAvatar: React.FC = () => {
-	return (
-		<AvatarGroup max={3} sx={{
-			'& .MuiAvatar-root': { width: 50, height: 50, fontSize: 25 }}}>
-			<Avatar src="https://randomuser.me/api/portraits/women/79.jpg" alt="Alice" sx={{ width: 35, height: 35 }}/>
-			<Avatar src="https://randomuser.me/api/portraits/men/51.jpg" alt="John" sx={{ width: 35, height: 35 }}/>
-			<Avatar sx={{ bgcolor: 'primary.light', width: 35, height: 35 }}>DK</Avatar>
-			<Avatar sx={{ bgcolor: 'success.light', width: 35, height: 35 }}>CK</Avatar>
-		</AvatarGroup>
-	);
+
+
+const FormButton = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    setIsOpen(false);
+  }
+
+  const handleInputChange = (e: any) => {
+    const { name, value} = e.target;
+    if (name === 'password') {
+      setPassword(value);
+    }
+  }
+
+  return (
+    <div  >
+      <button  className="btn-nobg, fa fa-cog" onClick={() => setIsOpen(true)}></button>
+      {isOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <span className="close" onClick={() => setIsOpen(false)}>&times;</span>
+            <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label htmlFor="name">Current password:</label>
+              <label htmlFor="name">test</label>
+            </div>
+            <div className="form-group">
+              <label htmlFor="email">New password:</label>
+              <input type="password" id="password" name="password" value={password} onChange={handleInputChange} className="channel_input" maxLength={10}/>
+            </div>
+              <button type="submit">Submit</button>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
 type ChatItm = {
@@ -181,17 +212,10 @@ export default class ChatContent extends Component<Props, State> {
         
         <div className="content__header">
           <div className="blocks">
-            <div className="current-chatting-user">
-              <ChatAvatar />
-              <p>Channel</p>
-            </div>
+              <h2>Channel 1</h2>
           </div>
           <div className="blocks">
-            <div className="settings">
-              <button className="btn-nobg">
-                <i className="fa fa-cog"></i>
-              </button>
-            </div>
+              <FormButton/>
           </div>
         </div>
 

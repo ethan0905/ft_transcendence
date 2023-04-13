@@ -1,0 +1,77 @@
+.tableau {
+    overflow-y: scroll;
+    width: 75vw;
+    height: 50vh;
+    background-color: rgba(48, 48, 55, 0.25);
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+thead {
+    position: sticky;
+    top: 0;
+}
+.maintitleTab {
+    background-color: black;
+    color: white;
+    font-size: 25px;
+}
+.titlesTab {
+    background-color: black;
+    color: white;
+    text-align: center;
+}
+.lineTab {
+    border-bottom: 1px solid rgb(171, 169, 169);
+    color: white;
+    text-shadow: 1px 1px 1px black;
+    font-weight: bold;
+    text-align: center;
+}
+.cellPlayer {
+    min-width: 10vw;
+}
+
+.GamePage {
+    width: 100vw;
+    height: 100vh;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-image: url("/public/games.png");
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.ButtonPlay {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#ImgButton {
+    width: 200px;
+    border-radius: 50%;
+}
+#textPlay {
+    color: #f9f9f9f7;
+    font-size: 50px;
+    text-shadow: 2px 2px 1px #0a0a0a;
+    position: absolute;
+}
+
+#ImgButton:hover {
+    width: 180px;
+    border: 10px solid #f9fafa;
+    border-radius: 50%;
+}
+
+#ImgButton:hover + #textPlay {
+    font-size: 60px;
+    color: rgb(251, 251, 251);
+    text-shadow: 3px 3px 2px #0a0a0abc;
+
+}

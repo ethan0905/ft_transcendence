@@ -2,7 +2,6 @@ import { Component } from "react";
 
 interface Props {
     image: string;
-    isOnline: string;
 }
 
 export default class UserAvatar extends Component<Props> {
@@ -15,7 +14,6 @@ export default class UserAvatar extends Component<Props> {
         <div className="avatar-img">
           <img src={this.props.image} alt="#" />
         </div>
-        <span className={`isOnline ${this.props.isOnline}`}></span>
       </div>
     );
   }

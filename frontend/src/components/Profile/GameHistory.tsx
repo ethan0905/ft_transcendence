@@ -13,7 +13,7 @@ interface TableProps {
 	const { data } = props;
   
 	return (
-	  <div style={{ overflowY: 'scroll', width: '65%',height: '50vh'}}>
+	  <div style={{ overflowY: 'scroll', minWidth: '60%',height: '100%'}}>
 		<table style={{ borderCollapse: 'collapse', width: '100%', height:'100%' }}>
 		  <thead style={{ position: 'sticky', top: '0' }}>
 		  <tr>

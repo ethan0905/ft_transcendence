@@ -4,6 +4,8 @@
   justify-content: flex-start;
   align-items: center;
   gap: 10px;
+  background-color: rgba(128, 128, 128, 0.7);
+
 }
 
 .userlist__heading {
@@ -30,8 +32,6 @@
   max-height: 80vh;
   min-height: 25vh;
   width: 95%;
-  background-color: grey;
-  opacity: .7;
 }
 
 .userlist__item {
@@ -98,7 +98,6 @@
 .userlist__item:hover,
 .userlist__item.active {
   background: #fff;
-
   border-radius: 10px;
 }
 .isOnline {

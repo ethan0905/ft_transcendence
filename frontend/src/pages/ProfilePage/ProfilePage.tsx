@@ -2,10 +2,10 @@ import React, { useState, useEffect, ChangeEvent, ChangeEventHandler } from 'rea
 import axios from 'axios';
 import './profilePage.css';
 import Sidebar from '../../components/Sidebar/Sidebar';
-import EditableText from '../../components/EditableText';
-import ProfilePicture from '../../components/ProfilePicture';
-import FriendList from '../../components/FriendList';
-import GameHistory from '../../components/GameHistory';
+import EditableText from '../../components/Profile/EditableText';
+import ProfilePicture from '../../components/Profile/ProfilePicture';
+import FriendList from '../../components/Profile/FriendList';
+import GameHistory from '../../components/Profile/GameHistory';
 import AuthCode from 'react-auth-code-input';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';

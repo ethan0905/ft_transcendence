@@ -78,8 +78,11 @@ const FormButton = () => {
   }
   
   return (
-    <div  >
-      <button  onClick={() => setIsOpen(true)}>New Channel</button>
+    <div>
+      <button className="btn" onClick={() => setIsOpen(true)}>
+        <i className='fa fa-plus'> </i>
+        New Channel
+      </button>
       {isOpen && (
         <div className="modal">
           <div className="modal-content">
@@ -87,11 +90,11 @@ const FormButton = () => {
             <form onSubmit={handleSubmit}>
             <div className="form-group">
                 <label htmlFor="name">Name:</label>
-                <input type="text" id="name" name="name" value={name} onChange={handleInputChange} className="channel_input" />
+                <input type="text" id="name" name="name" value={name} onChange={handleInputChange} className="channel_input" maxLength={20} />
               </div>
               <div className="form-group">
                 <label htmlFor="email">Password:</label>
-                <input type="password" id="password" name="password" value={password} onChange={handleInputChange} className="channel_input"/>
+                <input type="password" id="password" name="password" value={password} onChange={handleInputChange} className="channel_input" maxLength={10}/>
               </div>
               <div >
                 <label >is Private:</label>
@@ -130,20 +133,6 @@ export default function ChanList() {
         
         <div className="chatlist__heading">
           <h1>Chat</h1>
-        </div>
-
-        <div className="search_wrap">
-          <input type="text" placeholder="Search channels" required />
-          <button className="search-btn">
-            <i className='fa fa-search'></i>
-          </button>
-        </div>
-
-        <div className='Box-button-newchannel'>
-          {/* <button className="btn"> */}
-            <i className='fa fa-plus'> </i>
-            <span>New Channel</span>
-          {/* </button> */}
         </div>
 
         <FormButton />
