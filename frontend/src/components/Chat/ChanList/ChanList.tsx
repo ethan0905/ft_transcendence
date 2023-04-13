@@ -35,11 +35,11 @@ const FormButton = () => {
             <form onSubmit={handleSubmit}>
             <div className="form-group">
                 <label htmlFor="name">Name:</label>
-                <input type="text" id="name" name="name" value={name} onChange={handleInputChange} className="channel_input" />
+                <input type="text" id="name" name="name" value={name} onChange={handleInputChange} className="channel_input" maxLength={20} />
               </div>
               <div className="form-group">
                 <label htmlFor="email">Password:</label>
-                <input type="password" id="password" name="password" value={password} onChange={handleInputChange} className="channel_input"/>
+                <input type="password" id="password" name="password" value={password} onChange={handleInputChange} className="channel_input" maxLength={10}/>
               </div>
               <div >
                 <label >is Private:</label>

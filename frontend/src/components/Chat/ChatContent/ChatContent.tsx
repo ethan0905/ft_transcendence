@@ -1,7 +1,51 @@
-import React, { Component, createRef} from "react";
+import React, { useState, Component, createRef} from "react";
 import ChatItem from "./ChatItem";
 import { Avatar, AvatarGroup } from "@mui/material";
 import "./ChatContent.css";
+
+
+
+const FormButton = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    setIsOpen(false);
+  }
+
+  const handleInputChange = (e: any) => {
+    const { name, value} = e.target;
+    if (name === 'password') {
+      setPassword(value);
+    }
+  }
+
+  return (
+    <div  >
+      <button  className="btn-nobg, fa fa-cog" onClick={() => setIsOpen(true)}></button>
+      {isOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <span className="close" onClick={() => setIsOpen(false)}>&times;</span>
+            <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label htmlFor="name">Current password:</label>
+              <label htmlFor="name">test</label>
+            </div>
+            <div className="form-group">
+              <label htmlFor="email">New password:</label>
+              <input type="password" id="password" name="password" value={password} onChange={handleInputChange} className="channel_input" maxLength={10}/>
+            </div>
+              <button type="submit">Submit</button>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 
 const ChatAvatar: React.FC = () => {
 	return (
@@ -183,14 +227,13 @@ export default class ChatContent extends Component<Props, State> {
           <div className="blocks">
             <div className="current-chatting-user">
               <ChatAvatar />
-              <p>Channel</p>
+              <p>Channel 1</p>
             </div>
           </div>
           <div className="blocks">
             <div className="settings">
-              <button className="btn-nobg">
-                <i className="fa fa-cog"></i>
-              </button>
+              <FormButton/>
+
             </div>
           </div>
         </div>
