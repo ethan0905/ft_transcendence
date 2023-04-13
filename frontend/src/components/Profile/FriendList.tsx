@@ -11,7 +11,7 @@ const FriendList = (props: TableProps) => {
 	const { data } = props;
   
 	return (
-	  <div style={{ overflowY: 'scroll', width: '30%',height: '50vh',}}>
+	  <div style={{ overflowY: 'scroll', minWidth: '35%',height: '100%',}}>
 		<table style={{ borderCollapse: 'collapse', width: '100%', height:'100%' }}>
 		  <thead style={{ position: 'sticky', top: '0' }}>
 		  <tr>

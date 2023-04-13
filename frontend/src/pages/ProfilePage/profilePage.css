@@ -76,13 +76,16 @@
 }
 
 .Profile_tabs {
+  overflow-y: scroll;
   background-color: rgba(132, 132, 139, 0.568); 
+  flex-grow: 1;
   display: flex;
   color: black;
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: space-around;
   align-items: center;
-  height: 70vh;
+  /* height: 70vh; */
 }
 
 .Auth_block {
