@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import { Avatar, AvatarGroup } from "@mui/material";
 
 interface Props {
   animationDelay: number;
