@@ -28,35 +28,9 @@ import { useEffect } from 'react';
 import PrivateRoute from './components/private-route';
 
 function App() {
-  
-    // const [token, setToken] = useState(false);
-
-    // useEffect(() => {
-    //   checkUserToken();
-    // }, []);
-
-    // async function checkUserToken() {
-    //   const token = localStorage.getItem('token');
-    //   if (token) {
-    //     console.log('token exists : ', token);
-    //     setToken(true);
-    //   }
-    // }
 
     return (
-      // <Router>
-      //   <div>
-      //     <Routes>
-      //       <Route path="/" element={<LoginPage/>}/>
-      //       <Route path="/login" element={<LoginPage/>}/>
-      //       <Route path="/2fa/verification" element={<Verify2FA/>}/>
-      //       <Route path="/homepage" element={<HomePage/>}/>
-      //     </Routes>
-      //   </div>
-      // </Router>
-
-    // <Router>
-
+     
       <div className="App">
         <Routes>
           <Route path='/' element={<AuthPage/>} />
@@ -129,7 +103,6 @@ function App() {
         </Routes>
       </div>
 
-    // </Router>
     );
 }
 
