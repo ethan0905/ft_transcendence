@@ -25,7 +25,7 @@ import Verify2FA from "./components/2fa-verify"
 import HomePage from "./components/homepage"
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { PrivateRoute } from './components/private-route';
+import PrivateRoute from './components/private-route';
 
 function App() {
   
@@ -102,7 +102,7 @@ function App() {
             path="/Game"
             element={
               <PrivateRoute>
-                <ChatPage />
+                <GamePage />
               </PrivateRoute>
             }
           />
@@ -112,7 +112,7 @@ function App() {
             path="/Leaderboard"
             element={
               <PrivateRoute>
-                <ChatPage />
+                <LeaderboardPage />
               </PrivateRoute>
             }
           />

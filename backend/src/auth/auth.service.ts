@@ -430,24 +430,21 @@ export class AuthService{
 	  }
 
 	  async checkIfUserAuthenticated(@Req() req: Request) {
-		
-		console.log("Is user authenticated ? ", req.body.token);
-
-		const user = await this.prisma.user.findFirst({
-			where: {
-				accessToken: req.body.token,
-			},
-		});
-
-		if (user)
-		{
-			console.log("Connected !!!\n");
-		}
-		else
-		{
-			console.log("Not connected !!!\n");
+		  
+		console.log("Is user authenticated ? ", req.headers.authorization);
+		try {
+			const user = await this.prisma.user.findFirst({
+				where: {
+					accessToken: req.headers.authorization,
+				},
+			});
+			console.log("User found: ", user.email);
+			return user;
+		} catch (error) {
+			console.log(error);
+			throw new HttpException('User not found', HttpStatus.NOT_FOUND);
 		}
 
-		return user || null;
+		// return userEmail || null;
 	  }
 }
