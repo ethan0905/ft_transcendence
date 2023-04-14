@@ -46,9 +46,9 @@ export class ChatService {
                     username : info.username,
                   }
                 }
-            }
-          });
-        }
+              }
+            });
+          }
 
         async delChanById(id : number)
         {
@@ -157,8 +157,15 @@ export class ChatService {
               invited : true,
             }
           })
+          if (chan.isPrivate === undefined)
+            chan.isPrivate = false;
           const isPriv = chan.isPrivate.valueOf()
-          const isPass = chan.isPassword.valueOf()
+          if (chan.isPassword === undefined)
+          {
+            chan.isPassword = false;
+            chan.password = null;
+          }
+            const isPass = chan.isPassword.valueOf()
           const isban = chan.banned.find(banned => banned.username == data.username)
           const isinvit = chan.invited.find(invited => invited.username == data.username)
           if (isPriv || isban)
@@ -169,7 +176,7 @@ export class ChatService {
               return (2);
           }
           else if (isPass)
-            if (data.Password != chan.password)
+            if (data.Password && data.Password != chan.password)
               return (3);
           await this.prisma.channel.update(
             {
@@ -309,11 +316,13 @@ export class ChatService {
           try {
             const source = await this.prisma.channel.findMany({
               where: {
-                members : {
-                  every: {
-                    username : username,
-                  },
+                OR: [
+                {
+                    isPrivate: false
                 },
+                {invited : { some : { username : username}}},
+                {members : { some : {username : username}}},
+              ]
               },
               select: {
                 id : true,

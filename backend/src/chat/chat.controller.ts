@@ -80,7 +80,6 @@ export class ChatController {
 	{
 		const idChan : number = parseInt(id); 
 		const users = await this.chat_service.get__UserIn(idChan);
-		console.log("test users in channel : ", users[0].members);
 		return users[0].members;
 	}
 
