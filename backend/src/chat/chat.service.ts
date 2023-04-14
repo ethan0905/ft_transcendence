@@ -377,6 +377,23 @@ export class ChatService {
           }
         }
 
+
+        async get__MsgIn(id : number) {
+          try {
+            const source = await this.prisma.channel.findMany({
+              where: {
+                id : id,
+              },
+              select: {
+                messages: true,
+              },
+            });
+            return source
+          } catch (error) {
+            console.log('get__channels error:', error);
+          }
+        }
+
         async get__UserBanIn(id : number) {
           try {
             const source = await this.prisma.channel.findMany({

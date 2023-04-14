@@ -83,6 +83,14 @@ export class ChatController {
 		return users[0].members;
 	}
 
+	@Get('/channels/:id/msg')
+	async take_all_msg(@Param("id") id : string)
+	{
+		const idChan : number = parseInt(id); 
+		const messages = await this.chat_service.get__MsgIn(idChan);
+		return messages[0].messages;
+	}
+
 	@Get('/channels/users/ban/:id')
 	async take_all_ban_user(@Param("id") id : string)
 	{

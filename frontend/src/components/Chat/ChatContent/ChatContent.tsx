@@ -3,6 +3,8 @@ import ChatItem from "./ChatItem";
 import "./ChatContent.css";
 import { SocketContext } from "../ChatBody";
 import { useLocation } from "react-router-dom";
+import axios from 'axios';
+
 
 
 interface FormValues {
@@ -61,11 +63,33 @@ const FormButton = () => {
 }
 
 type ChatItm = {
-  key: number;
-  image: string;
-  type: string;
-  msg: string;
+  id: number,
+  createdAt: Date,
+  message: string,
+  userId: number,
+  channelId: number
 };
+
+async function getAllMessages(id_channel:number){
+  let config = {
+    method: 'get',
+    maxBodyLength: Infinity,
+    url: 'http://localhost:3333/chat/channels/' + id_channel+"/msg",
+    headers: {}
+  };
+  
+  const value = axios.request(config)
+    .then((response) => {
+       return response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+      return [];
+    });
+  
+  return (value);
+}
+
 
 type ChatContentProps = {};
 
@@ -80,9 +104,15 @@ export default function ChatContent(props: ChatContentProps) {
     socket.on("NewMessage", (value:any) => {
       if (location.pathname !== "/Chat"){
         let id = Number(location.pathname.split("/")[2]);
-        console.log("id channel:"+ id);
-        if (value.chatId === id){
-          setChat((chats) => [...chats, {key:chat.length, type:"", msg:value.msg,image:"https://avatars.githubusercontent.com/u/8985933?v=4"}])
+        if (value.channelId === id){
+          setChat(chats => {
+            for (var i in chats){
+              if (chats[i].id === value.id){
+                return chats;
+              }
+            }
+            return ([...chats, value]);
+          })
         }
       }
     })
@@ -92,6 +122,14 @@ export default function ChatContent(props: ChatContentProps) {
     setMsg(e.target.value);
   };
 
+  useEffect(() => {
+    if (location.pathname !== "/Chat"){
+      let id = Number(location.pathname.split("/")[2]);
+      getAllMessages(id).then((values:any) => {
+        setChat(values)
+      });
+    }
+  }, [location.pathname])
 
   return (  <div className="main__chatcontent">
         
@@ -110,9 +148,11 @@ export default function ChatContent(props: ChatContentProps) {
           <ChatItem
             animationDelay={index + 2}
             key={index}
-            user={itm.type ? itm.type : "me"}
-            msg={itm.msg}
-            image={itm.image}
+            // user={itm.type ? itm.type : "me"}
+            user={"me"}
+            msg={itm.message}
+            // image={itm.image}
+            image={"https://cdn.pixabay.com/photo/2013/04/11/19/46/building-102840__480.jpg"}
           />
         );
       })}
