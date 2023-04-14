@@ -420,6 +420,22 @@ export class ChatService {
           }
         }
 
+        async get__chanNamebyId(id : number) {
+          try {
+            const source = await this.prisma.channel.findUnique({
+              where: {
+                id : id,
+              },
+              select: {
+                channelName: true,
+              },
+            });
+            return source
+          } catch (error) {
+            console.log('get__channels error:', error);
+          }
+        }
+
 
         async get__MsgIn(id : number) {
           try {
