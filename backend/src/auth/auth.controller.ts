@@ -158,4 +158,9 @@ export class AuthController {
   async verify2FA(@Req() req: Request) {
     return this.authService.verify2FA(req);
   }
+
+  @Get('42/verify')
+  async checkIfUserAuthenticated(@Req() req: Request) {
+    return this.authService.checkIfUserAuthenticated(req);
+  }
 }

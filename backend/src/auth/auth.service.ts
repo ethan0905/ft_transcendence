@@ -428,4 +428,26 @@ export class AuthService{
 		  secret: user.twoFactorSecret,
 		});
 	  }
+
+	  async checkIfUserAuthenticated(@Req() req: Request) {
+		
+		console.log("Is user authenticated ? ", req.body.token);
+
+		const user = await this.prisma.user.findFirst({
+			where: {
+				accessToken: req.body.token,
+			},
+		});
+
+		if (user)
+		{
+			console.log("Connected !!!\n");
+		}
+		else
+		{
+			console.log("Not connected !!!\n");
+		}
+
+		return user || null;
+	  }
 }
