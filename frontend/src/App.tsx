@@ -6,7 +6,7 @@ import ChatPage from "./pages/ChatPage"
 import GamePage from "./pages/GamePage/GamePage"
 import ErrorPage from "./pages/ErrorPage"
 import UserPage from "./pages/UserPage"
-import Verify2FA from "./components/2FA/2fa-verify"
+import Verify2FA from "./pages/2fa-verify"
 
 function App() {
   return (

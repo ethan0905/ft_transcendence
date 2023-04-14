@@ -5,37 +5,6 @@ import axios from 'axios';
 import { SocketContext } from '../ChatBody';
 import { useContext } from 'react';
 
-
-// async function createNewChannel(name: string, password: string, isPrivate: boolean) {
-
-//   let data = JSON.stringify({
-//     "chatName": name,
-//     "username": "chduong",
-//     "isPrivate": isPrivate,
-//     "password": password
-//   });
-
-
-//   let config = {
-//     method: 'post',
-//     maxBodyLength: Infinity,
-//     url: 'http://localhost:3333/chat/newchat',
-//     headers: {
-//       'Content-Type': 'application/json'
-//     },
-//     data: data
-//   };
-
-//   axios.request(config)
-//     .then((response: any) => {
-//       return JSON.stringify(response.data);
-//     })
-//     .catch((error: any) => {
-//       console.log(error);
-//     });
-//   return [];
-// }
-
 async function getAllChannels(username: string) {
   let config = {
     method: 'get',
@@ -86,7 +55,6 @@ const FormButton = () => {
   const handleSubmit = (e: any) => {
     e.preventDefault();
     console.log(`Name: ${name}, Password: ${password}, Private: ${isPrivate}`);
-    // createNewChannel(name, password, isPrivate);
     socket.emit("create channel", {chatName:name, Password:password, isPrivate:isPrivate, username:"chduong"})
     setIsOpen(false);
   }
@@ -103,11 +71,12 @@ const FormButton = () => {
   }
 
   return (
-    <div>
+    <>
       <button className="btn" onClick={() => setIsOpen(true)}>
         <i className='fa fa-plus'> </i>
         <span>New Channel</span>
       </button>
+
       {isOpen && (
         <div className="modal">
           <div className="modal-content">
@@ -130,7 +99,7 @@ const FormButton = () => {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
 
@@ -144,8 +113,6 @@ interface Channel {
 export default function ChanList() {
   const socket = useContext(SocketContext)
   const [allChannels, setAllChannels] = useState<Channel[]>([])
-  //const allChannels = ALL_CHAN;
-
 
   useEffect(() => {
     socket.on("Channel Created", (value:any) => {

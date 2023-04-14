@@ -5,8 +5,6 @@ import { SocketContext } from "../ChatBody";
 import { useLocation } from "react-router-dom";
 import axios from 'axios';
 
-
-
 interface FormValues {
   name: string;
   password: string;
@@ -20,8 +18,6 @@ const initialFormValues: FormValues = {
 const FormButton = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [formValues, setFormValues] = useState<FormValues>(initialFormValues);
-
-
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setFormValues({
@@ -39,7 +35,7 @@ const FormButton = () => {
 
   return (
     <div  >
-      <i className="btn-nobg, fa fa-cog" onClick={() => setIsOpen(true)}></i>
+      <i className="btn-nobg fa fa-cog" onClick={() => setIsOpen(true)}></i>
       {isOpen && (
         <div className="modal">
           <div className="modal-content">
@@ -79,17 +75,15 @@ async function getAllMessages(id_channel:number){
   };
   
   const value = axios.request(config)
-    .then((response) => {
-       return response.data;
-    })
-    .catch((error) => {
-      console.log(error);
-      return [];
-    });
-  
+  .then((response) => {
+    return response.data;
+  })
+  .catch((error) => {
+    console.log(error);
+    return [];
+  });
   return (value);
 }
-
 
 type ChatContentProps = {};
 
@@ -134,55 +128,41 @@ export default function ChatContent(props: ChatContentProps) {
   return (  <div className="main__chatcontent">
         
   <div className="content__header">
-    <div className="blocks">
-        <h2>Channel 1</h2>
-    </div>
-    <div className="blocks">
-        <FormButton/>
-    </div>
+    <div></div>
+    <h2>Channel 1</h2>
+    <FormButton/>
   </div>
 
   <div className="content__body">
-      {chat.map((itm, index) => {
-        return (
-          <ChatItem
-            animationDelay={index + 2}
-            key={index}
-            // user={itm.type ? itm.type : "me"}
-            user={"me"}
-            msg={itm.message}
-            // image={itm.image}
-            image={"https://cdn.pixabay.com/photo/2013/04/11/19/46/building-102840__480.jpg"}
-          />
-        );
-      })}
-      <div ref={messagesEndRef} />
+    {chat.map((itm, index) => {
+      return (
+        <ChatItem
+          animationDelay={index + 2}
+          key={index}
+          // user={itm.type ? itm.type : "me"}
+          user={"me"}
+          msg={itm.message}
+          // image={itm.image}
+          image={"https://cdn.pixabay.com/photo/2013/04/11/19/46/building-102840__480.jpg"}
+        />
+      );
+    })}
+    <div ref={messagesEndRef} />
   </div>
 
-  <div className="content__footer">
-    <div className="sendNewMessage">
-      <button className="addFiles">
-        <i className="fa fa-plus"></i>
-      </button>
-      <input
-        type="text"
-        placeholder="Type a message here"
-        onChange={onStateChange}
-        value={msg}
-        onFocus={() => {
-          return false;
-        }}
-      />
-      <button className="btnSendMsg" id="sendMsgBtn" onClick={() => {
-        socket.emit("sendMsgtoC", {
-          "chatId":Number(location.pathname.split("/")[2]),
-          "mail":"chduong@student.42.fr",
-          "msg":msg
-        })        
-      }}>
-        <i className="fa fa-paper-plane"></i>
-      </button>
-    </div>
+  <div className="sendNewMessage">
+    <input type="text" placeholder="Type a message here"
+      onChange={onStateChange}
+      value={msg}
+      onFocus={() => {return false;}}
+    />
+    <button className="btnSendMsg" id="sendMsgBtn" onClick={() => {
+      socket.emit("sendMsgtoC", {
+        "chatId":Number(location.pathname.split("/")[2]),
+        "mail":"chduong@student.42.fr",
+        "msg":msg
+      })
+    }}><i className="fa fa-paper-plane"></i></button>
   </div>
 
 </div>

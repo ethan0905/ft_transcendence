@@ -12,7 +12,7 @@
 }
 .content__header {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   width: 100%;
   height: 50px;
@@ -35,8 +35,10 @@
   margin: 0;
   font-weight: 600;
 }
-.settings .btn-nobg {
-  color: #000;
+
+.btn-nobg {
+  color: #5e5c5c;
+  cursor: pointer;
 }
 
 .chat__item {
@@ -156,13 +158,3 @@
   background-color: #3b5bfe;
   color: #fff;
 } */
-
-.ArrowBackIcon {
-  visibility: hidden;
-}
-
-@media (max-width: 1000px) {
-  .ArrowBackIcon {
-    visibility: visible;
-  }
-}
