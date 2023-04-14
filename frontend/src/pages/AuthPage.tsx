@@ -33,7 +33,7 @@ export default function Auth() {
 				<Button 
 				text="Log in with 42"
 				onClick={() => {
-					window.open(`${process.env.REACT_APP_API42_REACT_APP_URL}`, "_self");
+					window.open(`${process.env.REACT_APP_API42_URL}`, "_self");
 				}}
 				/>
 				{/* <Button text="Let's Play" 
