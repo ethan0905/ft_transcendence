@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import ProfilePage from '../pages/ProfilePage';
+import ProfilePage from '../pages/ProfilePage/ProfilePage';
 import AuthPage from "../pages/AuthPage"
 
 const PrivateRoute : React.FC<{children: React.ReactElement}> = ({children}) => {
@@ -17,7 +17,7 @@ const PrivateRoute : React.FC<{children: React.ReactElement}> = ({children}) => 
     async function checkUserToken() {
         let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
 
-        const response = await fetch('http://localhost:3333/auth/42/verify', {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/auth/42/verify', {
             method: 'GET',
             headers: {
             'Content-Type': 'application/json',

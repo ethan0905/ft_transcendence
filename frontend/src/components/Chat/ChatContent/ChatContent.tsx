@@ -1,238 +1,190 @@
-import React, { Component, createRef} from "react";
+import React, { useState, useEffect, useRef, useContext} from "react";
 import ChatItem from "./ChatItem";
-import { Avatar, AvatarGroup } from "@mui/material";
 import "./ChatContent.css";
+import { SocketContext } from "../ChatBody";
+import { useLocation } from "react-router-dom";
+import axios from 'axios';
 
-const ChatAvatar: React.FC = () => {
-	return (
-		<AvatarGroup max={3} sx={{
-			'& .MuiAvatar-root': { width: 50, height: 50, fontSize: 25 }}}>
-			<Avatar src="https://randomuser.me/api/portraits/women/79.jpg" alt="Alice" sx={{ width: 35, height: 35 }}/>
-			<Avatar src="https://randomuser.me/api/portraits/men/51.jpg" alt="John" sx={{ width: 35, height: 35 }}/>
-			<Avatar sx={{ bgcolor: 'primary.light', width: 35, height: 35 }}>DK</Avatar>
-			<Avatar sx={{ bgcolor: 'success.light', width: 35, height: 35 }}>CK</Avatar>
-		</AvatarGroup>
-	);
+
+
+interface FormValues {
+  name: string;
+  password: string;
+}
+
+const initialFormValues: FormValues = {
+  name: '',
+  password: '',
+};
+
+const FormButton = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [formValues, setFormValues] = useState<FormValues>(initialFormValues);
+
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setFormValues({
+      ...formValues,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    console.log('Form submitted:', formValues);
+    setFormValues(initialFormValues);
+    setIsOpen(false);
+  }
+
+  return (
+    <div  >
+      <i className="btn-nobg, fa fa-cog" onClick={() => setIsOpen(true)}></i>
+      {isOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <span className="close" onClick={() => setIsOpen(false)}>&times;</span>
+            <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label htmlFor="name">Edit name:</label>
+              <input type="text" name="name" value={formValues.name} onChange={handleChange}/>
+            </div>
+            <div className="form-group">
+              <label htmlFor="email">Edit password:</label>
+              <input type="password" name="password" value={formValues.password} onChange={handleChange} />
+            </div>
+              <button type="submit">Submit</button>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
 type ChatItm = {
-  key: number;
-  image: string;
-  type: string;
-  msg: string;
+  id: number,
+  createdAt: Date,
+  message: string,
+  userId: number,
+  channelId: number
 };
 
-type State = {
-  chat: ChatItm[];
-  msg: string;
-};
-
-type Props = {};
-
-export default class ChatContent extends Component<Props, State> {
-  messagesEndRef = createRef<HTMLDivElement>();
-  chatItms = [
-    {
-      key: 1,
-      image:
-        "https://avatars.githubusercontent.com/u/8985933?v=4",
-      type: "",
-      msg: "Hi Tim, How are you?",
-    },
-    {
-      key: 2,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
-      type: "other",
-      msg: "I am fine.",
-    },
-    {
-      key: 3,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
-      type: "other",
-      msg: "What about you?",
-    },
-    {
-      key: 4,
-      image:
-        "https://avatars.githubusercontent.com/u/8985933?v=4",
-      type: "",
-      msg: "Awesome these days.",
-    },
-    {
-      key: 5,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
-      type: "other",
-      msg: "Finally. What's the plan?",
-    },
-    {
-      key: 6,
-      image:
-        "https://avatars.githubusercontent.com/u/8985933?v=4",
-      type: "",
-      msg: "what plan mate?",
-    },
-    {
-      key: 7,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
-      type: "other",
-      msg: "I'm taliking about the tutorial",
-    },
-    {
-      key: 8,
-      image:
-        "https://avatars.githubusercontent.com/u/8985933?v=4",
-      type: "",
-      msg: "Awesome these days.",
-    },
-    {
-      key: 9,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
-      type: "other",
-      msg: "Finally. What's the plan?",
-    },
-    {
-      key: 10,
-      image:
-        "https://avatars.githubusercontent.com/u/8985933?v=4",
-      type: "",
-      msg: "what plan mate?",
-    },
-    {
-      key: 11,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
-      type: "other",
-      msg: "I'm taliking about the tutorial",
-    }, {
-      key: 12,
-      image:
-        "https://avatars.githubusercontent.com/u/8985933?v=4",
-      type: "",
-      msg: "Awesome these days.",
-    },
-    {
-      key: 13,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
-      type: "other",
-      msg: "Finally. What's the plan?",
-    },
-    {
-      key: 14,
-      image:
-        "https://avatars.githubusercontent.com/u/8985933?v=4",
-      type: "",
-      msg: "what plan mate?",
-    },
-    {
-      key: 15,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
-      type: "other",
-      msg: "I'm taliking about the tutorial",
-    },
-  ];
-
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      chat: this.chatItms,
-      msg: "",
-    };
-  }
-
-  scrollToBottom = () => {
-    if (this.messagesEndRef.current) {
-      this.messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+async function getAllMessages(id_channel:number){
+  let config = {
+    method: 'get',
+    maxBodyLength: Infinity,
+    url: `${process.env.REACT_APP_BACKEND_URL}` + '/chat/channels/' + id_channel+"/msg",
+    headers: {}
   };
   
-  componentDidMount() {
-    window.addEventListener("keydown", (e) => {
-      if (e.keyCode === 13) {
-        if (this.state.msg !== "") {
-          this.chatItms.push({
-            key: 1,
-            type: "",
-            msg: this.state.msg,
-            image:
-              "https://avatars.githubusercontent.com/u/8985933?v=4",
-          });
-          this.setState({ chat: [...this.chatItms] });
-          this.scrollToBottom();
-          this.setState({ msg: "" });
+  const value = axios.request(config)
+    .then((response) => {
+       return response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+      return [];
+    });
+  
+  return (value);
+}
+
+
+type ChatContentProps = {};
+
+export default function ChatContent(props: ChatContentProps) {
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  let location = useLocation();
+  const socket = useContext(SocketContext);
+  const [chat, setChat] = useState<ChatItm[]>([]);
+  const [msg, setMsg] = useState<string>('');
+
+  useEffect(() => {
+    socket.on("NewMessage", (value:any) => {
+      if (location.pathname !== "/Chat"){
+        let id = Number(location.pathname.split("/")[2]);
+        if (value.channelId === id){
+          setChat(chats => {
+            for (var i in chats){
+              if (chats[i].id === value.id){
+                return chats;
+              }
+            }
+            return ([...chats, value]);
+          })
         }
       }
-    });
-    this.scrollToBottom();
-  }
-  onStateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ msg: e.target.value });
+    })
+  },[location.pathname, socket, chat])
+
+  const onStateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMsg(e.target.value);
   };
 
-  render() {
-    return (
-      <div className="main__chatcontent">
+  useEffect(() => {
+    if (location.pathname !== "/Chat"){
+      let id = Number(location.pathname.split("/")[2]);
+      getAllMessages(id).then((values:any) => {
+        setChat(values)
+      });
+    }
+  }, [location.pathname])
+
+  return (  <div className="main__chatcontent">
         
-        <div className="content__header">
-          <div className="blocks">
-            <div className="current-chatting-user">
-              <ChatAvatar />
-              <p>Channel</p>
-            </div>
-          </div>
-          <div className="blocks">
-            <div className="settings">
-              <button className="btn-nobg">
-                <i className="fa fa-cog"></i>
-              </button>
-            </div>
-          </div>
-        </div>
+  <div className="content__header">
+    <div className="blocks">
+        <h2>Channel 1</h2>
+    </div>
+    <div className="blocks">
+        <FormButton/>
+    </div>
+  </div>
 
-        <div className="content__body">
-          <div className="chat__items">
-            {this.state.chat.map((itm, index) => {
-              return (
-                <ChatItem
-                  animationDelay={index + 2}
-                  key={itm.key}
-                  user={itm.type ? itm.type : "me"}
-                  msg={itm.msg}
-                  image={itm.image}
-                />
-              );
-            })}
-            <div ref={this.messagesEndRef} />
-          </div>
-        </div>
+  <div className="content__body">
+      {chat.map((itm, index) => {
+        return (
+          <ChatItem
+            animationDelay={index + 2}
+            key={index}
+            // user={itm.type ? itm.type : "me"}
+            user={"me"}
+            msg={itm.message}
+            // image={itm.image}
+            image={"https://cdn.pixabay.com/photo/2013/04/11/19/46/building-102840__480.jpg"}
+          />
+        );
+      })}
+      <div ref={messagesEndRef} />
+  </div>
 
-        <div className="content__footer">
-          <div className="sendNewMessage">
-            <button className="addFiles">
-              <i className="fa fa-plus"></i>
-            </button>
-            <input
-              type="text"
-              placeholder="Type a message here"
-              onChange={this.onStateChange}
-              value={this.state.msg}
-              onFocus={() => {
-                return false;
-              }}
-            />
-            <button className="btnSendMsg" id="sendMsgBtn">
-              <i className="fa fa-paper-plane"></i>
-            </button>
-          </div>
-        </div>
+  <div className="content__footer">
+    <div className="sendNewMessage">
+      <button className="addFiles">
+        <i className="fa fa-plus"></i>
+      </button>
+      <input
+        type="text"
+        placeholder="Type a message here"
+        onChange={onStateChange}
+        value={msg}
+        onFocus={() => {
+          return false;
+        }}
+      />
+      <button className="btnSendMsg" id="sendMsgBtn" onClick={() => {
+        socket.emit("sendMsgtoC", {
+          "chatId":Number(location.pathname.split("/")[2]),
+          "mail":"esafar@student.42.fr",
+          "msg":msg
+        })        
+      }}>
+        <i className="fa fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
 
-      </div>
-    );
-  }
+</div>
+);
 }

@@ -1,17 +1,6 @@
-import React, {Component} from 'react';
-import { Avatar, AvatarGroup } from "@mui/material";
-
-const ChanAvatar: React.FC = () => {
-	return (
-    <AvatarGroup max={3} sx={{
-      '& .MuiAvatar-root': { width: 35, height: 35, fontSize: 16 }}}>
-      <Avatar src="https://randomuser.me/api/portraits/women/79.jpg" alt="Alice" sx={{ width: 35, height: 35 }}/>
-      <Avatar src="https://randomuser.me/api/portraits/men/51.jpg" alt="John" sx={{ width: 35, height: 35 }}/>
-      <Avatar sx={{ bgcolor: 'primary.light', width: 35, height: 35 }}>DK</Avatar>
-      <Avatar sx={{ bgcolor: 'success.light', width: 35, height: 35 }}>CK</Avatar>
-    </AvatarGroup>
-	);
-}
+import React, { Component } from 'react';
+import DisabledByDefaultIcon from '@mui/icons-material/DisabledByDefault';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   animationDelay: number;
@@ -19,10 +8,13 @@ interface Props {
   image?: string;
   isOnline: string;
   name: string;
+  id_channel: number;
 }
 
-export default class ChanItems extends Component<Props> {
-  selectChat = (e: React.MouseEvent<HTMLDivElement>) => {
+
+const ChatItems: React.FC<Props> = ({ name, active, animationDelay, id_channel }) => {
+  const navigate = useNavigate();
+  const selectChat = (e: React.MouseEvent<HTMLDivElement>) => {
     for (
       let index = 0;
       index < e.currentTarget.parentNode!.children.length;
@@ -33,23 +25,24 @@ export default class ChanItems extends Component<Props> {
       );
     }
     e.currentTarget.classList.add("active");
+    navigate("/chat/" + id_channel);
   };
 
-  render() {
-    return (
-      <div
-        style={{ animationDelay: `0.${this.props.animationDelay}s` }}
-        onClick={this.selectChat}
-        className={`chatlist__item ${
-          this.props.active ? this.props.active : ""
-        } `}
-      >
-        <ChanAvatar />
-        <div className="userMeta">
-          <p>{this.props.name}</p>
-          <span className="activeTime">32 mins ago</span>
-        </div>
+  return (
+    <div style={{ animationDelay: `0.${animationDelay}s` }}
+      onClick={selectChat}
+      className={`chatlist__item ${active ? active : ""} `}
+    >
+      <div className="userMeta">
+        <p>{name}</p>
       </div>
-    );
-  }
-}
+      <div className="QuitButton">
+        <DisabledByDefaultIcon id='DisabledByDefaultIcon' sx={{ fontSize: 15 }}
+          onClick={() => { }}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default ChatItems;

@@ -21,7 +21,7 @@ export class EditChannelCreateDto{
     Password?: string;
 
     @IsString()
-    Token?: string;
+    username?: string;
 
     // @IsString()
     // @IsOptional()
@@ -34,7 +34,7 @@ export class QuitChanDto{
 
     //@IsUser()
     @IsString()
-    Token?: string;
+    username?: string;
 
     // @IsTrue()
     // @IsOptional()
@@ -55,7 +55,7 @@ export class JoinChanDto{
 
     //@IsUser()
     @IsString()
-    Token?: string;
+    username?: string;
 
     // @IsTrue()
     // @IsOptional()
