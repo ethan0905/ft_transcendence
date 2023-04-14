@@ -152,6 +152,7 @@ export default function ChatContent(props: ChatContentProps) {
     setMsg(e.target.value);
   };
 
+
   return (  <div className="main__chatcontent">
         
   <div className="content__header">

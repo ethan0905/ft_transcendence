@@ -1,5 +1,6 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import DisabledByDefaultIcon from '@mui/icons-material/DisabledByDefault';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   animationDelay: number;
@@ -7,15 +8,12 @@ interface Props {
   image?: string;
   isOnline: string;
   name: string;
+  id_channel: number;
 }
 
-interface Props {
-  name: string;
-  active?: string;
-  animationDelay: number;
-}
 
-const ChatItems: React.FC<Props> = ({ name, active, animationDelay }) => {
+const ChatItems: React.FC<Props> = ({ name, active, animationDelay, id_channel }) => {
+  const navigate = useNavigate();
   const selectChat = (e: React.MouseEvent<HTMLDivElement>) => {
     for (
       let index = 0;
@@ -27,6 +25,7 @@ const ChatItems: React.FC<Props> = ({ name, active, animationDelay }) => {
       );
     }
     e.currentTarget.classList.add("active");
+    navigate("/chat/" + id_channel);
   };
 
   return (
@@ -39,7 +38,7 @@ const ChatItems: React.FC<Props> = ({ name, active, animationDelay }) => {
       </div>
       <div className="QuitButton">
         <DisabledByDefaultIcon id='DisabledByDefaultIcon' sx={{ fontSize: 15 }}
-          onClick={() => {}}
+          onClick={() => { }}
         />
       </div>
     </div>
