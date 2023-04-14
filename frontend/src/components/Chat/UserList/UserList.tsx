@@ -54,7 +54,7 @@ export default function UserList() {
     if (location.pathname !== "/Chat"){
       let id = Number(location.pathname.split("/")[2]);
       console.log("id channel:"+ id);
-      socket.emit("join",{chatId:id, username:"mderome"}); // Ne pas oblier MDP
+      socket.emit("join",{chatId:id, username:"chduong"}); // Ne pas oublier MDP
       getAllUserInChat(id).then((value: any) => { // **** MODIFIER ID DU CHANNEL ****
         console.log(value);
         setAllUsers(value);

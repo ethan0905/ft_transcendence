@@ -176,7 +176,7 @@ export default function ChatContent(props: ChatContentProps) {
       <button className="btnSendMsg" id="sendMsgBtn" onClick={() => {
         socket.emit("sendMsgtoC", {
           "chatId":Number(location.pathname.split("/")[2]),
-          "mail":"achane-l@student.42.fr",
+          "mail":"chduong@student.42.fr",
           "msg":msg
         })        
       }}>

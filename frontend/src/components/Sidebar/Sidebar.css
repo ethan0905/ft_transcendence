@@ -1,7 +1,7 @@
 .Sidebar {
     width: 180px;
     height: 100vh;
-    background: #094da6;
+    background: #050505;
     display: flex;
     flex-direction: column;
   }
@@ -13,9 +13,9 @@
 }
 
 .SidebarImage {
-  padding: 10px;
-  height: 80%;
-  width: 80%;
+  padding: 0px;
+  height: 100%;
+  width: 100%;
   object-fit: contain;
 }
 
@@ -40,11 +40,11 @@
 
 .SidebarList .row:hover {
   cursor: pointer;
-  background: #3684cd;
+  background: #a11826;
 }
 
 .SidebarList #active {
-  background: #3684cd;
+  background: #a11826;
 }
 
 .row #icon {

@@ -10,7 +10,7 @@ import { useContext } from 'react';
 
 //   let data = JSON.stringify({
 //     "chatName": name,
-//     "username": "achane-l",
+//     "username": "chduong",
 //     "isPrivate": isPrivate,
 //     "password": password
 //   });
@@ -87,7 +87,7 @@ const FormButton = () => {
     e.preventDefault();
     console.log(`Name: ${name}, Password: ${password}, Private: ${isPrivate}`);
     // createNewChannel(name, password, isPrivate);
-    socket.emit("create channel", {chatName:name, Password:password, isPrivate:isPrivate, username:"achane-l"})
+    socket.emit("create channel", {chatName:name, Password:password, isPrivate:isPrivate, username:"chduong"})
     setIsOpen(false);
   }
 
@@ -106,7 +106,7 @@ const FormButton = () => {
     <div>
       <button className="btn" onClick={() => setIsOpen(true)}>
         <i className='fa fa-plus'> </i>
-        New Channel
+        <span>New Channel</span>
       </button>
       {isOpen && (
         <div className="modal">
@@ -163,7 +163,7 @@ export default function ChanList() {
   }, [socket]);
   
   useEffect(() => {    
-    getAllChannels("achane-l").then((value: any) => {
+    getAllChannels("chduong").then((value: any) => {
       console.log(value);
       setAllChannels(value);
     })
