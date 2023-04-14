@@ -2,37 +2,39 @@ import React, { useState, useEffect } from 'react';
 import './ChanList.css';
 import ChanItems from './ChanItems';
 import axios from 'axios';
+import { SocketContext } from '../ChatBody';
+import { useContext } from 'react';
 
 
-async function createNewChannel(name: string, password: string, isPrivate: boolean) {
+// async function createNewChannel(name: string, password: string, isPrivate: boolean) {
 
-  let data = JSON.stringify({
-    "chatName": name,
-    "username": "cmenasse",
-    "isPrivate": isPrivate,
-    "password": password
-  });
+//   let data = JSON.stringify({
+//     "chatName": name,
+//     "username": "achane-l",
+//     "isPrivate": isPrivate,
+//     "password": password
+//   });
 
 
-  let config = {
-    method: 'post',
-    maxBodyLength: Infinity,
-    url: 'http://localhost:3333/chat/newchat',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    data: data
-  };
+//   let config = {
+//     method: 'post',
+//     maxBodyLength: Infinity,
+//     url: 'http://localhost:3333/chat/newchat',
+//     headers: {
+//       'Content-Type': 'application/json'
+//     },
+//     data: data
+//   };
 
-  axios.request(config)
-    .then((response: any) => {
-      return JSON.stringify(response.data);
-    })
-    .catch((error: any) => {
-      console.log(error);
-    });
-  return [];
-}
+//   axios.request(config)
+//     .then((response: any) => {
+//       return JSON.stringify(response.data);
+//     })
+//     .catch((error: any) => {
+//       console.log(error);
+//     });
+//   return [];
+// }
 
 async function getAllChannels(username: string) {
   let config = {
@@ -54,27 +56,28 @@ async function getAllChannels(username: string) {
   return (value);
 }
 
-async function getme(username: string) {
-  let config = {
-    method: 'get',
-    maxBodyLength: Infinity,
-    url: 'http://localhost:3333/users/me' + username,
-    headers: {}
-  };
+// async function getme(username: string) {
+//   let config = {
+//     method: 'get',
+//     maxBodyLength: Infinity,
+//     url: 'http://localhost:3333/users/me' + username,
+//     headers: {}
+//   };
 
-  const value = axios.request(config)
-    .then((response) => {
-      return response.data;
-    })
-    .catch((error) => {
-      console.log(error);
-      return [];
-    });
+//   const value = axios.request(config)
+//     .then((response) => {
+//       return response.data;
+//     })
+//     .catch((error) => {
+//       console.log(error);
+//       return [];
+//     });
 
-  return (value);
-}
+//   return (value);
+// }
 
 const FormButton = () => {
+  const socket = useContext(SocketContext)
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
@@ -83,9 +86,11 @@ const FormButton = () => {
   const handleSubmit = (e: any) => {
     e.preventDefault();
     console.log(`Name: ${name}, Password: ${password}, Private: ${isPrivate}`);
-    createNewChannel(name, password, isPrivate);
+    // createNewChannel(name, password, isPrivate);
+    socket.emit("create channel", {chatName:name, Password:password, isPrivate:isPrivate, username:"achane-l"})
     setIsOpen(false);
   }
+
   const handleInputChange = (e: any) => {
     const { name, value, checked } = e.target;
     if (name === 'name') {
@@ -137,15 +142,31 @@ interface Channel {
 }
 
 export default function ChanList() {
+  const socket = useContext(SocketContext)
   const [allChannels, setAllChannels] = useState<Channel[]>([])
   //const allChannels = ALL_CHAN;
 
 
   useEffect(() => {
-    getAllChannels("cmenasse").then((value: any) => {
+    socket.on("Channel Created", (value:any) => {
+      setAllChannels(data => {
+        for (var i in data){
+          if (data[i].id === value.id)
+            return data;
+        }
+        return ([...data, value]);
+      });
+      console.log("New Channel");
+    });
+
+    
+  }, [socket]);
+  
+  useEffect(() => {    
+    getAllChannels("achane-l").then((value: any) => {
+      console.log(value);
       setAllChannels(value);
     })
-
   }, []);
 
   return (
@@ -159,8 +180,8 @@ export default function ChanList() {
 
       <div className="chatlist__items">
         {allChannels.map((item, index) => {
-          console.log(item.channelName);
-          console.log(item.id);
+          // console.log(item.channelName);
+          // console.log(item.id);
           return (
             <ChanItems
               name={item.channelName}

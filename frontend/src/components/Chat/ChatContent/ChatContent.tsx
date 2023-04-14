@@ -1,6 +1,8 @@
-import React, { useState, useEffect, Component, createRef, useRef} from "react";
+import React, { useState, useEffect, useRef, useContext} from "react";
 import ChatItem from "./ChatItem";
 import "./ChatContent.css";
+import { SocketContext } from "../ChatBody";
+import { useLocation } from "react-router-dom";
 
 
 interface FormValues {
@@ -65,88 +67,26 @@ type ChatItm = {
   msg: string;
 };
 
-type State = {
-  chat: ChatItm[];
-  msg: string;
-};
-
 type ChatContentProps = {};
 
 export default function ChatContent(props: ChatContentProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const chatItms: ChatItm[] = [
-    {
-      key: 1,
-      image: "https://avatars.githubusercontent.com/u/8985933?v=4",
-      type: "",
-      msg: "Hi Tim, How are you?",
-    },
-    {
-      key: 2,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
-      type: "other",
-      msg: "I am fine.",
-    },
-    {
-      key: 3,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
-      type: "other",
-      msg: "What about you?",
-    },
-    {
-      key: 4,
-      image: "https://avatars.githubusercontent.com/u/8985933?v=4",
-      type: "",
-      msg: "Awesome these days.",
-    },
-    {
-      key: 5,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
-      type: "other",
-      msg: "Finally. What's the plan?",
-    },
-    {
-      key: 6,
-      image: "https://avatars.githubusercontent.com/u/8985933?v=4",
-      type: "",
-      msg: "what plan mate?",
-    },
-  ];
-
-  const [chat, setChat] = useState<ChatItm[]>(chatItms);
+  let location = useLocation();
+  const socket = useContext(SocketContext);
+  const [chat, setChat] = useState<ChatItm[]>([]);
   const [msg, setMsg] = useState<string>('');
 
-  const scrollToBottom = () => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.keyCode === 13) {
-        if (msg !== "") {
-          chatItms.push({
-            key: 1,
-            type: "",
-            msg: msg,
-            image: "https://avatars.githubusercontent.com/u/8985933?v=4",
-          });
-          setChat([...chatItms]);
-          scrollToBottom();
-          setMsg("");
+    socket.on("NewMessage", (value:any) => {
+      if (location.pathname !== "/Chat"){
+        let id = Number(location.pathname.split("/")[2]);
+        console.log("id channel:"+ id);
+        if (value.chatId === id){
+          setChat((chats) => [...chats, {key:chat.length, type:"", msg:value.msg,image:"https://avatars.githubusercontent.com/u/8985933?v=4"}])
         }
       }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [msg]);
+    })
+  },[location.pathname, socket, chat])
 
   const onStateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMsg(e.target.value);
@@ -169,7 +109,7 @@ export default function ChatContent(props: ChatContentProps) {
         return (
           <ChatItem
             animationDelay={index + 2}
-            key={itm.key}
+            key={index}
             user={itm.type ? itm.type : "me"}
             msg={itm.msg}
             image={itm.image}
@@ -193,7 +133,13 @@ export default function ChatContent(props: ChatContentProps) {
           return false;
         }}
       />
-      <button className="btnSendMsg" id="sendMsgBtn">
+      <button className="btnSendMsg" id="sendMsgBtn" onClick={() => {
+        socket.emit("sendMsgtoC", {
+          "chatId":Number(location.pathname.split("/")[2]),
+          "mail":"achane-l@student.42.fr",
+          "msg":msg
+        })        
+      }}>
         <i className="fa fa-paper-plane"></i>
       </button>
     </div>
