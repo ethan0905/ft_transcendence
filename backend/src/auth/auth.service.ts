@@ -168,7 +168,7 @@ export class AuthService{
 		try {
 			const user = await this.prisma.user.findFirst({
 				where: {
-					email: user42.email,
+					email: user42,
 				},
 			});
 			return user;
