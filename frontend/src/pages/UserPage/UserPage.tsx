@@ -1,8 +1,9 @@
 import { useParams } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import Avatar from '@mui/material/Avatar';
+import GameHistory from '../../components/GameHistory';
+import Achievements from '../../components/Achievements/Achievements';
 import './userPage.css';
-import GameHistory from '../../components/Profile/GameHistory';
 
 export default function UserPage() {
 	let { id } = useParams();
@@ -41,7 +42,7 @@ export default function UserPage() {
 			<Sidebar />
 			<div className='UserPage'>
 				<div className='UserPage_header'>
-					<Avatar id='UserAvatar' alt='Profile Picture' src={"https://cdn.intra.42.fr/users/430b2acd1bcfedf5475654d235003086/norminet.jpeg"}/>
+					<Avatar id='UserAvatar' alt='Profile Picture' src={"/sasuke.jpg"}/>
 					<div className='UserPage_info'>
 						<h1>{id}</h1>
 						<div className='buttonList'>
@@ -52,24 +53,8 @@ export default function UserPage() {
 							<button>Fight</button>
 						</div>
 					</div>
-					<div className='Achievements'>
-						<div className='Achiev_list'>
-							<div className="tooltip">
-								<img className='Achiev_image' src='/match.svg' alt='Achiev'/>
-								<span className="tooltiptext">1st Game</span>
-							</div>
-							<div className="tooltip">
-								<img className='Achiev_image' src='/win.svg' alt='Achiev'/>
-								<span className="tooltiptext">1st Win</span>
-							</div>
-							<div className="tooltip">
-								<img className='Achiev_image' src='/friend.svg' alt='Achiev'/>
-								<span className="tooltiptext">1st Friend</span>
-							</div>
-						</div>
-					</div>
+					<Achievements />
 				</div>
-
 				<div className='UserPage_stats'>
 					<GameHistory data={games} />
 				</div>

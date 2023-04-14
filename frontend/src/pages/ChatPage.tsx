@@ -14,7 +14,6 @@ export default function ChatPage() {
         <Sidebar />
         <ChatBody />
       </SocketContext.Provider>
-        
     </>
   )
 }

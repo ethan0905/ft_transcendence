@@ -1,12 +1,15 @@
 import React, { useState, useEffect, ChangeEvent, ChangeEventHandler } from 'react';
+import Sidebar from '../../components/Sidebar/Sidebar';
+import EditableText from '../../components/ProfileSetting/EditableText';
+import ProfilePicture from '../../components/ProfileSetting/ProfilePicture';
+import FriendList from '../../components/FriendList';
+import GameHistory from '../../components/GameHistory';
+import Achievements from '../../components/Achievements/Achievements';
 import axios from 'axios';
 import './profilePage.css';
-import Sidebar from '../../components/Sidebar/Sidebar';
-import EditableText from '../../components/Profile/EditableText';
-import ProfilePicture from '../../components/Profile/ProfilePicture';
-import FriendList from '../../components/Profile/FriendList';
-import GameHistory from '../../components/Profile/GameHistory';
 import AuthCode from 'react-auth-code-input';
+import { styled } from '@mui/material/styles';
+import { red } from '@mui/material/colors';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
@@ -49,8 +52,8 @@ export default function ProfilePage() {
 			});
 		}
 
-		axios.post('http://localhost:3333/auth/2fa/enable', { token, twoFactorAuth: !checked }).then(response => {
-
+		axios.post('http://localhost:3333/auth/2fa/enable', { token, twoFactorAuth: !checked })
+		.then(response => {
 			console.log(response);
 		}).catch(error => {
 			console.error(error);
@@ -192,6 +195,11 @@ export default function ProfilePage() {
 		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
 	];
 
+	const RedSwitch = styled(Switch)(({ theme }) => ({
+		'& .MuiSwitch-switchBase.Mui-checked': {color: red[900]},
+		'& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {backgroundColor: red[900]},
+	}));
+
 	return (
 		<>
 			<Sidebar />
@@ -202,8 +210,10 @@ export default function ProfilePage() {
 						<EditableText text={name} onSubmit={setName} />
 
 						<FormControlLabel control={
-							<Switch	checked={checked} onChange={handleChange} inputProps={{ "aria-label": "controlled" }}/>
-						} label="Enable 2FA" />
+							<RedSwitch checked={checked}
+								onChange={handleChange} 
+								inputProps={{"aria-label": "controlled"}}
+						/>} label="Enable 2FA" />
 
 						{checked && (
 							<>
@@ -216,22 +226,7 @@ export default function ProfilePage() {
 						)}
 					</div>
 
-				<div className='Achievements'>
-					<div className='Achiev_list'>
-						<div className="tooltip">
-							<img className='Achiev_image' src='match.svg' alt='Achiev'/>
-							<span className="tooltiptext">1st Game</span>
-						</div>
-						<div className="tooltip">
-							<img className='Achiev_image' src='win.svg' alt='Achiev'/>
-							<span className="tooltiptext">1st Win</span>
-						</div>
-						<div className="tooltip">
-							<img className='Achiev_image' src='friend.svg' alt='Achiev'/>
-							<span className="tooltiptext">1st Friend</span>
-						</div>
-					</div>
-				</div>
+				<Achievements />
 				
 			</div>
 

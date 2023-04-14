@@ -23,14 +23,23 @@ function Verify2FA() {
 	}
 
 return (
-	<div>
-
-		<AuthCode
-		allowedCharacters='numeric'
-		onChange={handleOnChange}
-		/>
+	<div className='2faVerifyPage' style={{
+		width: '100%',
+		height: '100vh',
+		backgroundSize: 'cover',
+		backgroundImage: `url(https://m.media-amazon.com/images/M/MV5BNTliMGU4ZDAtN2JlYy00ZTBiLWFlMDEtNTFiMDIyYmYyMTA1L2ltYWdlL2ltYWdlXkEyXkFqcGdeQXVyNTAyODkwOQ@@._V1_.jpg)`,
+		backgroundRepeat: 'no-repeat',
+		backgroundPosition: 'center',
+		display: 'flex',
+		flexDirection: 'column',
+		// justifyContent: 'center',
+		alignItems: 'center',
+		fontFamily: 'Kocak',
+		color: 'white',
+	}}>
+		<h1>Two-Factor Authentication</h1>
+		<AuthCode allowedCharacters='numeric' onChange={handleOnChange}/>
 		<button onClick={check2FACode}>Submit code</button>
-
 	</div>
 	);
 }

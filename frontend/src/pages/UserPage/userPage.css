@@ -3,9 +3,6 @@
     flex-direction: column;
     width: 100%;
     height: 100%;
-    background-size: cover;
-    background-image: url("/public/profile.jpg");
-    background-repeat: no-repeat;
 }
 
 #UserAvatar {
@@ -19,7 +16,7 @@
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
-  background-color: rgba(132, 132, 139, 0.568);
+  background-color: rgb(24, 23, 23);
   border-bottom: #faf9f9 1px solid;
   padding: 10px 10px;
 }
@@ -40,6 +37,10 @@
 }
 
 .UserPage_stats {
+  background-size: cover;
+  background-image: url("/public/hinata.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
   overflow-y: scroll;
   background-color: rgba(132, 132, 139, 0.568); 
   flex-grow: 1;
@@ -47,59 +48,3 @@
   justify-content: center;
   align-items: center;
 }
-
-.Achievements {
-    display: flex;
-    flex-grow: 1;
-    justify-content: center;
-    flex-direction: column;
-    color: white;
-    max-height: fit-content;
-  }
-  .Achiev_list {
-    display: flex;
-    justify-content: space-evenly;
-  }
-  .Achiev {
-    display: flex;
-    flex-direction: column;
-  }
-  .Achiev_image {
-    height: 100px;
-    width: auto;
-    opacity: 0.5;
-    position: relative;
-  }
-
-  .tooltip {
-    position: relative;
-    display: inline-block;
-  }
-  
-  .tooltip .tooltiptext {
-    visibility: hidden;
-    background-color: rgb(239, 99, 99);
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px 5px;
-    position: absolute;
-    z-index: 1;
-    top: 80%;
-    left: 25%;
-  
-  }
-  
-  .tooltip .tooltiptext::after {
-    content: "";
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    border-width: 5px;
-    border-style: solid;
-    border-color: transparent transparent rgb(239, 99, 99) transparent;
-  }
-  
-  .tooltip:hover .tooltiptext {
-    visibility: visible;
-  }

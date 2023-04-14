@@ -22,7 +22,7 @@ const GameTable = (props: TableProps) => {
 				<tr className='titlesTab'>
 					<th>#</th>
 					<th className='cellPlayer'></th>
-					<th className='cellPlayer'></th>
+					<th></th>
 					<th className='cellPlayer'></th>
 					<th>Score</th>
 					<th>Watch</th>
@@ -82,16 +82,12 @@ return (
 	<div className='GamePage'>
 		{GameTable({ data })}
 		<div className='ButtonPlay'>
-			<img src="/buttonplay.jpg" alt='ImgButton' id='ImgButton'
-				onClick={() => {window.location.href = '/game'}}
-			/>
-
+			<img src="/rasengan.png" alt='ImgButton' id='ImgButton' onClick={() => {window.location.href = '/game'}}/>
 			<span id='textPlay' onClick={() => {window.location.href = '/game'}}>
 				PLAY
 			</span>
 			<div className='MapOption'>
-				<span>Default map</span>
-
+				{/* <span>Default map</span> */}
 			</div>
 		</div>
 	</div>
