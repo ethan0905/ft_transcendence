@@ -163,4 +163,9 @@ export class AuthController {
   async checkIfUserAuthenticated(@Req() req: Request) {
     return this.authService.checkIfUserAuthenticated(req);
   }
+
+  @Post('2fa/success')
+  async loginSucceeded(@Req() req: Request) {
+    return this.authService.loginSucceeded(req);
+  }
 }

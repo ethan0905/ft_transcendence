@@ -12,6 +12,7 @@ const PrivateRoute : React.FC<{children: React.ReactElement}> = ({children}) => 
 
     useEffect(() => {
         checkUserToken();
+        checkUser2FACode();
     }, []);
 
     async function checkUserToken() {
@@ -42,6 +43,36 @@ const PrivateRoute : React.FC<{children: React.ReactElement}> = ({children}) => 
             setIsAuthenticated(true);
         }
 
+    }
+
+    async function checkUser2FACode(): Promise<any> {
+    
+        let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/auth/42/verify', {
+            method: 'GET',
+            headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `${cookieToken}`
+            },
+        });
+
+        const data = await response.json();
+        console.log('2fa data.email: ', data.email);
+        if (data.twoFactorVerified === true)
+        {
+            console.log('2fa code is false in my user.data');
+            navigate('/myProfile');
+        }
+        if (data.twoFactorActivated === true && data.twoFactorVerified === false)
+        {
+            console.log('2fa code is true in my user.data');
+            navigate('/2fa/verification');
+            return;
+        }
+
+        // if (data.twoFactorActivated === true )
+    
     }
 
     if (isAuthenticated) {

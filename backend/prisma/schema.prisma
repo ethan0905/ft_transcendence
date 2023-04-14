@@ -24,6 +24,7 @@ model User {
 
   twoFactorAuth Boolean @default(false)
   twoFactorActivated Boolean @default(false)
+  twoFactorVerified Boolean @default(false)
   twoFactorSecret String?
 
   status    Status? @default(OFFLINE)

@@ -48,6 +48,12 @@ export default function ProfilePage() {
 				},
 				body: JSON.stringify({ token, twoFactorActivated: false })
 			});
+
+			fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/auth/2fa/success', {
+				method: 'POST',
+				headers: {'Content-Type': 'application/json'},
+				body: JSON.stringify({ token, status: false })
+			});
 		}
 
 		axios.post(`${process.env.REACT_APP_BACKEND_URL}` + '/auth/2fa/enable', { token, twoFactorAuth: !checked }).then(response => {

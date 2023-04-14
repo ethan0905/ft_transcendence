@@ -421,6 +421,7 @@ export class AuthService{
 		});
 
 		console.log("user to verify:  ", user.email);
+		console.log("access token to verify:  ", req.body.token);
 		console.log("authenticator code to verify:  ", req.body.twoFACode);
 
 		return authenticator.verify({
@@ -439,6 +440,8 @@ export class AuthService{
 				},
 			});
 			console.log("User found: ", user.email);
+			delete user.accessToken;
+
 			return user;
 		} catch (error) {
 			console.log(error);
@@ -447,4 +450,24 @@ export class AuthService{
 
 		// return userEmail || null;
 	  }
+
+	  async loginSucceeded(@Req() req: Request) {
+		try {
+			await this.prisma.user.update({
+				where: {
+					accessToken: req.body.token,
+				},
+				data: {
+					twoFactorVerified: req.body.status,
+				},
+			});
+	
+			return {message: "Login with 2FA Succeeded"};
+		} catch (error) {
+			console.log(error);
+			throw new HttpException('Error while connecting user', HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+	}
+
 }
