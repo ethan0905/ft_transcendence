@@ -23,39 +23,86 @@ import ErrorPage from "./pages/ErrorPage"
 import UserPage from "./pages/UserPage"
 import Verify2FA from "./components/2fa-verify"
 import HomePage from "./components/homepage"
+import { useState } from 'react';
+import { useEffect } from 'react';
+import PrivateRoute from './components/private-route';
 
 function App() {
-  
+
     return (
-      // <Router>
-      //   <div>
-      //     <Routes>
-      //       <Route path="/" element={<LoginPage/>}/>
-      //       <Route path="/login" element={<LoginPage/>}/>
-      //       <Route path="/2fa/verification" element={<Verify2FA/>}/>
-      //       <Route path="/homepage" element={<HomePage/>}/>
-      //     </Routes>
-      //   </div>
-      // </Router>
-
-    // <Router>
-
+     
       <div className="App">
         <Routes>
           <Route path='/' element={<AuthPage/>} />
           <Route path='/login' element={<AuthPage/>} />
-          <Route path="/2fa/verification" element={<Verify2FA/>}/>
-          {/* <Route path='/myProfile' element={<HomePage/>} /> */}
-          <Route path='/myProfile' element={<ProfilePage/>} />
-          <Route path='/Profile/:id' element={<UserPage/>} />
-          <Route path='/Chat' element={<ChatPage/>} />
-          <Route path='/Game' element={<GamePage/>} />
-          <Route path='/Leaderboard' element={<LeaderboardPage/>} />
-          <Route path='/*' element={<ErrorPage/>} />
+
+          <Route
+            path="/2fa/verification"
+            element={
+              <PrivateRoute>
+                <Verify2FA />
+              </PrivateRoute>
+            }
+          />
+          
+          <Route
+            path="/myProfile"
+            element={
+              <PrivateRoute>
+                <ProfilePage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/Profile/:id"
+            element={
+              <PrivateRoute>
+                <UserPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/Chat"
+            element={
+              <PrivateRoute>
+                <ChatPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/Game"
+            element={
+              <PrivateRoute>
+                <GamePage />
+              </PrivateRoute>
+            }
+          />
+
+
+          <Route
+            path="/Leaderboard"
+            element={
+              <PrivateRoute>
+                <LeaderboardPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/*"
+            element={
+              <PrivateRoute>
+                <ErrorPage />
+              </PrivateRoute>
+            }
+          />
+
         </Routes>
       </div>
 
-    // </Router>
     );
 }
 

@@ -1,9 +1,10 @@
 import { PrismaService } from './../prisma/prisma.service';
-import { Body, Controller, Post, Get, ParseIntPipe, HttpCode, HttpStatus, Req, Res } from '@nestjs/common';
+import { Body, Controller, Post, Get, ParseIntPipe, HttpCode, HttpStatus, Req, Res, Injectable } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { AuthDto, Auth42Dto } from './dto';
 
+@Injectable()
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService,
@@ -61,7 +62,7 @@ export class AuthController {
     {
       // const user42 = await this.authService.create42User(token, user);
       // if (user42)
-      res.redirect(`http://localhost:3000/login`);
+      res.redirect(`${process.env.FRONTEND_URL}/login`);
     }
     else {
       
@@ -84,14 +85,14 @@ export class AuthController {
       {
         // console.log("Hello 1\n");
         res.redirect(
-          `http://localhost:3000/myProfile`,
+          `${process.env.FRONTEND_URL}/myProfile`,
           );
       }
       else if (updatedUser.twoFactorActivated === true)
       {
         // console.log("Hello 2\n");
         res.redirect(
-          `http://localhost:3000/2fa/verification`,
+          `${process.env.FRONTEND_URL}/2fa/verification`,
           );
       }
       else
@@ -120,7 +121,7 @@ export class AuthController {
   @Get('42/logout')
   async logout( @Res() res: Response) {
     this.authService.deleteCookies(res);
-    res.redirect(`http://localhost:3000/login`);
+    res.redirect(`${process.env.FRONTEND_URL}/login`);
   }
 
   @Get('2fa/status')
@@ -156,5 +157,10 @@ export class AuthController {
   @Post('2fa/verify')
   async verify2FA(@Req() req: Request) {
     return this.authService.verify2FA(req);
+  }
+
+  @Get('42/verify')
+  async checkIfUserAuthenticated(@Req() req: Request) {
+    return this.authService.checkIfUserAuthenticated(req);
   }
 }

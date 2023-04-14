@@ -76,14 +76,11 @@ export class AuthService{
 
 	async accessToken(req: string) {
 
-		const client_id = "u-s4t2ud-c3680374c7c94850b80d768576ab99300705487e1f5c7f758876aaf8fbf5fbdb";
-		const client_secret = "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"
-
 		try {
 		  const response = await fetch("https://api.intra.42.fr/oauth/token", {
 			method: "POST",
 			headers: { "Content-Type": "application/x-www-form-urlencoded" },
-			body: `grant_type=authorization_code&client_id=${client_id}&client_secret=${client_secret}&code=${req}&redirect_uri=http://localhost:3333/auth/42/callback`,
+			body: `grant_type=authorization_code&client_id=${process.env.API42_CLIENT_ID}&client_secret=${process.env.API42_CLIENT_SECRET}&code=${req}&redirect_uri=${process.env.API42_REDIRECT_URI}`,
 		  });
 		  const data = await response.json();
 		  
@@ -423,12 +420,31 @@ export class AuthService{
 			},
 		});
 
-		console.log("user:  ", user.email);
-		console.log("authCode:  ", req.body.twoFACode);
+		console.log("user to verify:  ", user.email);
+		console.log("authenticator code to verify:  ", req.body.twoFACode);
 
 		return authenticator.verify({
 		  token: req.body.twoFACode, // the code the user enters
 		  secret: user.twoFactorSecret,
 		});
+	  }
+
+	  async checkIfUserAuthenticated(@Req() req: Request) {
+		  
+		console.log("Is user authenticated ? ", req.headers.authorization);
+		try {
+			const user = await this.prisma.user.findFirst({
+				where: {
+					accessToken: req.headers.authorization,
+				},
+			});
+			console.log("User found: ", user.email);
+			return user;
+		} catch (error) {
+			console.log(error);
+			throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+		}
+
+		// return userEmail || null;
 	  }
 }
