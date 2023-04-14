@@ -5,7 +5,7 @@ import ProfilePage from "./pages/ProfilePage/ProfilePage"
 import ChatPage from "./pages/ChatPage"
 import GamePage from "./pages/GamePage/GamePage"
 import ErrorPage from "./pages/ErrorPage"
-import UserPage from "./pages/UserPage"
+import UserPage from "./pages/UserPage/UserPage"
 import Verify2FA from "./pages/2fa-verify"
 
 function App() {
