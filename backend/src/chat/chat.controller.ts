@@ -75,6 +75,15 @@ export class ChatController {
 		return channel;
 	}
 
+
+	@Get('/channels/:id')
+	async take_all_channelbyId(@Param("id") id: string)
+	{
+		const channel = await this.chat_service.get__chanNamebyId(parseInt(id));
+		console.log("channel : ", channel);
+		return channel;
+	}
+
 	@Get('/channels/users/:id')
 	async take_all_user(@Param("id") id : string)
 	{
