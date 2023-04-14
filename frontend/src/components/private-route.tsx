@@ -89,13 +89,38 @@
 
 import React from 'react';
 import { Route, Navigate, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 
 export const PrivateRoute : React.FC<{children: React.ReactElement}> = ({children}) => {
-    const isAuthenticated = false;
+    // const isAuthenticated = false;
+
+    const [token, setToken] = useState<string>('');
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+
+    useEffect(() => {
+        let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+        if (cookieToken) {
+          setToken(cookieToken);
+        }
+        
+        checkUserToken();
+    }, []);
+
+    async function checkUserToken() {
+        // i was working on this function to check if the token is valid or not
+        if (token) {
+            console.log('token exists : ', token);
+            setToken(true);
+        }
+    }
         
     if (isAuthenticated ) {
-      return children
+        console.log('isAuthenticated : ', isAuthenticated);
+        return children;
     }
       
-    return <Navigate to="/login" />
+    console.log('isAuthenticated : ', isAuthenticated);
+    return (
+        <Navigate to="/login" />
+    )
   }
