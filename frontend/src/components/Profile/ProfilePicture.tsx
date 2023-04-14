@@ -19,19 +19,18 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({profilePicture, handleUp
 					width: 150,
 					height: 150,
 					verticalAlign: 'middle',
-					border: '#03d3fc 3px solid',
-					boxShadow: '0px 0px 10px 3px #03d3fc',
+					border: '#f8f8f8 3px solid',
 					margin: '20px 20px 20px 20px'
 				}}
-				src={profilePicture ? URL.createObjectURL(profilePicture) : '/loading.jpeg'}
+				src={profilePicture ? URL.createObjectURL(profilePicture) : "https://cdn.intra.42.fr/users/430b2acd1bcfedf5475654d235003086/norminet.jpeg"}
 			/>
 
 			<AddAPhotoIcon sx={{ 
 					position: 'absolute',
 					right: '25px',
 					bottom: '30px',
-					opacity: '0.8',
-					color: '#03d3fc',
+					opacity: '1',
+					color: '#0091d0',
 				}}
 				onClick={() => { 
 					const input = document.getElementById('profile-picture-upload'); 

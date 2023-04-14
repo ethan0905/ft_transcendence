@@ -1,15 +1,12 @@
-import React from 'react';
-import { useState } from 'react';
-import { Button } from './button';
+import React, { useEffect, useState } from 'react';
+import { Button } from "./button/button";
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import axios from 'axios';
 import AuthCode from 'react-auth-code-input';
-import { useEffect } from 'react';
 import Sidebar from './Sidebar/Sidebar';
 
 function HomePage() {
-
 	const [checked, setChecked] = React.useState(false);
 	const [twoFAActivated, setTwoFAActivated] = React.useState(false);
 	const [qrcodeDataUrl, setQrcodeDataUrl] = React.useState('');

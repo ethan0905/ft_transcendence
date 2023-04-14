@@ -23,8 +23,7 @@ export class ChannelCreateDto {
     members :   Array<Tag>
 
     @IsNotEmpty()
-    @IsEmail()
-    email : string
+    username : string
 }
 
 export class sendMsgDto {

@@ -1,11 +1,8 @@
 import './Sidebar.css';
-// import {useState} from 'react';
 import { Link } from 'react-router-dom';
 import ChatIcon from '@mui/icons-material/Chat';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import ProfileIcon from '@mui/icons-material/AccountCircle';
-import LeaderboardIcon from '@mui/icons-material/Leaderboard';
-// import GroupIcon from '@mui/icons-material/Group';
 import LogoutIcon from '@mui/icons-material/Logout';
 import React from 'react';
 
@@ -26,14 +23,9 @@ const SidebarData = [
         link: '/Game',
     },
     {
-      title: 'Leaderboard',
-      icon: <LeaderboardIcon />,
-      link: '/Leaderboard',
-    },
-    {
       title: 'Logout',
       icon: <LogoutIcon />,
-      onClick: () => { window.open('http://localhost:3333/auth/42/logout', "_self");},
+      onClick: () => { window.open(`${process.env.REACT_APP_BACKEND_URL}` + '/auth/42/logout', "_self");},
       link: '/login',
     },
 
@@ -45,7 +37,7 @@ export default function Sidebar () {
   return (
     <div className="Sidebar">
         <div className="SidebarIcon">
-          <img src="/logo.png" alt="Logo" className="SidebarImage"/>
+          <img src="/buttonplay.jpg" alt="Logo" className="SidebarImage"/>
         </div>
         <ul className='SidebarList'>
           {SidebarData.map((val, key) => {

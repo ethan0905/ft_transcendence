@@ -46,6 +46,7 @@ export class ChatController {
 	//@UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
 	async create_one(@Body()dto: ChannelCreateDto)
     {
+		console.log(dto);
         const chat = await this.chat_service.newChannel(dto);
         console.log("channel created");
     }
@@ -66,10 +67,19 @@ export class ChatController {
         console.log("cMsg added");
     }
 
-	@Get('/channels/:token')
-	async take_all_channel(@Param("token") Token: string)
+	@Get('/channels/:username')
+	async take_all_channel(@Param("username") username: string)
 	{
-		const channel = await this.chat_service.get__channelsUserIn(Token);
+		const channel = await this.chat_service.get__channelsUserIn(username);
+		console.log("channel : ", channel);
+		return channel;
+	}
+
+
+	@Get('/channels/:id')
+	async take_all_channelbyId(@Param("id") id: string)
+	{
+		const channel = await this.chat_service.get__chanNamebyId(parseInt(id));
 		console.log("channel : ", channel);
 		return channel;
 	}
@@ -79,8 +89,24 @@ export class ChatController {
 	{
 		const idChan : number = parseInt(id); 
 		const users = await this.chat_service.get__UserIn(idChan);
-		console.log("users int channel : ", users);
-		return users;
+		return users[0].members;
+	}
+
+	@Get('/channels/:id/msg')
+	async take_all_msg(@Param("id") id : string)
+	{
+		const idChan : number = parseInt(id); 
+		const messages = await this.chat_service.get__MsgIn(idChan);
+		return messages[0].messages;
+	}
+
+	@Get('/channels/users/ban/:id')
+	async take_all_ban_user(@Param("id") id : string)
+	{
+		const idChan : number = parseInt(id); 
+		const users = await this.chat_service.get__UserBanIn(idChan);
+		console.log("users's ban in channel : ", users[0].banned);
+		return users[0].banned;
 	}
 
 	// @Post('/channel/quit')

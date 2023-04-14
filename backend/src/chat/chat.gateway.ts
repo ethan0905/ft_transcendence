@@ -72,7 +72,7 @@ export class ChatGateway implements OnGatewayConnection {
     try
     {
       console.log('someone test connection');
-      client.emit('test', {client});
+      client.emit('test', {client}); // join all rooms
     }
     catch {}
   }
@@ -92,10 +92,20 @@ export class ChatGateway implements OnGatewayConnection {
     @MessageBody() data: ChannelCreateDto,
     @ConnectedSocket() client: Socket,
   ) {
-      console.log('create channel');
       const chat = await this.chatService.newChannel(data);
-      console.log("channel created");
-      client.emit('test');
+      const id_room = await this.prisma.channel.findMany({
+        where : {
+          channelName: data.chatName,
+        },
+        select: {
+          id: true,
+          isPrivate:true,
+        },
+      })
+      const id = id_room[0].id;
+      client.join(id.toString());
+      if (!id_room[0].isPrivate)
+        this.server.emit("Channel Created", {channelName:data.chatName, id: id});
     }
 
   @SubscribeMessage('sendMsgtoC')
@@ -111,22 +121,23 @@ export class ChatGateway implements OnGatewayConnection {
     )
     const chat = await this.chatService.newMsg(data, user.id);
     console.log("cMsg added");
+    this.server.to(data.chatId.toString()).emit("NewMessage",chat); // emit to the room
   }
 
-  @SubscribeMessage('sendMsgtoC')
-  async MsgtoUser(
-    @MessageBody()  data: DmMsgSend ,
-    @ConnectedSocket() client : Socket,
-  ) {
-    const user = await this.prisma.user.findUnique({
-      where : {
-        email : data.mail,
-      },
-    }
-    )
-    const chat = await this.chatService.newDM(data, user.id);
-    console.log("cMsg added");
-  }
+  // @SubscribeMessage('sendMsgtoC')
+  // async MsgtoUser(
+  //   @MessageBody()  data: DmMsgSend ,
+  //   @ConnectedSocket() client : Socket,
+  // ) {
+  //   const user = await this.prisma.user.findUnique({
+  //     where : {
+  //       email : data.mail,
+  //     },
+  //   }
+  //   )
+  //   const chat = await this.chatService.newDM(data, user.id);
+  //   console.log("cMsg added");
+  // }
 
   @SubscribeMessage('join')
   async join_chan(
@@ -134,8 +145,11 @@ export class ChatGateway implements OnGatewayConnection {
     @ConnectedSocket() client : Socket,
   ) {
     const ret = await this.chatService.join_Chan(data);
-    if (ret == 0 )
-      console.log("chan joinned");
+    if (ret == 0 ){
+      const user = await this.userService.getUser(data.username)
+      client.join(data.chatId.toString());
+      client.to(data.chatId.toString()).emit("NewUserJoin", user)
+    }
     else if (ret  == 1)
       console.log("chan is Private");
     else if (ret == 2)
@@ -150,7 +164,7 @@ export class ChatGateway implements OnGatewayConnection {
     @ConnectedSocket() client : Socket,
   ) {
     
-    await this.chatService.quit_Chan(data.Token, data.chatId);
+    await this.chatService.quit_Chan(data.username, data.chatId);
     console.log("chan quitted");
   }
 
@@ -160,7 +174,7 @@ export class ChatGateway implements OnGatewayConnection {
     @ConnectedSocket() client : Socket,
   ) {
     
-    await this.chatService.invit_Chan(data.Token, data.chatId);
+    await this.chatService.invit_Chan(data.username, data.chatId);
     console.log("user invited");
   }
 
@@ -170,7 +184,7 @@ export class ChatGateway implements OnGatewayConnection {
     @ConnectedSocket() client : Socket,
   ) {
     
-    await this.chatService.ban_Chan(data.Token, data.chatId);
+    await this.chatService.ban_Chan(data.username, data.chatId);
     console.log("chan banned");
   }
 
@@ -180,7 +194,7 @@ export class ChatGateway implements OnGatewayConnection {
     @ConnectedSocket() client : Socket,
   ) {
     
-    await this.chatService.kick_Chan(data.Token, data.chatId);
+    await this.chatService.kick_Chan(data.username, data.chatId);
     console.log("chan kicked");
   }
 
@@ -190,7 +204,7 @@ export class ChatGateway implements OnGatewayConnection {
     @ConnectedSocket() client : Socket,
   ) {
     
-    const res : boolean = await this.chatService.isBan_Chan(data.Token, data.chatId);
+    const res : boolean = await this.chatService.isBan_Chan(data.username, data.chatId);
     if (res == true)
       console.log("user is banned");
     else
