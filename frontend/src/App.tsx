@@ -5,9 +5,9 @@ import ProfilePage from "./pages/ProfilePage/ProfilePage"
 import ChatPage from "./pages/ChatPage"
 import GamePage from "./pages/GamePage/GamePage"
 import ErrorPage from "./pages/ErrorPage"
-import UserPage from "./pages/UserPage"
-import Verify2FA from "./components/2FA/2fa-verify"
 import PrivateRoute from './components/private-route';
+import UserPage from "./pages/UserPage/UserPage"
+import Verify2FA from "./pages/2faVerify"
 
 function App() {
 

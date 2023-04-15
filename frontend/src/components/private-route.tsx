@@ -1,8 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
-import ProfilePage from '../pages/ProfilePage/ProfilePage';
 import AuthPage from "../pages/AuthPage"
 
 const PrivateRoute : React.FC<{children: React.ReactElement}> = ({children}) => {
@@ -69,10 +67,7 @@ const PrivateRoute : React.FC<{children: React.ReactElement}> = ({children}) => 
             console.log('2fa code is true in my user.data');
             navigate('/2fa/verification');
             return;
-        }
-
-        // if (data.twoFactorActivated === true )
-    
+        }    
     }
 
     if (isAuthenticated) {

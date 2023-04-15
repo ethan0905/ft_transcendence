@@ -1,4 +1,4 @@
-import { Button } from '../components/button/button'
+import { Button } from '../components/Button/button'
 
 export default function Auth() {
 
@@ -10,13 +10,13 @@ export default function Auth() {
 			backgroundSize: 'cover',
 			backgroundImage: `url(/background.jpg)`,
 			backgroundRepeat: 'no-repeat',
+			backgroundPosition: 'center',
 			display: 'flex',
 			flexDirection: 'column',
 			alignItems: 'center',
 			justifyContent: 'center',
 			fontFamily: 'Kocak',
 		}}>
-
 			<div className='overlay' style={{
 				display: 'flex',
 				flexDirection: 'column',
@@ -36,7 +36,6 @@ export default function Auth() {
 				/>
 				
 			</div>
-
 		</div>
 	</>
 	);

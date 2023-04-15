@@ -1,0 +1,55 @@
+.Achievements {
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+    flex-direction: column;
+    color: white;
+    max-height: fit-content;
+  }
+  .Achiev_list {
+    display: flex;
+    justify-content: space-evenly;
+  }
+  .Achiev {
+    display: flex;
+    flex-direction: column;
+  }
+  .Achiev_image {
+    height: 100px;
+    width: auto;
+    opacity: 0.8;
+    position: relative;
+  }
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    background-color: rgb(239, 99, 99);
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 5px;
+    position: absolute;
+    z-index: 1;
+    top: 80%;
+    left: 25%;
+  
+  }
+  
+  .tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent rgb(239, 99, 99) transparent;
+  }
+  
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+  }

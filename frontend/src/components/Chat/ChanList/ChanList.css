@@ -7,10 +7,47 @@
   align-items: center;
   width: 20%;
 }
-
 .chatlist__heading {
   width: 100%;
   text-align: center;
+}
+
+.btn {
+  background-color: #e8e9eb;
+  border: none;
+  cursor: pointer;
+  margin: 0px 10px 10px 10px;
+  width: 180px;
+  height: 47px;
+  line-height: 47px;
+  border-radius: 5px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.357);
+  display: flex;
+  padding: 0;
+  transition: all 0.3s ease-in-out;
+}
+.btn:hover {
+  background-color: #0e0505;
+  color: #fff;
+  transform: scale(1.02);
+}
+.btn i {
+  flex: 0.3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  font-size: 18px;
+  border-right: 1px solid #ebe7fb;
+}
+.btn span {
+  flex: 0.9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: medium;
+  font-family: "Roboto", sans-serif;
+  font-weight: bold;
 }
 
 .chatlist__items {
@@ -51,21 +88,19 @@
   }
 }
 
-
 .chatlist__item:first-child {
   margin-top: 0;
-  border-top: #fff 1px solid;
+  border-top: #faf9f9 2px solid;
 }
-
 .chatlist__item .userMeta p {
-  margin: 0 10px;
+  margin: 0;
   padding: 0;
   color: #000;
   font-weight: 600;
   font-size: 14px;
 }
 .chatlist__item .userMeta span {
-  margin: 0 10px;
+  margin: 0;
   padding: 0;
   color: #4c4a53;
   font-weight: 400;
@@ -112,10 +147,6 @@
   margin-bottom: 10px;
 }
 
-label {
-  margin-bottom: 5px;
-}
-
 .channel_input {
   width: 90%;
   font-size: 14px;
@@ -134,43 +165,4 @@ label {
 
 #DisabledByDefaultIcon:hover {
   color: #c13232;
-}
-
-.btn {
-  background-color: #fff;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  margin: 0px 10px 10px 10px;
-  width: 180px;
-  height: 47px;
-  line-height: 47px;
-  border-radius: 5px;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.357);
-  display: flex;
-  padding: 0;
-  transition: all 0.3s ease-in-out;
-}
-.btn:hover {
-  background-color: #4664ff;
-  color: #fff;
-  transform: scale(1.02);
-}
-.btn i {
-  flex: 0.3;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  font-size: 18px;
-  border-right: 1px solid #ebe7fb;
-}
-.btn span {
-  flex: 0.9;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: medium;
-  font-family: "Roboto", sans-serif;
-  font-weight: bold;
 }

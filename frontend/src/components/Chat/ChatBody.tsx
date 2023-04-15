@@ -24,7 +24,7 @@ const ChatBody: React.FC = () => {
         {location.pathname === '/Chat' ? null :
           (
             <>
-              <ChatContent />
+              <ChatContent/>
               <UserList/>
             </>
           )}
