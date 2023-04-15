@@ -22,11 +22,11 @@ const GameTable = (props: TableProps) => {
 	<div className='tableau'>
 	  <table>
 			<thead>
-				<th colSpan={6} className='maintitleTab'>Pong Matches</th>
+				<th colSpan={6} className='maintitleTab'>Live Matches</th>
 				<tr className='titlesTab'>
 					<th>#</th>
 					<th className='cellPlayer'></th>
-					<th>Match</th>
+					<th></th>
 					<th className='cellPlayer'></th>
 					<th>Score</th>
 					<th>Watch</th>
@@ -108,16 +108,14 @@ return (
 	<div className='GamePage'>
 		{data.length > 0 ? GameTable({ data }) : <p>No Live</p>}
 		<div className='ButtonPlay'>
-			<img src="/buttonplay.jpg" alt='ImgButton' id='ImgButton'
+			<img src="/rasengan.png" alt='ImgButton' id='ImgButton'
 				onClick={() => {socket.emit("matchmaking", "prout")}}
 			/>
-
 			<span id='textPlay' onClick={() => {socket.emit("matchmaking", "prout")}}>
 				PLAY
 			</span>
 			<div className='MapOption'>
-				<span>Default map</span>
-
+				{/* <span>Default map</span> */}
 			</div>
 		</div>
 	</div>

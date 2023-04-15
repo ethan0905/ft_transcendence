@@ -46,9 +46,9 @@ export class ChatService {
                     username : info.username,
                   }
                 }
-            }
-          });
-        }
+              }
+            });
+          }
 
         async delChanById(id : number)
         {
@@ -61,7 +61,7 @@ export class ChatService {
           )
         }
 
-        async quit_Chan(Token: string, id : number)
+        async quit_Chan(username: string, id : number)
         {
           await this.prisma.channel.update(
             {
@@ -71,7 +71,7 @@ export class ChatService {
               data : {
                 members : {
                   disconnect : {
-                    accessToken : Token,
+                    username : username,
                   },
                 },
               },
@@ -80,7 +80,7 @@ export class ChatService {
           )
         }
 
-        async invit_Chan(Token: string, id : number)
+        async invit_Chan(username: string, id : number)
         {
           await this.prisma.channel.update(
             {
@@ -90,7 +90,7 @@ export class ChatService {
               data : {
                 invited : {
                   connect : {
-                    accessToken : Token,
+                    username : username,
                   },
                 },
               },
@@ -99,7 +99,7 @@ export class ChatService {
           )
         }
 
-        async ban_Chan(Token: string, id : number)
+        async ban_Chan(username: string, id : number)
         {
           await this.prisma.channel.update(
             {
@@ -109,12 +109,12 @@ export class ChatService {
               data : {
                 members : {
                   disconnect : {
-                    accessToken : Token,
+                    username : username,
                   },
                 },
                 banned : {
                   connect : {
-                    accessToken : Token,
+                    username : username,
                   },
                 },
               },
@@ -124,8 +124,17 @@ export class ChatService {
         }
 
 
-        async kick_Chan(Token: string, id : number)
+        async kick_Chan(username: string, id : number)
         {
+          const chan = await this.prisma.channel.findUnique({
+            where : {
+              id : id,
+            },
+            select : {
+              admins : true,
+            }
+          })
+          const isadmin = chan.admins.find(admins => admins.username == username)
           await this.prisma.channel.update(
             {
               where: {
@@ -134,13 +143,30 @@ export class ChatService {
               data : {
                 members : {
                   disconnect : {
-                    accessToken : Token,
+                    username : username,
                   },
                 },
               },
                 //isPrivate : info.Private,
               }
           )
+          if (isadmin)
+            await this.prisma.channel.update(
+              {
+                where: {
+                  id: id,
+                },
+                data : {
+                  admins : {
+                    disconnect : {
+                      username : username,
+                    },
+                  },
+                },
+                  //isPrivate : info.Private,
+                }
+            )
+
         }
 
         async join_Chan(data: JoinChanDto)
@@ -157,8 +183,15 @@ export class ChatService {
               invited : true,
             }
           })
+          if (chan.isPrivate === undefined)
+            chan.isPrivate = false;
           const isPriv = chan.isPrivate.valueOf()
-          const isPass = chan.isPassword.valueOf()
+          if (chan.isPassword === undefined)
+          {
+            chan.isPassword = false;
+            chan.password = null;
+          }
+            const isPass = chan.isPassword.valueOf()
           const isban = chan.banned.find(banned => banned.username == data.username)
           const isinvit = chan.invited.find(invited => invited.username == data.username)
           if (isPriv || isban)
@@ -169,7 +202,7 @@ export class ChatService {
               return (2);
           }
           else if (isPass)
-            if (data.Password != chan.password)
+            if (data.Password && data.Password != chan.password)
               return (3);
           await this.prisma.channel.update(
             {
@@ -186,10 +219,26 @@ export class ChatService {
                 //isPrivate : info.Private,
               }
           )
+          if (isinvit)
+            await this.prisma.channel.update(
+              {
+                where: {
+                  id: data.chatId,
+                },
+                data : {
+                  invited : {
+                    disconnect : {
+                      username : data.username,
+                    },
+                  },
+                },
+                  //isPrivate : info.Private,
+                }
+            )
           return (0);
         }
 
-        async isBan_Chan(Token: string, id : number)
+        async isBan_Chan(username: string, id : number)
         {
           const chan = await this.prisma.channel.findFirst({
             where: {
@@ -200,14 +249,14 @@ export class ChatService {
               banned : true,
             }
           })
-          const isban : User = chan.banned.find(banned => banned.accessToken == Token)
+          const isban : User = chan.banned.find(banned => banned.username == username)
           if (isban)
             return (true)
           else
             return (false)
         }
 
-        async isAdmin_Chan(Token: string, id : number)
+        async isAdmin_Chan(username: string, id : number)
         {
           const chan = await this.prisma.channel.findFirst({
             where: {
@@ -218,7 +267,7 @@ export class ChatService {
               admins : true,
             }
           })
-          const isad : User = chan.admins.find(admins => admins.accessToken == Token)
+          const isad : User = chan.admins.find(admins => admins.username == username)
           if (isad)
             return (true)
           else
@@ -309,15 +358,18 @@ export class ChatService {
           try {
             const source = await this.prisma.channel.findMany({
               where: {
-                members : {
-                  every: {
-                    username : username,
-                  },
+                OR: [
+                {
+                    isPrivate: false
                 },
+                {invited : { some : { username : username}}},
+                {members : { some : {username : username}}},
+              ]
               },
               select: {
                 id : true,
                 channelName: true,
+                password: true,
               },
             });
             return source;
@@ -368,6 +420,39 @@ export class ChatService {
           }
         }
 
+        async get__chanNamebyId(id : number) {
+          try {
+            const source = await this.prisma.channel.findUnique({
+              where: {
+                id : id,
+              },
+              select: {
+                channelName: true,
+              },
+            });
+            return source
+          } catch (error) {
+            console.log('get__channels error:', error);
+          }
+        }
+
+
+        async get__MsgIn(id : number) {
+          try {
+            const source = await this.prisma.channel.findMany({
+              where: {
+                id : id,
+              },
+              select: {
+                messages: true,
+              },
+            });
+            return source
+          } catch (error) {
+            console.log('get__channels error:', error);
+          }
+        }
+
         async get__UserBanIn(id : number) {
           try {
             const source = await this.prisma.channel.findMany({
@@ -393,7 +478,7 @@ export class ChatService {
             if (info.isPrivate == undefined)
               info.isPrivate = false;
             const isPass = info.isPassword.valueOf();
-            if (await this.isAdmin_Chan(info.Token, info.channelid) == true)
+            if (await this.isAdmin_Chan(info.username, info.channelid) == true)
             {
               if (isPass)
                 if (!info.Password)

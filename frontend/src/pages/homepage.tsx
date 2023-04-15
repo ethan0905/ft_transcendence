@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Button } from "./button/button";
+import { Button } from "../components/button/button";
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import axios from 'axios';
 import AuthCode from 'react-auth-code-input';
-import Sidebar from './Sidebar/Sidebar';
+import Sidebar from '../components/Sidebar/Sidebar';
 
 function HomePage() {
 	const [checked, setChecked] = React.useState(false);
