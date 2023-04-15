@@ -5,6 +5,9 @@ import { io, Socket } from 'socket.io-client';
 import { useEffect, useState } from 'react';
 import { createContext } from 'react';
 import axios from 'axios';
+import { useLocation, useParams , useNavigate} from 'react-router-dom';
+import PlayPage from './PlayPage.tsx';
+
 
 export const SocketContext = createContext({} as Socket);
 interface TableProps {
@@ -20,6 +23,7 @@ interface TableProps {
 
 const GameTable = (props: TableProps) => {
   const { data } = props;
+  const navigate = useNavigate();
 
   return (
 	<div className='tableau'>
@@ -44,7 +48,7 @@ const GameTable = (props: TableProps) => {
 					<td>{item.player2}</td>
 					<td>{item.game.player1_score+ ":"+ item.game.player2_score}</td>
 					{/* <td>{item.name}</td> */}
-					<td>link</td>
+					<td onClick={() => {navigate(item.name)}}>link</td>
 				</tr>))}
 			</tbody>
 	  </table>
@@ -74,6 +78,8 @@ async function getRooms() {
 export default function GamePage() {
 	const [socket, setSocket] = useState(io("http://localhost:4343/ws-game", {transports:["websocket"], autoConnect:false, reconnection:true,reconnectionAttempts: 3, reconnectionDelay: 1000}));
 	// const data = [];
+	let location = useLocation();
+	let params = useParams();
 	const [data, setData] = useState<any>([]);
 
 	useEffect(() => {
@@ -100,24 +106,30 @@ export default function GamePage() {
 			});
 		})
 	}, [])
-
 return (
 <>
-	<Sidebar />
-	<div className='GamePage'>
-		{data.length > 0 ? GameTable({ data }) : <p>No Live</p>}
-		<div className='ButtonPlay'>
-			<img src="/rasengan.png" alt='ImgButton' id='ImgButton'
-				onClick={() => {socket.emit("matchmaking", "prout")}}
-			/>
-			<span id='textPlay' onClick={() => {socket.emit("matchmaking", "prout")}}>
-				PLAY
-			</span>
-			<div className='MapOption'>
-				{/* <span>Default map</span> */}
-			</div>
-		</div>
-	</div>
+	<SocketContext.Provider value={socket}>
+		<Sidebar />
+		{location.pathname === '/Game' ?
+			<div className='GamePage'>
+				<GameTable data={data} />
+				<div className='ButtonPlay'>
+					<img src="/rasengan.png" alt='ImgButton' id='ImgButton'
+						onClick={() => {
+							socket.emit("matchmaking", "prout")
+						}}
+					/>
+					<span id='textPlay' onClick={() => {socket.emit("matchmaking", "prout")}}>
+						PLAY
+					</span>
+					<div className='MapOption'>
+						{/* <span>Default map</span> */}
+					</div>
+				</div>
+			</div>:
+			<PlayPage />
+		}
+	</SocketContext.Provider>
 </>
 );
 }

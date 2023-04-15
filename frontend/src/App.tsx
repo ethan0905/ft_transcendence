@@ -20,6 +20,7 @@ function App() {
         <Route path='/Chat' element={<ChatPage />} />
         <Route path='/Chat/:id' element={<ChatPage />} />
         <Route path='/Game' element={<GamePage />} />
+        <Route path='/Game/:id_game' element={<GamePage />} />
         <Route path='/*' element={<ErrorPage />} />
       </Routes>
     </div>
