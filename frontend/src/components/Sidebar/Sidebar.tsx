@@ -37,7 +37,7 @@ export default function Sidebar () {
   return (
     <div className="Sidebar">
         <div className="SidebarIcon">
-          <img src="/buttonplay.jpg" alt="Logo" className="SidebarImage"/>
+          <img src="/logo.jpg" alt="Logo" className="SidebarImage"/>
         </div>
         <ul className='SidebarList'>
           {SidebarData.map((val, key) => {

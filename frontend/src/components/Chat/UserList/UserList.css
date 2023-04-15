@@ -3,7 +3,7 @@
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  background-color: rgba(128, 128, 128, 0.7);
+  background-color: #8e8c8c4e;
   width: 20%;
 }
 
@@ -13,17 +13,6 @@
   width: 100%;
   align-items: center;
   text-align: left;
-}
-
-.btn-nobg {
-  background-color: transparent;
-  border: none;
-  box-shadow: none;
-  font-size: 18px;
-  cursor: pointer;
-  padding: 10px;
-  color: #8b898e;
-  outline: none;
 }
 
 .userlist__items {

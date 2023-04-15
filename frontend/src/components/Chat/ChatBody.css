@@ -1,6 +1,6 @@
 .main__chatbody{
+    background-image: url("/public/boruto.jpg");
     background-size: cover;
-    background-image: url("/public/maxresdefault.jpg");
     background-repeat: no-repeat;
     width: 100%;
     display: inline-flex;
@@ -18,23 +18,19 @@
         scroll-behavior: smooth;
         flex-direction: row;
     }
-
     .content__footer{
         height:100px;
     }
-
     .main__chatlist {
         min-width: 26%;
         height: 100%;
         scroll-snap-align: start;
     }
-    
     .main__chatcontent {
         min-width: 50%;
         height: 100%;
         scroll-snap-align: center;
     }
-    
     .main__userlist{
         min-width: 26%;
         height: 100%;

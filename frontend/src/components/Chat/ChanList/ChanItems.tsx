@@ -12,7 +12,7 @@ interface Props {
 }
 
 
-const ChatItems: React.FC<Props> = ({ name, active, animationDelay, id_channel }) => {
+const ChanItems: React.FC<Props> = ({ name, active, animationDelay, id_channel }) => {
   const navigate = useNavigate();
   const selectChat = (e: React.MouseEvent<HTMLDivElement>) => {
     for (
@@ -45,4 +45,4 @@ const ChatItems: React.FC<Props> = ({ name, active, animationDelay, id_channel }
   );
 };
 
-export default ChatItems;
+export default ChanItems;
