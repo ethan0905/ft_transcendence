@@ -18,6 +18,8 @@ model User {
   email     String  @unique
   username  String? @unique
   avatarUrl String?
+  // avatar    File[]   @relation("file")
+  // avatarId  Int?
 
   accessToken String? @unique
   refreshToken String? @unique
@@ -49,6 +51,18 @@ model User {
 
   @@map("users")
   @@unique([id, email])
+}
+
+model File {
+  id        Int     @id @default(autoincrement())
+  createdAt DateTime @default(now())
+
+  content   Bytes
+  filename  String
+  mimetype  String
+
+  // owner     User    @relation("file", fields: [userId], references: [id])
+  // userId    Int
 }
 
 enum Status {

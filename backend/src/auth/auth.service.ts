@@ -87,6 +87,7 @@ export class AuthService{
 				HttpStatus.BAD_REQUEST); 
 			}
 			const data = await response.json();
+			// console.log("get42User(): \n", data.image.versions.medium);
 			return data;
 		} catch (error) {
 			throw new ForbiddenException("Invalid token");
@@ -100,6 +101,8 @@ export class AuthService{
 			// if (user42.email)
 			// 	return user42;
 
+			console.log("user image url : ", user42.image.versions.medium);
+
 			const user = await this.prisma.user.create({
 				data: {
 					email: user42.email,
@@ -108,11 +111,12 @@ export class AuthService{
 					refreshToken: token.refresh_token,
 					twoFactorAuth: false,
 					twoFactorActivated: false,
+					avatarUrl: user42.image.versions.medium,
 					// hash: token, //while we don't have a password
 				},
 			});
 	
-			console.log("Create42User()\n");
+			console.log("User 42 has been created!\n");
 
 			return user;
 		}catch (error) {

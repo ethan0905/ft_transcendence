@@ -6,6 +6,10 @@ import { GetUser } from '../auth/decorator';
 import { User } from '@prisma/client';
 import { EditUserDto } from './dto';
 import { UserService } from './user.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { UseInterceptors } from '@nestjs/common';
+import { UploadedFile } from '@nestjs/common';
+
 
 // @UseGuards(JwtGuard)
 @Controller('users')
@@ -36,4 +40,16 @@ export class UserController {
 	editUsername(@Req () req: Request) {
 		return this.userService.editUsername(req);
 	}
+
+	@Get('me/avatar/get')
+	getAvatar(@Req () req: Request) {
+		return this.userService.getAvatar(req);
+	}
+
+	@Post('me/avatar/upload')
+	@UseInterceptors(FileInterceptor('file'))
+	uploadAvatar(@UploadedFile() file, @Req() req: Request) {
+		return this.userService.uploadAvatar(file, req);
+	}
+
 }

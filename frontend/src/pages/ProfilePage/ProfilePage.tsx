@@ -15,7 +15,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 
 export default function ProfilePage() {
 	const [name, setName] = useState('');
-	const [profilePicture, setProfilePicture] = useState<File | null>(null);
+	const [profilePicture, setProfilePicture] = useState<File | null>(null); // previous one
 	const [checked, setChecked] = React.useState(false);
 	const [twoFAActivated, setTwoFAActivated] = React.useState(false);
 	const [qrcodeDataUrl, setQrcodeDataUrl] = React.useState('');
@@ -26,6 +26,7 @@ export default function ProfilePage() {
 		if (token !== '') {
 			console.log("token: ", token);
 			getUsername(token);
+			getAvatar(1);
 			check2FAStatus(token).then((status: any) => status.json()).then((status: any) => {
 				console.log("status: ", status);
 				setChecked(status.twoFactorAuth);
@@ -200,8 +201,41 @@ export default function ProfilePage() {
 		if (target && target.files && target.files.length > 0) {
 			const file = target.files[0];
 			setProfilePicture(file);
+			const formData = new FormData();
+			formData.append('file', file);
+
+			axios.post(`${process.env.REACT_APP_BACKEND_URL}` + '/files/upload', formData, {
+				headers: {
+					'Content-Type': 'multipart/form-data',
+				},
+			  }).then(response => {
+				console.log('File uploaded successfully', response.data);
+			  }).catch(error => {
+				console.error('Error uploading file', error);
+			  });
 		}
 	};
+
+	async function getAvatar(id : number): Promise<any> {
+		try {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/files/' + id, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+			const blob = await response.blob();
+			const file = new File([blob], 'filename.jpg', { type: 'image/jpeg' });
+			setProfilePicture(file);
+			// return data;
+		} catch (error) {
+
+			console.error(error);
+			// handle error
+		}
+	}
+
+	// async function uploadProfilePicture(): Promise<any> {
 
 	const friends = [
 		{ name: 'Alex', status: 'online' },
@@ -258,6 +292,7 @@ export default function ProfilePage() {
 			<div className='ProfilePage'>
 				<div className='ProfilePage_header'>
 					<ProfilePicture profilePicture={profilePicture} handleUpload={handleUpload} />
+					{/* <ProfilePicture profilePicture={avatar} handleUpload={handleUpload} /> */}
 					<div className='ProfilePage_info'>
 						<EditableText text={name} onSubmit={setUsernameInDatabase} />
 
