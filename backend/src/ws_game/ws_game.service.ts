@@ -104,7 +104,8 @@ export class WsGameService {
 		// client1.join(room.room_name.toString());
 		// client2.join(room.room_name.toString());
 		console.log("Room created: " + room.name);
-		server.to(room.name).emit('RoomCreated', room.name);
+		// server.to(room.name).emit('RoomCreated', room);
+		server.emit('RoomCreated', room);
 		server.to([this.clients[client1].id, this.clients[client2].id]).emit('FindGame', room.name);
 		// server.in(room.room_name).fetchSockets().then((sockets) => {
 		//   console.log(sockets.length)

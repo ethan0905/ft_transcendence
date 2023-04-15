@@ -4,14 +4,17 @@ import Switch from '@mui/material/Switch';
 import { io, Socket } from 'socket.io-client';
 import { useEffect, useState } from 'react';
 import { createContext } from 'react';
+import axios from 'axios';
 
 export const SocketContext = createContext({} as Socket);
 interface TableProps {
   data: {
 	player1: string;
 		player2: string;
-		score: string;
-		link: string;
+		player1_score: number;
+		player2_score: number;
+		name: string;
+		game: any;
   }[];
 }
 
@@ -39,8 +42,9 @@ const GameTable = (props: TableProps) => {
 					<td>{item.player1}</td>
 					<td>VS</td>
 					<td>{item.player2}</td>
-					<td>{item.score}</td>
-					<td>{item.link}</td>
+					<td>{item.game.player1_score+ ":"+ item.game.player2_score}</td>
+					{/* <td>{item.name}</td> */}
+					<td>link</td>
 				</tr>))}
 			</tbody>
 	  </table>
@@ -49,58 +53,53 @@ const GameTable = (props: TableProps) => {
 };
 
 async function getRooms() {
-	const res = await fetch("http://localhost:3333/ws-game/rooms");
-	const data = await res.json();
-	return data;
+	let config = {
+		method: 'get',
+		maxBodyLength: Infinity,
+		url: "http://localhost:3333/ws-game/rooms",
+		headers: {}
+	  };
+
+	  const value = axios.request(config)
+	  .then((response) => {
+		return response.data;
+	  })
+	  .catch((error) => {
+		console.log(error);
+		return [];
+	  });
+	  return (value);
 }
 
 export default function GamePage() {
 	const [socket, setSocket] = useState(io("http://localhost:4343/ws-game", {transports:["websocket"], autoConnect:false, reconnection:true,reconnectionAttempts: 3, reconnectionDelay: 1000}));
 	// const data = [];
+	const [data, setData] = useState<any>([]);
 
 	useEffect(() => {
 		socket.connect();
-		socket.emit("ClientSession", "prout");
-		getRooms().then((rooms) => {
-			console.log(rooms);
+		getRooms().then((values) => {
+			const rooms:any = Object.values(values);
+			// console.log(rooms);
+			setData(rooms);
+			// rooms.forEach((room:any) => {
+			// 	console.log(room.name + ":" + room.player1 + " " + room.player2 + " " + room.game.player1_score + " " + room.game.player2_score);
+			// })
 		})
 
-		socket.on("NewMatch", (value:any) => {
-			console.log("NewRoom")
-			console.log(value);
+		socket.emit("ClientSession", "prout");
+
+		socket.on("RoomCreated", (value:any) => {
+			setData((rooms:any) => {
+				for (var i in rooms) {
+					if (rooms[i].name === value.name) {
+						return rooms;
+					}
+				}
+				return [...rooms, value];
+			});
 		})
 	}, [])
-
-	const data = [
-		{ player1: 'John Doe', player2: 'Jane Smith', score: "3-2", link: "link" },
-		{ player1: 'Jane Smith', player2: 'John Doe',score: "3-2", link: "link"  },
-		{ player1: 'Bob Johnson', player2: 'Jane Smith',score: "3-2", link: "link"},
-		{ player1: 'Tom Smith', player2: 'John Doe',score: "3-2" , link: "link" },
-		{ player1: 'Tom Smith', player2: 'John Doe' ,score: "3-2", link: "link"},
-		{ player1: 'Tom Smith', player2: 'John Doe' ,score: "13-2", link: "link"},
-		{ player1: 'Tom Smith', player2: 'John Doe' ,score: "3-2", link: "link"},
-		{ player1: 'Tom Smith', player2: 'John Doe' ,score: "3-2", link: "link"},
-		{ player1: 'Tom Smith', player2: 'John Doe' ,score: "3-2", link: "link"},
-		{ player1: 'Tom Smith', player2: 'John Doe' ,score: "3-2", link: "link"},
-		{ player1: 'Tom Smith', player2: 'John Doe' ,score: "3-2", link: "link"},
-		{ player1: 'Tom Smith', player2: 'John Doe' ,score: "3-2", link: "link"},
-		{ player1: 'Tom Smith', player2: 'John Doe' ,score: "3-2", link: "link"},
-		{ player1: 'Tom Smith', player2: 'John Doe' ,score: "3-2", link: "link"},
-		{ player1: 'Tom Smith', player2: 'John Doe' ,score: "3-2", link: "link"},
-		{ player1: 'Tom Smith', player2: 'John Doe' ,score: "3-2", link: "link"},
-		{ player1: 'Tom Smith', player2: 'John Doe' ,score: "3-2", link: "link"},
-		{ player1: 'Tom Smith', player2: 'John Doe' ,score: "3-2", link: "link"},
-		{ player1: 'Tom Smith', player2: 'John Doe' ,score: "3-2", link: "link"},
-		{ player1: 'Tom Smith', player2: 'John Doe' ,score: "3-2", link: "link"},
-		{ player1: 'Tom Smith', player2: 'John Doe' ,score: "3-2", link: "link"},
-		{ player1: 'Tom Smith', player2: 'John Doe' ,score: "3-2", link: "link"},
-		{ player1: 'Tom Smith', player2: 'John Doe' ,score: "3-2", link: "link"},
-		{ player1: 'Tom Smith', player2: 'John Doe' ,score: "3-2", link: "link"},
-		{ player1: 'Tom Smith', player2: 'John Doe' ,score: "3-2", link: "link"},
-		{ player1: 'Tom Smith', player2: 'John Doe' ,score: "3-2", link: "link"},
-		{ player1: 'Tom Smith', player2: 'John Doe' ,score: "3-2", link: "link"},
-		{ player1: 'Tom Smith', player2: 'John Doe' ,score: "3-2", link: "link"},
-	];
 
 return (
 <>
