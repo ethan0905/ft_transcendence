@@ -10,28 +10,7 @@ export class AuthController {
   constructor(private authService: AuthService,
               private prismaService: PrismaService) {}
 
-  // //POST /auth/signup
-  // @Post('signup')
-  // signup(@Body() dto: AuthDto) {
-  // 	return this.authService.signup(dto);
-  // }
-
-  @HttpCode(HttpStatus.OK) //send a 200 code for clarity
-  //POST /auth/signin
-  @Post('signin')
-  signin(@Body() dto: AuthDto) {
-    return this.authService.signin(dto);
-  }
-
-  @Get('/')
-  testAuth() {
-    return this.authService.testAuth();
-  }
-
-  // @Get('42')
-  // signin42(@Body() dto: Auth42Dto) {
-  // 	console.log("/auth/42 controller");
-  // }
+  // @HttpCode(HttpStatus.OK) //send a 200 code for clarity
 
   @Get('42/callback')
   async getToken( @Req() req: Request, @Res() res: Response) {
@@ -95,27 +74,9 @@ export class AuthController {
           `${process.env.FRONTEND_URL}/2fa/verification`,
           );
       }
-      else
-      {
-        // console.log("Hello 3\n");
-      }
 
       return { token: token, user: user };
     }
-  }
-
-  @Get('token')
-  async getToken2( @Req() req: Request, @Res() res: Response) {
-    // const user = await this.prismaService.user.findUnique({
-    //   where: {
-    //     email: req.body.email,
-    //   },
-    // })
-
-    const test = req.cookies.token;
-    
-    console.log("Inside get token2 fucntion: ", test);
-    return;
   }
 
   @Get('42/logout')
@@ -138,11 +99,6 @@ export class AuthController {
   async activate2FA(@Req() req: Request, @Res() res: Response) {
     return this.authService.activate2FA(req, res);
   }
-
-  // @Post('2fa/disable')
-  // async disable2FA(@Req() req: Request, @Res() res: Response) {
-  //   return this.authService.disable2FA(req, res);
-  // }
 
   @Post('2fa/generate')
   async generate2FA(@Req() req: Request, @Res() res: Response) {

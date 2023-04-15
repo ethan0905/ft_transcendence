@@ -14,7 +14,7 @@ import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
 export default function ProfilePage() {
-	const [name, setName] = useState("Username");
+	const [name, setName] = useState('');
 	const [profilePicture, setProfilePicture] = useState<File | null>(null);
 	const [checked, setChecked] = React.useState(false);
 	const [twoFAActivated, setTwoFAActivated] = React.useState(false);
@@ -25,6 +25,7 @@ export default function ProfilePage() {
 	useEffect(() => {
 		if (token !== '') {
 			console.log("token: ", token);
+			getUsername(token);
 			check2FAStatus(token).then((status: any) => status.json()).then((status: any) => {
 				console.log("status: ", status);
 				setChecked(status.twoFactorAuth);
@@ -149,6 +150,51 @@ export default function ProfilePage() {
 		}
 	}
 
+	async function getUsername(accessToken: string): Promise<any> {
+		try {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/username/get', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `${accessToken}`
+				},
+			});
+			const data = await response.json();
+			if (data) {
+				console.log("NAME : ", data);
+				setName(data.username);
+			}
+			// return data;
+		} catch (error) {
+
+			console.error(error);
+			// handle error
+		}
+	}
+
+	async function setUsernameInDatabase(username: string): Promise<any> {
+		try {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/username/edit', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `${token}`
+				},
+				body: JSON.stringify({ username })
+			});
+			const data = await response.json();
+			if (data.username) {
+				// console.log("NAME : ", data);
+				setName(data.username);
+			}
+			// return data;
+		} catch (error) {
+
+			console.error(error);
+			// handle error
+		}
+	}
+
 	const handleUpload: ChangeEventHandler<HTMLInputElement> = (event: ChangeEvent) => {
 		const target = event.target as HTMLInputElement;
 		if (target && target.files && target.files.length > 0) {
@@ -213,7 +259,7 @@ export default function ProfilePage() {
 				<div className='ProfilePage_header'>
 					<ProfilePicture profilePicture={profilePicture} handleUpload={handleUpload} />
 					<div className='ProfilePage_info'>
-						<EditableText text={name} onSubmit={setName} />
+						<EditableText text={name} onSubmit={setUsernameInDatabase} />
 
 						<FormControlLabel control={
 							<RedSwitch checked={checked}
