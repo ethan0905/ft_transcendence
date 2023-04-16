@@ -18,6 +18,8 @@ model User {
   email     String  @unique
   username  String? @unique
   avatarUrl String?
+  files    File[]   @relation("file")
+  // avatarId  Int?
 
   accessToken String? @unique
   refreshToken String? @unique
@@ -46,9 +48,19 @@ model User {
 
   games Game[] @relation("player")
 
-
   @@map("users")
   @@unique([id, email])
+}
+
+model File {
+  id        Int     @id @default(autoincrement())
+  createdAt DateTime @default(now())
+
+  content   Bytes
+  filename  String
+  mimetype  String
+
+  owner     User[]    @relation("file")
 }
 
 enum Status {

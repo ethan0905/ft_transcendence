@@ -23,56 +23,24 @@ export class AuthService{
 		private config: ConfigService,
 	) {}
 
-	async signin(dto: AuthDto) {
-		//1. find the user by email
-		const user = await this.prisma.user.findFirstOrThrow({
-			where: {
-				email: dto.email, 
-			},
-		});
-		//if user does not exist, throw exception
-		if (!user)
-			throw new ForbiddenException('Credentials incorrect');
+	// async signToken(userId: number, email: string): Promise<{access_token: string}> {
+	// 	const payload = {
+	// 		sub: userId,
+	// 		email,
+	// 	};
+	// 	const secret = this.config.get('JWT_SECRET');
 
-		//2. compare password
-		// const pwMatches = await argon.verify(user.hash, dto.password);
-		//if password incorrect, throw exception
-		// if (!pwMatches)
-		// 	throw new ForbiddenException('Credentials incorrect');
+	// 	const token = await this.jwt.signAsync(
+	// 		payload, {
+	// 			expiresIn: '15min',
+	// 			secret: secret,
+	// 		},
+	// 	);
 
-		//3. send back the user
-		return this.signToken(user.id, user.email);
-	}
-
-	async signToken(userId: number, email: string): Promise<{access_token: string}> {
-		const payload = {
-			sub: userId,
-			email,
-		};
-		const secret = this.config.get('JWT_SECRET');
-
-		const token = await this.jwt.signAsync(
-			payload, {
-				expiresIn: '15min',
-				secret: secret,
-			},
-		);
-
-		return {
-			access_token: token,
-		};
-	}
-
-	testAuth() {
-		return ({
-			message: '/auth path is working!'
-		});
-	}
-
-	async afterRedirection() {
-
-		console.log("Redirection happened! Now what?");
-	}
+	// 	return {
+	// 		access_token: token,
+	// 	};
+	// }
 
 	async accessToken(req: string) {
 
@@ -119,6 +87,7 @@ export class AuthService{
 				HttpStatus.BAD_REQUEST); 
 			}
 			const data = await response.json();
+			// console.log("get42User(): \n", data.image.versions.medium);
 			return data;
 		} catch (error) {
 			throw new ForbiddenException("Invalid token");
@@ -132,6 +101,8 @@ export class AuthService{
 			// if (user42.email)
 			// 	return user42;
 
+			console.log("user image url : ", user42.image.versions.medium);
+
 			const user = await this.prisma.user.create({
 				data: {
 					email: user42.email,
@@ -140,11 +111,12 @@ export class AuthService{
 					refreshToken: token.refresh_token,
 					twoFactorAuth: false,
 					twoFactorActivated: false,
+					avatarUrl: user42.image.versions.medium,
 					// hash: token, //while we don't have a password
 				},
 			});
 	
-			console.log("Create42User()\n");
+			console.log("User 42 has been created!\n");
 
 			return user;
 		}catch (error) {
@@ -194,15 +166,14 @@ export class AuthService{
 		// });
 	}
 
-
 	async updateCookies(@Res() res: Response, token: any, user42: any) {
 		try {
 		  if (user42)
 		  {
 			const user = await this.prisma.user.update({
 				where: {
-				username: user42.login,
-			},
+					email: user42.email,
+				},
 				data: {
 					accessToken: token.access_token,
 				},
@@ -226,7 +197,6 @@ export class AuthService{
 
 	async get2FAStatus(@Req() req: Request) {
 		try {
-			// console.log("123123 req: [", req.headers.authorization);
 			
 			const status = await this.prisma.user.findFirst({
 				where: {
@@ -238,7 +208,6 @@ export class AuthService{
 				},
 			});
 
-			// console.log("123123 status: [", status);
 			return status;
 		} catch (error) {
 			throw new HttpException({
@@ -262,84 +231,11 @@ export class AuthService{
 			},
 		});
 
-		// console.log("2fa has been SWITCHED! status: ", req.body.twoFactorAuth);
-
-		// if (req.body.twoFactorAuth == true)
-		// {
-		// 	// if (user.twoFactorSecret == null)
-		// 	// {
-		// 		// if (user.twoFactorSecret != null)
-		// 		// 	return {message: "2FA already enabled"};
-
-		// 		const secret = authenticator.generateSecret();
-		// 		await this.prisma.user.update({
-		// 			where: {
-		// 				accessToken: req.body.token,
-		// 			},
-		// 			data: {
-		// 				twoFactorSecret: secret,
-		// 			},
-		// 		});
-
-		// 		const twoFactorSecret = await this.prisma.user.findFirst({
-		// 			where: {
-		// 				accessToken: req.body.token,
-		// 			},
-		// 			select: {
-		// 				twoFactorSecret: true,
-		// 			},
-		// 		});
-
-		// 		console.log("User.twofactorsecret : ", twoFactorSecret.twoFactorSecret);
-
-		// 		if (twoFactorSecret.twoFactorSecret == null)
-		// 			return {message: "Error while enabling 2FA"};
-
-		// 		const otpauthUrl = authenticator.keyuri(user.email, 'Pong Pong', twoFactorSecret.twoFactorSecret);
-		// 		console.log("otpauthUrl: ", otpauthUrl);
-
-		// 		return res.json(
-		// 			await this.generateQrCodeDataURL(otpauthUrl)
-		// 		);
-		// 	// }
-		// 	// const middleIndex = Math.floor(secret.length / 8);
-		// 	// const firstQuarter = secret.substr(0, middleIndex);
-		// 	// console.log("Secret: ", secret);
-
-
-		// 	// const speakeasy = require('speakeasy');
-
-		// 	// const otpauthUrl = speakeasy.otpauthURL({
-		// 	// 	secret: secret,
-		// 	// 	label: 'Pong ping',
-		// 	// 	algorithm: 'sha512',
-		// 	// 	encoding: 'base32'
-		// 	// });
-		// 	// console.log("otpauthUrl: ", otpauthUrl);
-
-		// 	// console.log(otpauthUrl);
-
-
-		// 	// await this.prisma.user.update({
-		// 	// 	where: {
-		// 	// 		accessToken: req.body.token,
-		// 	// 	},
-		// 	// 	data: {
-		// 	// 		twoFactorSecret: secret,
-		// 	// 	},
-		// 	// });
-
-		// 	// const qrCodeDataURL = await this.generateQrCodeDataURL(otpauthUrl);
-		// 	// console.log("qrCodeDataURL: ", qrCodeDataURL);
-
-		// 	// return qrCodeDataURL;
-		// }
 	}
 
 	async activate2FA(@Req() req: Request, @Res() res: Response) {
 
 		console.log("99998888---> ", req.body.twoFactorActivated);
-		// console.log("Getting my Token from req.cookies.token: ", req.body.token);
 
 		const user = await this.prisma.user.update({
 			where: {
@@ -350,20 +246,6 @@ export class AuthService{
 			},
 		});
 	}
-
-	// async disable2FA(@Req() req: Request, @Res() res: Response) {
-
-	// 	await this.prisma.user.update({
-	// 		where: {
-	// 			accessToken: req.body.token,
-	// 		},
-	// 		data: {
-	// 			twoFactorAuth: false,
-	// 		},
-	// 	});
-
-	// 	console.log("Two factor Boolean has been disabled!");
-	// }
 
 	async generate2FA(@Req() req: Request, @Res() res: Response) {
 		
@@ -420,9 +302,9 @@ export class AuthService{
 			},
 		});
 
-		console.log("user to verify:  ", user.email);
-		console.log("access token to verify:  ", req.body.token);
-		console.log("authenticator code to verify:  ", req.body.twoFACode);
+		// console.log("user to verify:  ", user.email);
+		// console.log("access token to verify:  ", req.body.token);
+		// console.log("authenticator code to verify:  ", req.body.twoFACode);
 
 		return authenticator.verify({
 		  token: req.body.twoFACode, // the code the user enters
@@ -432,14 +314,14 @@ export class AuthService{
 
 	  async checkIfUserAuthenticated(@Req() req: Request) {
 		  
-		console.log("Is user authenticated ? ", req.headers.authorization);
+		// console.log("Is user authenticated ? ", req.headers.authorization);
 		try {
 			const user = await this.prisma.user.findFirst({
 				where: {
 					accessToken: req.headers.authorization,
 				},
 			});
-			console.log("User found: ", user.email);
+			// console.log("User found: ", user.email);
 			delete user.accessToken;
 
 			return user;
@@ -462,7 +344,7 @@ export class AuthService{
 				},
 			});
 	
-			return {message: "Login with 2FA Succeeded"};
+			return { message: "Login with 2FA Succeeded" };
 		} catch (error) {
 			console.log(error);
 			throw new HttpException('Error while connecting user', HttpStatus.INTERNAL_SERVER_ERROR);

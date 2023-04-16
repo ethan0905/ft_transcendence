@@ -14,8 +14,8 @@ import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
 export default function ProfilePage() {
-	const [name, setName] = useState("Username");
-	const [profilePicture, setProfilePicture] = useState<File | null>(null);
+	const [name, setName] = useState('');
+	const [profilePicture, setProfilePicture] = useState<File | null>(null); // previous one
 	const [checked, setChecked] = React.useState(false);
 	const [twoFAActivated, setTwoFAActivated] = React.useState(false);
 	const [qrcodeDataUrl, setQrcodeDataUrl] = React.useState('');
@@ -24,7 +24,8 @@ export default function ProfilePage() {
 
 	useEffect(() => {
 		if (token !== '') {
-			console.log("token: ", token);
+			getUsername(token);
+			getProfilePicture(token);
 			check2FAStatus(token).then((status: any) => status.json()).then((status: any) => {
 				console.log("status: ", status);
 				setChecked(status.twoFactorAuth);
@@ -90,11 +91,12 @@ export default function ProfilePage() {
 				body: JSON.stringify({ token: token })
 			});
 			const data = await response.json();
-			console.log(data);
-			setQrcodeDataUrl(data);
-			setTwoFAActivated(false);
-			debugBase64(data);
-			return data;
+			if (data) {
+				setQrcodeDataUrl(data);
+				setTwoFAActivated(false);
+				debugBase64(data);
+				return data;
+			}
 		} catch (error) {
 			console.error(error);
 			// handle error
@@ -149,13 +151,111 @@ export default function ProfilePage() {
 		}
 	}
 
+	async function getUsername(accessToken: string): Promise<any> {
+		try {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/username/get', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `${accessToken}`
+				},
+			});
+			const data = await response.json();
+			if (data) {
+				setName(data.username);
+			}
+			return data.username;
+		} catch (error) {
+
+			console.error(error);
+			// handle error
+		}
+	}
+
+	async function setUsernameInDatabase(username: string): Promise<any> {
+		try {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/username/edit', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `${token}`
+				},
+				body: JSON.stringify({ username })
+			});
+			const data = await response.json();
+			if (data.username) {
+				setName(data.username);
+			}
+			// return data;
+		} catch (error) {
+
+			console.error(error);
+			// handle error
+		}
+	}
+
 	const handleUpload: ChangeEventHandler<HTMLInputElement> = (event: ChangeEvent) => {
+
 		const target = event.target as HTMLInputElement;
+
 		if (target && target.files && target.files.length > 0) {
 			const file = target.files[0];
 			setProfilePicture(file);
+			const formData = new FormData();
+			formData.append('file', file);
+
+			axios.post(`${process.env.REACT_APP_BACKEND_URL}` + '/files/' + name + '/upload', formData, {
+				headers: {
+					'Content-Type': 'multipart/form-data',
+				},
+			  }).then(response => {
+				console.log('File uploaded successfully', response.data);
+			  }).catch(error => {
+				console.error('Error uploading file', error);
+			  });
 		}
 	};
+
+	async function getProfilePicture(accessToken: string): Promise<any> {
+
+		let username: string = '';
+
+		try {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/username/get', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `${accessToken}`
+				},
+			});
+			const data = await response.json();
+			if (data) {
+				setName(data.username);
+				username = data.username; // TMP : storing my name inside this variable
+			}
+		} catch (error) {
+
+			console.error(error);
+			// handle error
+		}
+
+		try {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/files/' + username, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+			const blob = await response.blob();
+			const file = new File([blob], 'filename.jpg', { type: 'image/jpeg' });
+			setProfilePicture(file);
+			// return data;
+		} catch (error) {
+
+			console.error(error);
+			// handle error
+		}
+	}
 
 	const friends = [
 		{ name: 'Alex', status: 'online' },
@@ -212,8 +312,9 @@ export default function ProfilePage() {
 			<div className='ProfilePage'>
 				<div className='ProfilePage_header'>
 					<ProfilePicture profilePicture={profilePicture} handleUpload={handleUpload} />
+					{/* <ProfilePicture profilePicture={avatar} handleUpload={handleUpload} /> */}
 					<div className='ProfilePage_info'>
-						<EditableText text={name} onSubmit={setName} />
+						<EditableText text={name} onSubmit={setUsernameInDatabase} />
 
 						<FormControlLabel control={
 							<RedSwitch checked={checked}
