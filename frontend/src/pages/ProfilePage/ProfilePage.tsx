@@ -27,7 +27,6 @@ export default function ProfilePage() {
 			console.log("token: ", token);
 			getUsername(token);
 			getAvatar(token);
-			console.log("username: ", name);
 			check2FAStatus(token).then((status: any) => status.json()).then((status: any) => {
 				console.log("status: ", status);
 				setChecked(status.twoFactorAuth);
@@ -219,10 +218,32 @@ export default function ProfilePage() {
 
 	async function getAvatar(accessToken: string): Promise<any> {
 		// const name = getUsername(accessToken);
-		console.log("INSIDE GET AVATAR! : ", name);
+		console.log("INSIDE GET AVATAR! : ", accessToken);
 
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/files/' + name, {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/username/get', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `${accessToken}`
+				},
+			});
+			const data = await response.json();
+			if (data) {
+				console.log("NAME : ", data);
+				setName(data.username);
+			}
+			accessToken = data.username; // TMP : getting my name inside this variable
+		} catch (error) {
+
+			console.error(error);
+			// handle error
+		}
+
+		console.log("INSIDE GET AVATAR 2222 ! : ", accessToken);
+
+		try {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/files/' + accessToken, {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
