@@ -24,9 +24,8 @@ export default function ProfilePage() {
 
 	useEffect(() => {
 		if (token !== '') {
-			console.log("token: ", token);
 			getUsername(token);
-			getAvatar(token);
+			getProfilePicture(token);
 			check2FAStatus(token).then((status: any) => status.json()).then((status: any) => {
 				console.log("status: ", status);
 				setChecked(status.twoFactorAuth);
@@ -92,11 +91,12 @@ export default function ProfilePage() {
 				body: JSON.stringify({ token: token })
 			});
 			const data = await response.json();
-			console.log(data);
-			setQrcodeDataUrl(data);
-			setTwoFAActivated(false);
-			debugBase64(data);
-			return data;
+			if (data) {
+				setQrcodeDataUrl(data);
+				setTwoFAActivated(false);
+				debugBase64(data);
+				return data;
+			}
 		} catch (error) {
 			console.error(error);
 			// handle error
@@ -162,7 +162,6 @@ export default function ProfilePage() {
 			});
 			const data = await response.json();
 			if (data) {
-				console.log("NAME : ", data);
 				setName(data.username);
 			}
 			return data.username;
@@ -185,7 +184,6 @@ export default function ProfilePage() {
 			});
 			const data = await response.json();
 			if (data.username) {
-				// console.log("NAME : ", data);
 				setName(data.username);
 			}
 			// return data;
@@ -197,7 +195,9 @@ export default function ProfilePage() {
 	}
 
 	const handleUpload: ChangeEventHandler<HTMLInputElement> = (event: ChangeEvent) => {
+
 		const target = event.target as HTMLInputElement;
+
 		if (target && target.files && target.files.length > 0) {
 			const file = target.files[0];
 			setProfilePicture(file);
@@ -216,9 +216,9 @@ export default function ProfilePage() {
 		}
 	};
 
-	async function getAvatar(accessToken: string): Promise<any> {
-		// const name = getUsername(accessToken);
-		console.log("INSIDE GET AVATAR! : ", accessToken);
+	async function getProfilePicture(accessToken: string): Promise<any> {
+
+		let username: string = '';
 
 		try {
 			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/username/get', {
@@ -230,20 +230,17 @@ export default function ProfilePage() {
 			});
 			const data = await response.json();
 			if (data) {
-				console.log("NAME : ", data);
 				setName(data.username);
+				username = data.username; // TMP : storing my name inside this variable
 			}
-			accessToken = data.username; // TMP : getting my name inside this variable
 		} catch (error) {
 
 			console.error(error);
 			// handle error
 		}
 
-		console.log("INSIDE GET AVATAR 2222 ! : ", accessToken);
-
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/files/' + accessToken, {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/files/' + username, {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
@@ -259,8 +256,6 @@ export default function ProfilePage() {
 			// handle error
 		}
 	}
-
-	// async function uploadProfilePicture(): Promise<any> {
 
 	const friends = [
 		{ name: 'Alex', status: 'online' },
