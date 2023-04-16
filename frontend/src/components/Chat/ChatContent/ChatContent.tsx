@@ -93,6 +93,40 @@ export default function ChatContent(props: ChatContentProps) {
   const socket = useContext(SocketContext);
   const [chat, setChat] = useState<ChatItm[]>([]);
   const [msg, setMsg] = useState<string>('');
+  const [email, setEmail] = useState<string>()
+  const [token, setToken] = useState('');
+
+  useEffect(() => {
+		if (token !== '') {
+			console.log("Le token est valide !", token);
+			getUsername(token);
+		}
+		let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+		if (cookieToken) {
+			setToken(cookieToken);
+		}
+	}, [token]);
+
+  async function getUsername(accessToken: string): Promise<any> {
+    try {
+        const response = await fetch('http://localhost:3333/users/me/email/get', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `${accessToken}`
+          },
+        });
+        const data = await response.json();
+        if (data) {
+          setEmail(data.email);
+        }
+        // return data;
+      } catch (error) {
+  
+        console.error(error);
+        // handle error
+      }
+    }
 
   useEffect(() => {
     socket.on("NewMessage", (value:any) => {
@@ -157,9 +191,10 @@ export default function ChatContent(props: ChatContentProps) {
       onFocus={() => {return false;}}
     />
     <button className="btnSendMsg" id="sendMsgBtn" onClick={() => {
+      console.log("email = ", email)
       socket.emit("sendMsgtoC", {
         "chatId":Number(location.pathname.split("/")[2]),
-        "mail":"chduong@student.42.fr",
+        "mail":email,
         "msg":msg
       })
     }}><i className="fa fa-paper-plane"></i></button>

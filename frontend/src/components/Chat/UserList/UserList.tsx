@@ -37,6 +37,40 @@ export default function UserList() {
   const [allUsers, setAllUsers] = useState<ChanUser[]>([]);
   const socket = useContext(SocketContext);
   let location = useLocation();
+  const [username, setUsername] = useState<string>()
+  const [token, setToken] = useState('');
+
+  useEffect(() => {
+		if (token !== '') {
+			console.log("Le token est valide !", token);
+			getUsername(token);
+		}
+		let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+		if (cookieToken) {
+			setToken(cookieToken);
+		}
+	}, [token]);
+
+  async function getUsername(accessToken: string): Promise<any> {
+    try {
+        const response = await fetch('http://localhost:3333/users/me/username/get', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `${accessToken}`
+          },
+        });
+        const data = await response.json();
+        if (data) {
+          setUsername(data.username);
+        }
+        // return data;
+      } catch (error) {
+  
+        console.error(error);
+        // handle error
+      }
+    }
 
   useEffect(() => {
     socket.on("NewUserJoin", (value:any) => {
@@ -54,8 +88,8 @@ export default function UserList() {
     if (location.pathname !== "/Chat"){
       let id = Number(location.pathname.split("/")[2]);
       console.log("id channel:"+ id);
-      socket.emit("join",{chatId:id, username:"chduong"}); // Ne pas oublier MDP
-      getAllUserInChat(id).then((value: any) => { // **** MODIFIER ID DU CHANNEL ****
+      socket.emit("join",{chatId:id, username:username}); // Ne pas oublier MDP
+      getAllUserInChat(id).then((value: any) => {
         console.log(value);
         setAllUsers(value);
       })

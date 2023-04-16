@@ -7,24 +7,17 @@ import { User } from '@prisma/client';
 import { EditUserDto } from './dto';
 import { UserService } from './user.service';
 
-@UseGuards(JwtGuard)
 @Controller('users')
 export class UserController {
 	constructor(private userService: UserService) {} //dependency injection
 
-	@Get('me')
-	getMe(@GetUser() user: User) {
-		return user;
+	@Get('me/username/get')
+	getUsername(@Req() req: Request) {
+		return this.userService.getUsername(req);
 	}
 
-	@Patch()
-	editUser(@GetUser('id') userId: number, @Body() dto: EditUserDto) {
-		return this.userService.editUser(userId, dto);
-	}
-
-
-	@Get('me')
-	getUserbyId(@GetUser() user: User) {
-		return user;
+	@Get('me/email/get')
+	getmail(@Req() req: Request) {
+		return this.userService.getmail(req);
 	}
 }
