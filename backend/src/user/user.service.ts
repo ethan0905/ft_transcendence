@@ -79,4 +79,15 @@ export class UserService {
 			},
 		});
 	}
+
+	async getid(@Req() req: Request) {
+		return this.prisma.user.findUnique({
+			where: {
+				accessToken: req.headers.authorization,
+			},
+			select: {
+				id: true,
+			},
+		});
+	}
 }

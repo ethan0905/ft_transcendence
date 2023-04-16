@@ -58,14 +58,6 @@ const FormButton = () => {
   );
 }
 
-type ChatItm = {
-  id: number,
-  createdAt: Date,
-  message: string,
-  userId: number,
-  channelId: number
-};
-
 async function getAllMessages(id_channel:number){
   let config = {
     method: 'get',
@@ -85,6 +77,14 @@ async function getAllMessages(id_channel:number){
   return (value);
 }
 
+type ChatItm = {
+  id: number,
+  createdAt: Date,
+  message: string,
+  userId: number,
+  channelId: number
+};
+
 type ChatContentProps = {};
 
 export default function ChatContent(props: ChatContentProps) {
@@ -93,13 +93,15 @@ export default function ChatContent(props: ChatContentProps) {
   const socket = useContext(SocketContext);
   const [chat, setChat] = useState<ChatItm[]>([]);
   const [msg, setMsg] = useState<string>('');
+  const [userID, setUserID] = useState<number>()
   const [email, setEmail] = useState<string>()
   const [token, setToken] = useState('');
 
   useEffect(() => {
 		if (token !== '') {
 			console.log("Le token est valide !", token);
-			getUsername(token);
+			getUsermail(token);
+      getUserId(token);
 		}
 		let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
 		if (cookieToken) {
@@ -107,7 +109,26 @@ export default function ChatContent(props: ChatContentProps) {
 		}
 	}, [token]);
 
-  async function getUsername(accessToken: string): Promise<any> {
+  async function getUserId(accessToken: string): Promise<any> {
+    try {
+        const response = await fetch('http://localhost:3333/users/me/id/get', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `${accessToken}`
+          },
+        });
+        const data = await response.json();
+        if (data) {
+          console.log("data id: ", data.id)
+          setUserID(data.id);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+  async function getUsermail(accessToken: string): Promise<any> {
     try {
         const response = await fetch('http://localhost:3333/users/me/email/get', {
           method: 'GET',
@@ -118,13 +139,11 @@ export default function ChatContent(props: ChatContentProps) {
         });
         const data = await response.json();
         if (data) {
+          console.log("data email: ", data)
           setEmail(data.email);
         }
-        // return data;
       } catch (error) {
-  
         console.error(error);
-        // handle error
       }
     }
 
@@ -173,10 +192,8 @@ export default function ChatContent(props: ChatContentProps) {
         <ChatItem
           animationDelay={index + 2}
           key={index}
-          // user={itm.type ? itm.type : "me"}
-          user={"me"}
+          user={itm.userId === userID ? "me" : "other"}
           msg={itm.message}
-          // image={itm.image}
           image={"https://cdn.pixabay.com/photo/2013/04/11/19/46/building-102840__480.jpg"}
         />
       );

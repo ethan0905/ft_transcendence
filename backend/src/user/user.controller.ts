@@ -20,4 +20,8 @@ export class UserController {
 	getmail(@Req() req: Request) {
 		return this.userService.getmail(req);
 	}
+	@Get('me/id/get')
+	getid(@Req() req: Request) {
+		return this.userService.getid(req);
+	}
 }
