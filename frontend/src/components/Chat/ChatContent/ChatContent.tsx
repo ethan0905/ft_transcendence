@@ -96,6 +96,8 @@ export default function ChatContent(props: ChatContentProps) {
   const [userID, setUserID] = useState<number>()
   const [email, setEmail] = useState<string>()
   const [token, setToken] = useState('');
+  const [msgInput, setMsgInput] = useState("Type a message here");
+
 
   useEffect(() => {
 		if (token !== '') {
@@ -109,6 +111,12 @@ export default function ChatContent(props: ChatContentProps) {
 		}
 	}, [token]);
 
+
+  function clearInput() {
+    setMsgInput("Type a message here");
+    setMsg("");
+  }
+  
   async function getUserId(accessToken: string): Promise<any> {
     try {
         const response = await fetch('http://localhost:3333/users/me/id/get', {
@@ -202,13 +210,13 @@ export default function ChatContent(props: ChatContentProps) {
   </div>
 
   <div className="sendNewMessage">
-    <input type="text" placeholder="Type a message here"
+    <input type="text" placeholder={msgInput}
       onChange={onStateChange}
       value={msg}
       onFocus={() => {return false;}}
     />
     <button className="btnSendMsg" id="sendMsgBtn" onClick={() => {
-      console.log("email = ", email)
+      clearInput();
       socket.emit("sendMsgtoC", {
         "chatId":Number(location.pathname.split("/")[2]),
         "mail":email,
