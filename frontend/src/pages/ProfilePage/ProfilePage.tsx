@@ -26,7 +26,8 @@ export default function ProfilePage() {
 		if (token !== '') {
 			console.log("token: ", token);
 			getUsername(token);
-			getAvatar(1);
+			getAvatar(token);
+			console.log("username: ", name);
 			check2FAStatus(token).then((status: any) => status.json()).then((status: any) => {
 				console.log("status: ", status);
 				setChecked(status.twoFactorAuth);
@@ -165,7 +166,7 @@ export default function ProfilePage() {
 				console.log("NAME : ", data);
 				setName(data.username);
 			}
-			// return data;
+			return data.username;
 		} catch (error) {
 
 			console.error(error);
@@ -204,7 +205,7 @@ export default function ProfilePage() {
 			const formData = new FormData();
 			formData.append('file', file);
 
-			axios.post(`${process.env.REACT_APP_BACKEND_URL}` + '/files/upload', formData, {
+			axios.post(`${process.env.REACT_APP_BACKEND_URL}` + '/files/' + name + '/upload', formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
 				},
@@ -216,9 +217,12 @@ export default function ProfilePage() {
 		}
 	};
 
-	async function getAvatar(id : number): Promise<any> {
+	async function getAvatar(accessToken: string): Promise<any> {
+		// const name = getUsername(accessToken);
+		console.log("INSIDE GET AVATAR! : ", name);
+
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/files/' + id, {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/files/' + name, {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
