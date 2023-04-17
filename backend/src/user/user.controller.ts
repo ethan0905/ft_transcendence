@@ -34,6 +34,11 @@ export class UserController {
 		return this.userService.getUserNameById(req);
 	}
 
+	@Get('username/valid')
+	userExistsInDatabase(@Req() req: Request) {
+		return this.userService.userExistsInDatabase(req);
+	}
+
 	@Get('id/get')
 	getUserIdByUserName(@Req() req: Request) {
 		return this.userService.getUserIdByUserName(req);

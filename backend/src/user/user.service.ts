@@ -76,13 +76,31 @@ export class UserService {
 		});
 	}
 
+	async userExistsInDatabase(@Req() req: Request) {
+		const username = Array.isArray(req.headers.username)
+			? req.headers.username[0]
+			: req.headers.username;
+
+		const user = await this.prisma.user.findUnique({
+			where: {
+				username: username,
+			},
+		});
+
+		if (user) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	async getUserIdByUserName(@Req() req: Request) {
 
 		const username = Array.isArray(req.headers.username)
 		? req.headers.username[0]
 		: req.headers.username;
 
-		console.log("username: ", username);
+		// console.log("username: ", username);
 
 		return this.prisma.user.findUnique({
 			where: {
@@ -96,7 +114,7 @@ export class UserService {
 
 	async addFriend(data : FriendDto)
 	{
-		console.log("data: ", data)
+		console.log("adding friend... ");
 		const userid = await this.prisma.user.findUnique({
 			where: {
 				username: data.username
@@ -105,7 +123,7 @@ export class UserService {
 				id: true
 			}
 		})
-		console.log("userid: ", userid.id)
+		// console.log("userid: ", userid.id)
 		const friendid = await this.prisma.user.findUnique({
 			where: {
 				accessToken: data.Tokensource
@@ -115,7 +133,7 @@ export class UserService {
 			}
 		})
 		friendid.friends.push(userid.id);
-		console.log("friendId: ", friendid.friends);
+		// console.log("friendId: ", friendid.friends);
 		await this.prisma.user.update({
 			where: {
 				accessToken: data.Tokensource
@@ -131,7 +149,7 @@ export class UserService {
 	}
 
 	async removeFriend(data : FriendDto) {
-		console.log("removing friends... ", data)
+		console.log("removing friends... ");
 
 		const userid = await this.prisma.user.findUnique({
 			where: {
@@ -143,7 +161,7 @@ export class UserService {
 			}
 		})
 
-		console.log("userid: ", userid.id);
+		// console.log("userid: ", userid.id);
 		const friendid = await this.prisma.user.findUnique({
 			where: {
 				accessToken: data.Tokensource
@@ -154,7 +172,7 @@ export class UserService {
 		})
 
 		const index = friendid.friends.indexOf(userid.id);
-		console.log("index: ", index);
+		// console.log("index: ", index);
 		if (index > -1) {
 			friendid.friends.splice(index, 1);
 		}
@@ -198,7 +216,7 @@ export class UserService {
 	// block part
 	async blockUser(data : BlockDto)
 	{
-		console.log("data: ", data)
+		console.log("blocking user... ");
 		const userid = await this.prisma.user.findUnique({
 			where: {
 				username: data.username
@@ -207,7 +225,7 @@ export class UserService {
 				id: true
 			}
 		})
-		console.log("userid: ", userid.id)
+		// console.log("userid: ", userid.id)
 		const blockid = await this.prisma.user.findUnique({
 			where: {
 				accessToken: data.Tokensource
@@ -217,7 +235,7 @@ export class UserService {
 			}
 		})
 		blockid.blocked.push(userid.id);
-		console.log("blockid: ", blockid.blocked);
+		// console.log("blockid: ", blockid.blocked);
 		await this.prisma.user.update({
 			where: {
 				accessToken: data.Tokensource
@@ -233,7 +251,7 @@ export class UserService {
 	}
 
 	async unblockUser(data : BlockDto) {
-		console.log("unblock friends... ", data)
+		console.log("unblock user... ");
 
 		const userid = await this.prisma.user.findUnique({
 			where: {
@@ -245,7 +263,7 @@ export class UserService {
 			}
 		})
 
-		console.log("userid: ", userid.id);
+		// console.log("userid: ", userid.id);
 		const blockid = await this.prisma.user.findUnique({
 			where: {
 				accessToken: data.Tokensource,
@@ -256,7 +274,7 @@ export class UserService {
 		})
 
 		const index = blockid.blocked.indexOf(userid.id);
-		console.log("index: ", index);
+		// console.log("index: ", index);
 		if (index > -1) {
 			blockid.blocked.splice(index, 1);
 		}

@@ -9,9 +9,12 @@ import { useEffect } from 'react';
 import ProfilePicture from '../../components/ProfileSetting/ProfilePicture';
 import { CircularProgress } from '@mui/material';
 
+import { useNavigate } from 'react-router-dom';
+
 export default function UserPage() {
 	// let { id } = useParams();
 	let { username } = useParams();
+	const navigate = useNavigate();
 
 	const games = [
 		{ player1: 'Mika', player2: 'Ethan', score: "3-2", date: "2023-01-02" },
@@ -43,6 +46,7 @@ export default function UserPage() {
 		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
 	];
 
+	const [userExists, setUserExists] = useState(false);
 	// const [userName, setUserName] = useState('');
 	const [userId, setUserId] = useState<string>('');
 	const [profilePicture, setProfilePicture] = useState<File | null>(null);
@@ -55,10 +59,9 @@ export default function UserPage() {
 		if (token && username)
 		{
 			// getUserNameById(id);
+			userExistsByUsername(username);
 			getUserIdByUserName(username);
 			getProfilePictureByUserName(username);
-			// getFriendStatusByUserName(username);
-			// getBlockedStatusByUserName(username);
 			// getProfilePicture(id);
 			getFriendStatusById();
 			getBlockedStatusById();
@@ -67,7 +70,7 @@ export default function UserPage() {
 		if (cookieToken) {
 			setToken(cookieToken);
 		}
-	}, [token]);
+	}, [token, username]);
 	// }, [id, token]);
 
 	useEffect(() => {
@@ -85,6 +88,31 @@ export default function UserPage() {
 			setToken(cookieToken);
 		}
 	}, []);
+
+	async function userExistsByUsername(username: string) {
+		try {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/username/valid', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'Username': username,
+				},
+			});
+			const data = await response.json();
+			if (data) {
+				setUserExists(data.exists);
+			}
+			else
+			{
+				setUserExists(false);
+				alert("User does not exist, redirecting to your profile page..."); // optionnal
+				navigate('/myProfile');
+			}
+		} catch (error) {
+			console.error(error);
+			// handle error
+		}
+	}
 
 	async function getUserNameById(id: string) {
 		try {
@@ -117,7 +145,6 @@ export default function UserPage() {
 				},
 			});
 			const data = await response.json();
-			console.log('data: ', data);
 			if (data) {
 				setUserId(data.id);
 				// return data;
@@ -164,7 +191,6 @@ export default function UserPage() {
 			});
 			// console.log('response: ', response);
 			const data = await response.json();
-			console.log('data: ', data.value);
 			if (data.value) {
 				setFriendAdded(true);
 			}
@@ -214,7 +240,6 @@ export default function UserPage() {
 			const data = await response.json();
 			console.log('data: ', data);
 			if (data) {
-				// setUserId(data.id);
 				id = data.id;
 			}
 		} catch (error) {
@@ -263,7 +288,6 @@ export default function UserPage() {
 			});
 			// console.log('response: ', response);
 			const data = await response.json();
-			console.log('data: ', data.value);
 			if (data.value) {
 				setBlocked(true);
 			}
@@ -288,7 +312,6 @@ export default function UserPage() {
 			});
 			// console.log('response: ', response);
 			const data = await response.json();
-			console.log('data: ', data.value);
 			if (data.value) {
 				setBlocked(false);
 			}
@@ -311,7 +334,6 @@ export default function UserPage() {
 				},
 			});
 			const data = await response.json();
-			console.log('data: ', data);
 			if (data) {
 				id = data.id;
 			}
