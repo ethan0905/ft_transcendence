@@ -100,7 +100,7 @@ export default function UserList() {
       <div className="main__userlist">
 
         <div className="userlist__heading">
-          <h2>Users</h2>
+          <h2 style={{fontFamily: 'Kocak', color: 'white', textShadow: '1px 1px 1px black'}}>Users</h2>
         </div>
 
         <div className="userlist__items">

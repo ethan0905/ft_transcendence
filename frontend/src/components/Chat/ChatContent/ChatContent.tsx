@@ -190,7 +190,9 @@ export default function ChatContent(props: ChatContentProps) {
         
   <div className="content__header">
     <div></div>
-    <h2>Channel 1</h2>
+    <h1>
+      Channel Name
+    </h1>
     <FormButton/>
   </div>
 

@@ -236,7 +236,7 @@ export default function ChanList() {
     <div className="main__chatlist">
 
       <div className="chatlist__heading">
-        <h2>Channels</h2>
+        <h2 style={{fontFamily: 'Kocak', color: 'white', textShadow: '1px 1px 1px black'}}>Channels</h2>
       </div>
 
       <FormButton />

@@ -1,34 +1,30 @@
 .main__chatlist {
-  border-right: 2px solid #f8f8f935;
-  background-color: #8e8c8c4e;
+  border-right: 2px solid #f8f8f9;
+  background-color: #8e8c8c39;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  width: 20%;
+  min-width: 200px;
 }
 .chatlist__heading {
   width: 100%;
   text-align: center;
 }
-
 .btn {
-  background-color: #e8e9eb;
+  background-color: #000000;
+  color: #fff;
   border: none;
   cursor: pointer;
   margin: 0px 10px 10px 10px;
-  width: 180px;
-  height: 47px;
-  line-height: 47px;
-  border-radius: 5px;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.357);
+  width: 95%;
+  height: 45px;
+  border-radius: 6px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
   display: flex;
-  padding: 0;
-  transition: all 0.3s ease-in-out;
 }
 .btn:hover {
-  background-color: #0e0505;
-  color: #fff;
+  background-color: #bf1e2d;
   transform: scale(1.02);
 }
 .btn i {
@@ -36,9 +32,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
   font-size: 18px;
-  border-right: 1px solid #ebe7fb;
+  border-right: 1px solid #9d9696;
 }
 .btn span {
   flex: 0.9;
@@ -48,22 +43,20 @@
   font-size: medium;
   font-family: "Roboto", sans-serif;
   font-weight: bold;
+  padding: 0px 6px;
 }
-
 .chatlist__items {
   overflow: auto;
   max-height: 100vh;
   min-height: 25vh;
-  width: 90%;
-  opacity: .8;
+  width: 95%;
 }
-
 .chatlist__item {
   display: flex;
   justify-content: space-between;
   border-bottom: 1px solid #ebe7fb;
   cursor: pointer;
-  padding: 10px 10px 10px 10px;
+  padding: 10px;
   transition: all 0.3s cubic-bezier(0.88, 0.19, 0.37, 1.11);
   transform: scale(0);
   animation-name: showIn;
@@ -88,22 +81,18 @@
   }
 }
 
-.chatlist__item:first-child {
-  margin-top: 0;
-  border-top: #faf9f9 2px solid;
-}
 .chatlist__item .userMeta p {
   margin: 0;
   padding: 0;
   color: #000;
-  font-weight: 600;
-  font-size: 14px;
+  font-weight: 520;
+  font-size: 15px;
 }
 .chatlist__item .userMeta span {
   margin: 0;
   padding: 0;
   color: #4c4a53;
-  font-weight: 400;
+  font-weight: 200;
   font-size: 12px;
   display: block;
 }

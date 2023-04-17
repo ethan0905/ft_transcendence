@@ -196,6 +196,7 @@ export default function ProfilePage() {
 	];
 
 	const RedSwitch = styled(Switch)(({ theme }) => ({
+		'& .MuiSwitch-track': {backgroundColor: red[100]},
 		'& .MuiSwitch-switchBase.Mui-checked': {color: red[900]},
 		'& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {backgroundColor: red[900]},
 	}));
@@ -210,9 +211,11 @@ export default function ProfilePage() {
 						<EditableText text={name} onSubmit={setName} />
 
 						<FormControlLabel control={
-							<RedSwitch checked={checked}
+							<RedSwitch
+								checked={checked}
 								onChange={handleChange} 
 								inputProps={{"aria-label": "controlled"}}
+								sx={{'&.Mui-disabled': { color: red[900] }}}
 						/>} label="Enable 2FA" />
 
 						{checked && (
