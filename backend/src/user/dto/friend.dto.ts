@@ -9,3 +9,9 @@ export class FriendDto {
     @IsNotEmpty()
     Tokensource : string;
 }
+
+export class GetFriendDTO{
+    @IsString()
+    @IsNotEmpty()
+    Tokensource : string;
+}

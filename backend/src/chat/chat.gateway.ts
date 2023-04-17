@@ -92,6 +92,7 @@ export class ChatGateway implements OnGatewayConnection {
     @MessageBody() data: ChannelCreateDto,
     @ConnectedSocket() client: Socket,
   ) {
+    console.log("data: ", data);
       const chat = await this.chatService.newChannel(data);
       const id_room = await this.prisma.channel.findMany({
         where : {

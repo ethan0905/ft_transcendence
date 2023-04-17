@@ -97,6 +97,7 @@ export class ChatController {
 	{
 		const idChan : number = parseInt(id); 
 		const messages = await this.chat_service.get__MsgIn(idChan);
+		console.log("msg: ", messages)
 		return messages[0].messages;
 	}
 
