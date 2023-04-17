@@ -44,14 +44,21 @@ export default function UserPage() {
 	const [userName, setUserName] = useState('');
 	const [profilePicture, setProfilePicture] = useState<File | null>(null);
 	const [imageIsLoaded, setImageIsLoaded] = useState(false);
+	const [token, setToken] = useState<string>('');
+	const [friendAdded, setFriendAdded] = useState(false);
 
 	useEffect(() => {
-		if (id)
+		if (token && id)
 		{
 			getUserNameById(id);
 			getProfilePicture(id);
+			getFriendStatusById(id);
 		}
-	}, [id]);
+		let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+		if (cookieToken) {
+			setToken(cookieToken);
+		}
+	}, [id, token]);
 
 	useEffect(() => {
 		if (profilePicture)
@@ -61,6 +68,13 @@ export default function UserPage() {
 			}, 400);
 		}
 	}, [profilePicture]);
+
+	useEffect(() => {
+		let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+		if (cookieToken) {
+			setToken(cookieToken);
+		}
+	}, []);
 
 	async function getUserNameById(id: string) {
 		try {
@@ -124,6 +138,84 @@ export default function UserPage() {
 		}
 	}
 
+	async function addFriend() {
+		// 1. get user cookie
+		// 2. send friend request to user using his id
+		// let token = '';
+
+		console.log('Add friend button clicked! : ', token);
+		try {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/addfriend', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({username: userName, Tokensource: token}),
+			});
+			// console.log('response: ', response);
+			const data = await response.json();
+			console.log('data: ', data.value);
+			if (data.value) {
+				setFriendAdded(true);
+			}
+		} catch (error) {
+			console.error(error);
+			// handle error
+		}
+	}
+
+	async function removeFriend() {
+		// 1. get user cookie
+		// 2. remove friend using his id
+		console.log('Remove friend button clicked! : ', token);
+
+		try {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/removefriend', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({username: userName, Tokensource: token}),
+			});
+			// console.log('response: ', response);
+			const data = await response.json();
+			console.log('data: ', data.value);
+			if (data.value) {
+				setFriendAdded(false);
+			}
+		} catch (error) {
+			console.error(error);
+			// handle error
+		}
+	}
+
+	async function getFriendStatusById(id: string) {
+
+		// console.log('getFriendStatusById: ', id);
+		// console.log('friend status token: ', token);
+		try {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/getfriendstatus', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': token,
+					'Id': id,
+				},
+			});
+			const data = await response.json();
+			if (data.value) {
+				console.log('data.value: FRIEND');
+				setFriendAdded(true);
+			}
+			else {
+				console.log('data.value: NOT FRIEND');
+				setFriendAdded(false);
+			}
+		} catch (error) {
+			console.error(error);
+			// handle error
+		}
+	}
 
 	return (
 		<>
@@ -156,8 +248,12 @@ export default function UserPage() {
 					<div className='UserPage_info'>
 						<h1>{userName}</h1>
 						<div className='buttonList'>
-							<button style={{backgroundColor: 'green'}}>Add</button>
-							<button style={{backgroundColor: 'red'}}>Delete</button>
+							{ !friendAdded ? (
+									<button style={{backgroundColor: 'green'}} onClick={addFriend}>Add</button>
+								) : (
+									<button style={{backgroundColor: 'red'}} onClick={removeFriend}>Delete</button>
+								)
+							}
 							<button style={{backgroundColor: 'orange'}}>Block</button>
 							<button>Unblock</button>
 							<button>Fight</button>

@@ -1,15 +1,8 @@
 import { Controller, Get, UseGuards, Req, Patch, Body, Post } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
-// import { JwtGuard } from '../auth/guard';
-import { GetUser } from '../auth/decorator';
-import { User } from '@prisma/client';
-import { EditUserDto } from './dto';
 import { UserService } from './user.service';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { UseInterceptors } from '@nestjs/common';
-import { UploadedFile } from '@nestjs/common';
-import { Param } from '@nestjs/common';
+import { FriendDto } from './dto/friend.dto';
+import { GetFriendDTO } from './dto/friend.dto';
 
 // @UseGuards(JwtGuard)
 @Controller('users')
@@ -40,17 +33,29 @@ export class UserController {
 		return this.userService.getUserNameById(req);
 	}
 
-	// @Post('me/addfriend')
-	// addFriend(@Body() data : FriendDto)
-	// {
-	// 	// console.log("data on Post:", data)
-	// 	this.userService.addFriend(data);
-	// }
-	// @Get('me/getfriend')
-	// getFriend(@Body() data :GetFriendDTO)
-	// {
-	// 	const user = this.userService.getFriend(data)
-	// 	return (user);
-	// }
+	@Post('me/addfriend')
+	addFriend(@Body() data : FriendDto)
+	{
+		return this.userService.addFriend(data);
+	}
+
+	@Post('me/removefriend')
+	removeFriend(@Body() data : FriendDto)
+	{
+		return this.userService.removeFriend(data);
+	}
+
+	@Get('me/getfriendstatus')
+	getFriendStatusById(@Req() req: Request)
+	{
+		return this.userService.getFriendStatusById(req);
+	}
+
+	@Get('me/getfriend')
+	getFriend(@Body() data :GetFriendDTO)
+	{
+		const user = this.userService.getFriend(data)
+		return (user);
+	}
 
 }
