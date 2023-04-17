@@ -13,8 +13,8 @@ import { useNavigate } from 'react-router-dom';
 
 export default function UserPage() {
 	// let { id } = useParams();
-	let { username } = useParams();
 	const navigate = useNavigate();
+	let { username } = useParams();
 
 	const games = [
 		{ player1: 'Mika', player2: 'Ethan', score: "3-2", date: "2023-01-02" },
@@ -47,6 +47,7 @@ export default function UserPage() {
 	];
 
 	const [userExists, setUserExists] = useState(false);
+	const [userIsMe, setUserIsMe] = useState(false);
 	// const [userName, setUserName] = useState('');
 	const [userId, setUserId] = useState<string>('');
 	const [profilePicture, setProfilePicture] = useState<File | null>(null);
@@ -59,7 +60,7 @@ export default function UserPage() {
 		if (token && username)
 		{
 			// getUserNameById(id);
-			userExistsByUsername(username);
+			userExistsByUsername(username, token);
 			getUserIdByUserName(username);
 			getProfilePictureByUserName(username);
 			// getProfilePicture(id);
@@ -89,21 +90,22 @@ export default function UserPage() {
 		}
 	}, []);
 
-	async function userExistsByUsername(username: string) {
+	async function userExistsByUsername(username: string, accessToken: string) {
 		try {
 			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/username/valid', {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
 					'Username': username,
+					'Authorization': accessToken,
 				},
 			});
 			const data = await response.json();
-			if (data) {
-				setUserExists(data.exists);
-			}
-			else
-			{
+			if (data.value === true) {
+				setUserExists(data.value);
+				console.log('user is me ? ', data.loggedUser); // getting properly if user is the user logged or not
+				setUserIsMe(data.loggedUser);
+			} else {
 				setUserExists(false);
 				alert("User does not exist, redirecting to your profile page..."); // optionnal
 				navigate('/myProfile');
@@ -397,19 +399,26 @@ export default function UserPage() {
 					<div className='UserPage_info'>
 						<h1>{username}</h1>
 						<div className='buttonList'>
-							{ !friendAdded ? (
-									<button style={{backgroundColor: 'green'}} onClick={addFriend}>Add</button>
+							{ userIsMe ? (
+									<button>Edit Profile</button>
 								) : (
-									<button style={{backgroundColor: 'red'}} onClick={removeFriend}>Delete</button>
+									<>
+										{ !friendAdded ? (
+											<button style={{backgroundColor: 'green'}} onClick={addFriend}>Add</button>
+											) : (
+												<button style={{backgroundColor: 'red'}} onClick={removeFriend}>Delete</button>
+												)
+											}
+										{ !blocked ? (
+											<button style={{backgroundColor: 'orange'}} onClick={blockUser}>Block</button>
+											) : (
+												<button onClick={unblockUser}>Unblock</button>
+												)
+											}
+										<button>Fight</button>
+									</>
 								)
 							}
-							{ !blocked ? (
-									<button style={{backgroundColor: 'orange'}} onClick={blockUser}>Block</button>
-								) : (
-									<button onClick={unblockUser}>Unblock</button>
-								)
-							}
-							<button>Fight</button>
 						</div>
 					</div>
 					<Achievements />

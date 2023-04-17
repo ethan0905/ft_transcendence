@@ -87,11 +87,25 @@ export class UserService {
 			},
 		});
 
-		if (user) {
-			return true;
+		const loggedUser = await this.prisma.user.findUnique({
+			where: {
+				accessToken: req.headers.authorization,
+			},
+		});
+
+		if (user.username === loggedUser.username) {
+			return {value: true, loggedUser: true};
+		} else if (user) {
+			return {value: true, loggedUser: false};
 		} else {
-			return false;
+			return {value: false, loggedUser: false};
 		}
+
+		// if (user) {
+		// 	return {value: true, loggedUser: false};
+		// } else {
+		// 	return false;
+		// }
 	}
 
 	async getUserIdByUserName(@Req() req: Request) {
