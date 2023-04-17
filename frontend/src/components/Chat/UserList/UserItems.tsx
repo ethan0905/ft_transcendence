@@ -61,8 +61,8 @@ const UserItems = ({ active, animationDelay, image, name }: Props) => {
   return (
     <div style={{ animationDelay: `0.${animationDelay}s` }} className={`userlist__item ${active ? active : ""} `}>
       <div className='id_user'>
-        <UserAvatar image={image ? image : "http://placehold.it/80x80"} />
-        {name}
+        <UserAvatar image={image ? image : "http://placehold.it/80x80"}/>
+        <span>{name}</span>
       </div>
       <PopupButton buttonText="Open Popup" />
     </div>

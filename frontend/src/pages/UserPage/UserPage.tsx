@@ -10,7 +10,9 @@ import ProfilePicture from '../../components/ProfileSetting/ProfilePicture';
 import { CircularProgress } from '@mui/material';
 
 export default function UserPage() {
-	let { id } = useParams();
+	// let { id } = useParams();
+	let { username } = useParams();
+
 	const games = [
 		{ player1: 'Mika', player2: 'Ethan', score: "3-2", date: "2023-01-02" },
 		{ player1: 'Ethan', player2: 'Mika', score: "3-2", date: "2023-01-02" },
@@ -41,7 +43,8 @@ export default function UserPage() {
 		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
 	];
 
-	const [userName, setUserName] = useState('');
+	// const [userName, setUserName] = useState('');
+	const [userId, setUserId] = useState<string>('');
 	const [profilePicture, setProfilePicture] = useState<File | null>(null);
 	const [imageIsLoaded, setImageIsLoaded] = useState(false);
 	const [token, setToken] = useState<string>('');
@@ -49,18 +52,23 @@ export default function UserPage() {
 	const [blocked, setBlocked] = useState(false);
 
 	useEffect(() => {
-		if (token && id)
+		if (token && username)
 		{
-			getUserNameById(id);
-			getProfilePicture(id);
-			getFriendStatusById(id);
-			getBlockedStatusById(id);
+			// getUserNameById(id);
+			getUserIdByUserName(username);
+			getProfilePictureByUserName(username);
+			// getFriendStatusByUserName(username);
+			// getBlockedStatusByUserName(username);
+			// getProfilePicture(id);
+			getFriendStatusById();
+			getBlockedStatusById();
 		}
 		let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
 		if (cookieToken) {
 			setToken(cookieToken);
 		}
-	}, [id, token]);
+	}, [token]);
+	// }, [id, token]);
 
 	useEffect(() => {
 		if (profilePicture)
@@ -90,7 +98,7 @@ export default function UserPage() {
 			const data = await response.json();
 			// console.log('data: ', data);
 			if (data) {
-				setUserName(data.username);
+				// setUserName(data.username); // commented to test /profile/:username
 				// return data;
 			}
 		} catch (error) {
@@ -99,31 +107,31 @@ export default function UserPage() {
 		}
 	}
 
-	async function getProfilePicture(id: string): Promise<any> {
-
-		let name = '';
-
+	async function getUserIdByUserName(username: string) {
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/username/get', {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/id/get', {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
-					'Id': id,
+					'UserName': username,
 				},
 			});
 			const data = await response.json();
+			console.log('data: ', data);
 			if (data) {
-				name = data.username;
-				// console.log('data: ', data);
+				setUserId(data.id);
+				// return data;
 			}
 		} catch (error) {
-
 			console.error(error);
 			// handle error
 		}
+	}
+
+	async function getProfilePictureByUserName(username: string): Promise<any> {
 
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/files/' + name, {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/files/' + username, {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
@@ -152,7 +160,7 @@ export default function UserPage() {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({username: userName, Tokensource: token}),
+				body: JSON.stringify({username: username, Tokensource: token}),
 			});
 			// console.log('response: ', response);
 			const data = await response.json();
@@ -177,7 +185,7 @@ export default function UserPage() {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({username: userName, Tokensource: token}),
+				body: JSON.stringify({username: username, Tokensource: token}),
 			});
 			// console.log('response: ', response);
 			const data = await response.json();
@@ -191,10 +199,29 @@ export default function UserPage() {
 		}
 	}
 
-	async function getFriendStatusById(id: string) {
+	async function getFriendStatusById() {
 
-		// console.log('getFriendStatusById: ', id);
-		// console.log('friend status token: ', token);
+		let id = '';
+		
+		try {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/id/get', {
+				method: 'GET',
+				headers:{
+					'Content-Type': 'application/json',
+					'Username': username || '',
+				},
+			});
+			const data = await response.json();
+			console.log('data: ', data);
+			if (data) {
+				// setUserId(data.id);
+				id = data.id;
+			}
+		} catch (error) {
+			console.error(error);
+			// handle error
+		}
+
 		try {
 			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/getfriendstatus', {
 				method: 'GET',
@@ -232,7 +259,7 @@ export default function UserPage() {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({username: userName, Tokensource: token}),
+				body: JSON.stringify({username: username, Tokensource: token}),
 			});
 			// console.log('response: ', response);
 			const data = await response.json();
@@ -257,7 +284,7 @@ export default function UserPage() {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({username: userName, Tokensource: token}),
+				body: JSON.stringify({username: username, Tokensource: token}),
 			});
 			// console.log('response: ', response);
 			const data = await response.json();
@@ -271,7 +298,27 @@ export default function UserPage() {
 		}
 	}
 
-	async function getBlockedStatusById(id: string) {
+	async function getBlockedStatusById() {
+
+		let id = '';
+		
+		try {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/id/get', {
+				method: 'GET',
+				headers:{
+					'Content-Type': 'application/json',
+					'Username': username || '',
+				},
+			});
+			const data = await response.json();
+			console.log('data: ', data);
+			if (data) {
+				id = data.id;
+			}
+		} catch (error) {
+			console.error(error);
+			// handle error
+		}
 
 		try {
 			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/getblockstatus', {
@@ -326,7 +373,7 @@ export default function UserPage() {
 						)
 					}
 					<div className='UserPage_info'>
-						<h1>{userName}</h1>
+						<h1>{username}</h1>
 						<div className='buttonList'>
 							{ !friendAdded ? (
 									<button style={{backgroundColor: 'green'}} onClick={addFriend}>Add</button>

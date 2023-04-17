@@ -76,6 +76,24 @@ export class UserService {
 		});
 	}
 
+	async getUserIdByUserName(@Req() req: Request) {
+
+		const username = Array.isArray(req.headers.username)
+		? req.headers.username[0]
+		: req.headers.username;
+
+		console.log("username: ", username);
+
+		return this.prisma.user.findUnique({
+			where: {
+				username: username,
+			},
+			select: {
+				id: true,
+			},
+		});
+	}
+
 	async addFriend(data : FriendDto)
 	{
 		console.log("data: ", data)

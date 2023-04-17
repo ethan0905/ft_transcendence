@@ -34,6 +34,11 @@ export class UserController {
 		return this.userService.getUserNameById(req);
 	}
 
+	@Get('id/get')
+	getUserIdByUserName(@Req() req: Request) {
+		return this.userService.getUserIdByUserName(req);
+	}
+
 	// friend part
 	@Post('me/addfriend')
 	addFriend(@Body() data : FriendDto)
