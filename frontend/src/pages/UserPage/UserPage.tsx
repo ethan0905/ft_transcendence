@@ -7,6 +7,7 @@ import './userPage.css';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import ProfilePicture from '../../components/ProfileSetting/ProfilePicture';
+import { CircularProgress } from '@mui/material';
 
 export default function UserPage() {
 	let { id } = useParams();
@@ -42,6 +43,7 @@ export default function UserPage() {
 
 	const [userName, setUserName] = useState('');
 	const [profilePicture, setProfilePicture] = useState<File | null>(null);
+	const [imageIsLoaded, setImageIsLoaded] = useState(false);
 
 	useEffect(() => {
 		if (id)
@@ -49,7 +51,16 @@ export default function UserPage() {
 			getUserNameById(id);
 			getProfilePicture(id);
 		}
-	}, []);
+	}, [id]);
+
+	useEffect(() => {
+		if (profilePicture)
+		{
+			setTimeout(() => {
+				setImageIsLoaded(true);
+			}, 0);
+		}
+	}, [profilePicture]);
 
 	async function getUserNameById(id: string) {
 		try {
@@ -119,7 +130,28 @@ export default function UserPage() {
 			<Sidebar />
 			<div className='UserPage'>
 				<div className='UserPage_header'>
-					<Avatar id='UserAvatar' alt='Profile Picture' src={profilePicture ? URL.createObjectURL(profilePicture) : undefined}/>
+					{imageIsLoaded ? (
+							<Avatar
+								id='UserAvatar'
+								alt='Profile Picture'
+								sx={{
+									width: 150,
+									height: 150,
+									verticalAlign: 'middle',
+									border: '#f8f8f8 4px solid',
+									margin: '10px 20px 10px 10px'
+								}}
+								src={profilePicture ? URL.createObjectURL(profilePicture) : undefined}/>
+						) : (
+							<CircularProgress
+							size={150}
+							thickness={2}
+							sx={{	
+							  color: '#f8f8f8'
+							}}
+						  />
+						)
+					}
 					<div className='UserPage_info'>
 						<h1>{userName}</h1>
 						<div className='buttonList'>
