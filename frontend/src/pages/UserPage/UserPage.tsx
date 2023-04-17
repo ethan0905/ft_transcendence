@@ -58,7 +58,7 @@ export default function UserPage() {
 		{
 			setTimeout(() => {
 				setImageIsLoaded(true);
-			}, 0);
+			}, 400);
 		}
 	}, [profilePicture]);
 
@@ -144,11 +144,12 @@ export default function UserPage() {
 								src={profilePicture ? URL.createObjectURL(profilePicture) : undefined}/>
 						) : (
 							<CircularProgress
-							size={150}
-							thickness={2}
-							sx={{	
-							  color: '#f8f8f8'
-							}}
+								id='LoadingAvatar'
+								size={150}
+								thickness={2}
+								sx={{	
+								color: '#f8f8f8'
+								}}
 						  />
 						)
 					}

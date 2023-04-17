@@ -12,6 +12,15 @@
   border: #f8f8f8 3px solid;
   margin: 10px 10px;
 }
+
+#LoadingAvatar {
+  width: 150px;
+  height: 150px;
+  vertical-align: middle;
+  /* border: #f8f8f8 3px solid; */
+  margin: 10px 10px;
+}
+
 .UserPage_header {
   display: flex;
   flex-wrap: wrap;
