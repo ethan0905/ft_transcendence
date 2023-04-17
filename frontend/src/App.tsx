@@ -39,9 +39,9 @@ function App() {
           <Route
             path="/Profile/:id"
             element={
-              <PrivateRoute>
+              // <PrivateRoute>
                 <UserPage />
-              </PrivateRoute>
+              // </PrivateRoute>
             }
           />
 

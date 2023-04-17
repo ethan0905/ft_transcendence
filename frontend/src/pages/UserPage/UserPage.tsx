@@ -4,6 +4,8 @@ import Avatar from '@mui/material/Avatar';
 import GameHistory from '../../components/GameHistory';
 import Achievements from '../../components/Achievements/Achievements';
 import './userPage.css';
+import { useState } from 'react';
+import { useEffect } from 'react';
 
 export default function UserPage() {
 	let { id } = useParams();
@@ -37,6 +39,36 @@ export default function UserPage() {
 		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
 	];
 
+	const [userName, setUserName] = useState('');
+
+	useEffect(() => {
+		if (id)
+		{
+			getUserNameById(id);
+		}
+	}, []);
+
+	async function getUserNameById(id: string) {
+		try {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/username/get', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'Id': id,
+				},
+			});
+			const data = await response.json();
+			// console.log('data: ', data);
+			if (data) {
+				setUserName(data.username);
+				// return data;
+			}
+		} catch (error) {
+			console.error(error);
+			// handle error
+		}
+	}
+
 	return (
 		<>
 			<Sidebar />
@@ -44,7 +76,7 @@ export default function UserPage() {
 				<div className='UserPage_header'>
 					<Avatar id='UserAvatar' alt='Profile Picture' src={"/sasuke.jpg"}/>
 					<div className='UserPage_info'>
-						<h1>{id}</h1>
+						<h1>{userName}</h1>
 						<div className='buttonList'>
 							<button style={{backgroundColor: 'green'}}>Add</button>
 							<button style={{backgroundColor: 'red'}}>Delete</button>
