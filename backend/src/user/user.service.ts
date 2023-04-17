@@ -4,6 +4,7 @@ import { Request } from 'express';
 import { Req } from '@nestjs/common';
 import { FriendDto } from './dto/friend.dto';
 import { GetFriendDTO } from './dto/friend.dto';
+import { BlockDto } from './dto/friend.dto';
 
 @Injectable()
 export class UserService {
@@ -175,34 +176,100 @@ export class UserService {
 
 		return {value: user.friends.includes(parseInt(req.headers.id as string, 10))};
 	}
-
-
-	// async getFriendStatusById(@Req() req: Request) {
-
-	// 	const userid = await this.prisma.user.findUnique({
-	// 		where: {
-	// 			accessToken: req.headers.authorization,
-	// 		},
-	// 		select: {
-	// 			id: true,
-	// 		}
-	// 	})
-	// 	console.log("userid: ", userid.id)
-	// 	const friendid = await this.prisma.user.findUnique({
-	// 		where: {
-	// 			accessToken: data.Tokensource
-	// 		},
-	// 		select: {
-	// 			friends: true
-	// 		}
-	// 	})
-	// 	console.log("friendId: ", friendid.friends);
-	// 	if (friendid.friends.includes(userid.id)) {
-	// 		return {value: true};
-	// 	}
-	// 	return {value: false};
-	// }
 	
+	// block part
+	async blockUser(data : BlockDto)
+	{
+		console.log("data: ", data)
+		const userid = await this.prisma.user.findUnique({
+			where: {
+				username: data.username
+			},
+			select: {
+				id: true
+			}
+		})
+		console.log("userid: ", userid.id)
+		const blockid = await this.prisma.user.findUnique({
+			where: {
+				accessToken: data.Tokensource
+			},
+			select: {
+				blocked: true
+			}
+		})
+		blockid.blocked.push(userid.id);
+		console.log("blockid: ", blockid.blocked);
+		await this.prisma.user.update({
+			where: {
+				accessToken: data.Tokensource
+			},
+			data: {
+				blocked: {
+					set: blockid.blocked
+				}
+			}
+		})
+
+		return {value: true};
+	}
+
+	async unblockUser(data : BlockDto) {
+		console.log("unblock friends... ", data)
+
+		const userid = await this.prisma.user.findUnique({
+			where: {
+				username: data.username
+			},
+			
+			select: {
+				id: true
+			}
+		})
+
+		console.log("userid: ", userid.id);
+		const blockid = await this.prisma.user.findUnique({
+			where: {
+				accessToken: data.Tokensource,
+			},
+			select: {
+				blocked: true,
+			}
+		})
+
+		const index = blockid.blocked.indexOf(userid.id);
+		console.log("index: ", index);
+		if (index > -1) {
+			blockid.blocked.splice(index, 1);
+		}
+		await this.prisma.user.update({
+			where: {
+				accessToken: data.Tokensource
+			},
+			data: {
+				blocked: {
+					set: blockid.blocked
+				}
+			}
+		})
+		return {value: true};
+	}
+
+	async getBlockStatusById(@Req() req: Request) {
+
+		const user = await this.prisma.user.findUnique({
+			where: {
+				accessToken: req.headers.authorization,
+			},
+			select: {
+				blocked: true,
+			},
+		});
+
+		return {value: user.blocked.includes(parseInt(req.headers.id as string, 10))};
+	}
+
+	//mderome's request
 	async getFriend(data : GetFriendDTO)
 	{
 		const user = this.prisma.user.findUnique({

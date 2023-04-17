@@ -10,6 +10,16 @@ export class FriendDto {
     Tokensource : string;
 }
 
+export class BlockDto {
+    @IsString()
+    @IsNotEmpty()
+    username : string;
+
+    @IsString()
+    @IsNotEmpty()
+    Tokensource : string;
+}
+
 export class GetFriendDTO{
     @IsString()
     @IsNotEmpty()

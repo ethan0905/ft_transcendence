@@ -3,6 +3,7 @@ import { Request } from 'express';
 import { UserService } from './user.service';
 import { FriendDto } from './dto/friend.dto';
 import { GetFriendDTO } from './dto/friend.dto';
+import { BlockDto } from './dto/friend.dto';
 
 // @UseGuards(JwtGuard)
 @Controller('users')
@@ -33,6 +34,7 @@ export class UserController {
 		return this.userService.getUserNameById(req);
 	}
 
+	// friend part
 	@Post('me/addfriend')
 	addFriend(@Body() data : FriendDto)
 	{
@@ -51,6 +53,26 @@ export class UserController {
 		return this.userService.getFriendStatusById(req);
 	}
 
+	// block part
+	@Post('me/blockuser')
+	blockUser(@Body() data : BlockDto)
+	{
+		return this.userService.blockUser(data);
+	}
+
+	@Post('me/unblockuser')
+	unblockUser(@Body() data : BlockDto)
+	{
+		return this.userService.unblockUser(data);
+	}
+
+	@Get('me/getblockstatus')
+	getBlockStatusById(@Req() req: Request)
+	{
+		return this.userService.getBlockStatusById(req);
+	}
+
+	// mderome's request
 	@Get('me/getfriend')
 	getFriend(@Body() data :GetFriendDTO)
 	{

@@ -46,6 +46,7 @@ export default function UserPage() {
 	const [imageIsLoaded, setImageIsLoaded] = useState(false);
 	const [token, setToken] = useState<string>('');
 	const [friendAdded, setFriendAdded] = useState(false);
+	const [blocked, setBlocked] = useState(false);
 
 	useEffect(() => {
 		if (token && id)
@@ -53,6 +54,7 @@ export default function UserPage() {
 			getUserNameById(id);
 			getProfilePicture(id);
 			getFriendStatusById(id);
+			getBlockedStatusById(id);
 		}
 		let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
 		if (cookieToken) {
@@ -217,6 +219,84 @@ export default function UserPage() {
 		}
 	}
 
+	// block part
+	async function blockUser() {
+		// 1. get user cookie
+		// 2. send friend request to user using his id
+		// let token = '';
+
+		console.log('Block button clicked! : ', token);
+		try {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/blockuser', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({username: userName, Tokensource: token}),
+			});
+			// console.log('response: ', response);
+			const data = await response.json();
+			console.log('data: ', data.value);
+			if (data.value) {
+				setBlocked(true);
+			}
+		} catch (error) {
+			console.error(error);
+			// handle error
+		}
+	}
+
+	async function unblockUser() {
+		// 1. get user cookie
+		// 2. remove friend using his id
+		console.log('Unblock button clicked! : ', token);
+
+		try {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/unblockuser', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({username: userName, Tokensource: token}),
+			});
+			// console.log('response: ', response);
+			const data = await response.json();
+			console.log('data: ', data.value);
+			if (data.value) {
+				setBlocked(false);
+			}
+		} catch (error) {
+			console.error(error);
+			// handle error
+		}
+	}
+
+	async function getBlockedStatusById(id: string) {
+
+		try {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/getblockstatus', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': token,
+					'Id': id,
+				},
+			});
+			const data = await response.json();
+			if (data.value) {
+				console.log('data.value: BLOCKED');
+				setBlocked(true);
+			}
+			else {
+				console.log('data.value: UNBLOCKED');
+				setBlocked(false);
+			}
+		} catch (error) {
+			console.error(error);
+			// handle error
+		}
+	}
+
 	return (
 		<>
 			<Sidebar />
@@ -254,8 +334,12 @@ export default function UserPage() {
 									<button style={{backgroundColor: 'red'}} onClick={removeFriend}>Delete</button>
 								)
 							}
-							<button style={{backgroundColor: 'orange'}}>Block</button>
-							<button>Unblock</button>
+							{ !blocked ? (
+									<button style={{backgroundColor: 'orange'}} onClick={blockUser}>Block</button>
+								) : (
+									<button onClick={unblockUser}>Unblock</button>
+								)
+							}
 							<button>Fight</button>
 						</div>
 					</div>
