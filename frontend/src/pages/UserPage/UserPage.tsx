@@ -66,6 +66,11 @@ export default function UserPage() {
 			// getProfilePicture(id);
 			getFriendStatusById();
 			getBlockedStatusById();
+			console.log("Fetching game list...", token);
+			const fetchData = async () => {
+			  getGameHistory();
+			};
+			fetchData();
 		}
 		let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
 		if (cookieToken) {
@@ -368,6 +373,32 @@ export default function UserPage() {
 		}
 	}
 
+	const [gameHistoryList, setGameHistoryList] = useState([]);
+
+	async function getGameHistory(): Promise<any> {
+
+		console.log("username : ", username);
+
+		try {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/game/history/get', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'Username': `${username}`,
+				},
+			});
+			const data = await response.json();
+			if (data) {
+				setGameHistoryList(data);
+			}
+			return data;
+		} catch (error) {
+
+			console.error(error);
+			// handle error
+		}
+	}
+
 	return (
 		<>
 			<Sidebar />
@@ -424,7 +455,7 @@ export default function UserPage() {
 					<Achievements />
 				</div>
 				<div className='UserPage_stats'>
-					<GameHistory data={games} />
+					<GameHistory data={gameHistoryList} />
 				</div>
 			</div>
 		</>

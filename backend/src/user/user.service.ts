@@ -355,27 +355,6 @@ export class UserService {
 		return Promise.all(friendList);
 	  }
 
-	  
-
-	// async getGameHistory(@Req() req: Request) {
-
-	// 	const username = Array.isArray(req.headers.username)
-	// 	? req.headers.username[0]
-	// 	: req.headers.username;
-
-	// 	const user = await this.prisma.user.findUnique({
-	// 		where: {
-	// 			username: username,
-	// 		},
-	// 		select: {
-	// 			games: true,
-	// 		},
-	// 	});
-
-	// 	const gameList = user.games.map(async (gameId) => {
-
-	// }
-
 	async getGameHistory(@Req() req: Request) {
 		const username = Array.isArray(req.headers.username)
 		  ? req.headers.username[0]
