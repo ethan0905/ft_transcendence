@@ -82,11 +82,15 @@ export class UserController {
 		return this.userService.getBlockStatusById(req);
 	}
 
-	// mderome's request
 	@Get('me/getfriendlist')
-	getFriendList(@Req() req: Request)
+	getFriendListByToken(@Req() req: Request)
 	{
-		return this.userService.getFriendList(req);
+		return this.userService.getFriendListByToken(req);
 	}
-
+	
+	@Get('me/game/history/get')
+	getGameHistory(@Req() req: Request)
+	{
+		return this.userService.getGameHistory(req);
+	}
 }

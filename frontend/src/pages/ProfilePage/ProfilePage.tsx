@@ -36,6 +36,11 @@ export default function ProfilePage() {
 			  getFriendList(token);
 			};
 			fetchData();
+			console.log("Fetching game history...");
+			const fetchGameHistory = async () => {
+				getGameHistory(token);
+			};
+			fetchGameHistory();
 		}
 		let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
 		if (cookieToken) {
@@ -273,6 +278,7 @@ export default function ProfilePage() {
 	//   }, []);
 
 	async function getFriendList(accessToken: string): Promise<any> {
+		
 		try {
 			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/getfriendlist', {
 				method: 'GET',
@@ -308,35 +314,85 @@ export default function ProfilePage() {
 
 	// ];
 
-	const games = [
-		{ player1: 'Mika', player2: 'Ethan', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Ethan', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Kenny', player2: 'Ethan', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Clem', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-	];
+	const [gameList, setGameList] = useState([]);
+	
+	// useEffect(() => {
+	// 	console.log("Fetching game list...", token);
+	// 	const fetchData = async () => {
+	// 	  getGameList(token);
+	// 	};
+	// 	fetchData();
+	//   }, []);
+
+	async function getGameHistory(accessToken: string): Promise<any> {
+
+		let username: string = '';
+		try {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/username/get', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `${accessToken}`
+				},
+			});
+			const data = await response.json();
+			if (data) {
+				username = data.username;
+			}
+		} catch (error) {
+			console.error(error);
+			// handle error
+		}
+
+		try {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/game/history/get', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'Username': `${username}`,
+				},
+			});
+			const data = await response.json();
+			if (data) {
+				setGameList(data);
+			}
+			return data;
+		} catch (error) {
+
+			console.error(error);
+			// handle error
+		}
+	}
+
+	// const games = [
+	// 	{ player1: 'Mika', player2: 'Ethan', score: "3-2", date: "2023-01-02" },
+	// 	{ player1: 'Ethan', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	// 	{ player1: 'Kenny', player2: 'Ethan', score: "3-2", date: "2023-01-02" },
+	// 	{ player1: 'Clem', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	// ];
 
 	const RedSwitch = styled(Switch)(({ theme }) => ({
 		'& .MuiSwitch-switchBase.Mui-checked': {color: red[900]},
@@ -384,7 +440,7 @@ export default function ProfilePage() {
 
 			<div className='Profile_tabs'>
 				<FriendList data={friendList} />
-				<GameHistory data={games} />
+				<GameHistory data={gameList} />
 			</div>
 			
 			</div>

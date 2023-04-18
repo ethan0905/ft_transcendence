@@ -45,7 +45,7 @@ const GameHistory = (props: TableProps) => {
 							<td style={lineTable}>{item.player1}</td>
 							<td style={lineTable}>VS</td>
 							<td style={lineTable}>{item.player2}</td>
-							<td style={lineTable}>{item.score}</td>
+							<td style={lineTable}>{item.score.at(0)} - {item.score.at(1)}</td>
 							<td style={lineTable}>{item.date}</td>
 						</tr>))}
 				</tbody>

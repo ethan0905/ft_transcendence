@@ -319,7 +319,7 @@ export class UserService {
 		return {value: user.blocked.includes(parseInt(req.headers.id as string, 10))};
 	}
 
-	async getFriendList(@Req() req: Request) {
+	async getFriendListByToken(@Req() req: Request) {
 
 		const user = await this.prisma.user.findUnique({
 		  where: {
@@ -341,10 +341,10 @@ export class UserService {
 			},
 		  });
 	  
-		  console.log({
-			name: friend.username,
-			status: friend.status,
-		  });
+		//   console.log({
+		// 	name: friend.username,
+		// 	status: friend.status,
+		//   });
 
 		  return {
 			name: friend.username,
@@ -354,6 +354,74 @@ export class UserService {
 	  
 		return Promise.all(friendList);
 	  }
+
 	  
+
+	// async getGameHistory(@Req() req: Request) {
+
+	// 	const username = Array.isArray(req.headers.username)
+	// 	? req.headers.username[0]
+	// 	: req.headers.username;
+
+	// 	const user = await this.prisma.user.findUnique({
+	// 		where: {
+	// 			username: username,
+	// 		},
+	// 		select: {
+	// 			games: true,
+	// 		},
+	// 	});
+
+	// 	const gameList = user.games.map(async (gameId) => {
+
+	// }
+
+	async getGameHistory(@Req() req: Request) {
+		const username = Array.isArray(req.headers.username)
+		  ? req.headers.username[0]
+		  : req.headers.username;
+
+		const games = await this.prisma.game.findMany({
+		  where: {
+			players: {
+			  some: {
+				username: username
+			  }
+			}
+		  },
+		  select: {
+			players: {
+			  where: {
+				NOT: {
+				  username: username
+				}
+			  },
+			  select: {
+				username: true
+			  }
+			},
+			score: true,
+			createdAt: true
+		  }
+		});
+
+		return games.map(game => {
+		  const [player1, player2] = game.players.map(player => player.username);
+
+			console.log({
+			player1,
+			player2: username,
+			score: game.score,
+			date: game.createdAt
+			});
+
+		  return {
+			player1,
+			player2: username,
+			score: game.score,
+			date: game.createdAt
+		  }
+		});
+	}
 
 }
