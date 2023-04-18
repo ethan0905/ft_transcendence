@@ -83,11 +83,10 @@ export class UserController {
 	}
 
 	// mderome's request
-	@Get('me/getfriend')
-	getFriend(@Body() data :GetFriendDTO)
+	@Get('me/getfriendlist')
+	getFriendList(@Req() req: Request)
 	{
-		const user = this.userService.getFriend(data)
-		return (user);
+		return this.userService.getFriendList(req);
 	}
 
 }

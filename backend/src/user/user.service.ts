@@ -319,14 +319,41 @@ export class UserService {
 		return {value: user.blocked.includes(parseInt(req.headers.id as string, 10))};
 	}
 
-	//mderome's request
-	async getFriend(data : GetFriendDTO)
-	{
-		const user = this.prisma.user.findUnique({
-			where: { accessToken: data.Tokensource},
-			select: { friends: true }
-		})
-		return (user)
-	}
+	async getFriendList(@Req() req: Request) {
+
+		const user = await this.prisma.user.findUnique({
+		  where: {
+			accessToken: req.headers.authorization,
+		  },
+		  select: {
+			friends: true,
+		  },
+		});
+	  
+		const friendList = user.friends.map(async (friendId) => {
+		  const friend = await this.prisma.user.findUnique({
+			where: {
+			  id: friendId,
+			},
+			select: {
+			  username: true,
+			  status: true,
+			},
+		  });
+	  
+		  console.log({
+			name: friend.username,
+			status: friend.status,
+		  });
+
+		  return {
+			name: friend.username,
+			status: friend.status,
+		  };
+		});
+	  
+		return Promise.all(friendList);
+	  }
+	  
 
 }

@@ -31,6 +31,11 @@ export default function ProfilePage() {
 				setChecked(status.twoFactorAuth);
 				setTwoFAActivated(status.twoFactorActivated);
 			});
+			console.log("Fetching friend list...", token);
+			const fetchData = async () => {
+			  getFriendList(token);
+			};
+			fetchData();
 		}
 		let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
 		if (cookieToken) {
@@ -257,19 +262,51 @@ export default function ProfilePage() {
 		}
 	}
 
-	const friends = [
-		{ name: 'Alex', status: 'online' },
-		{ name: 'Mika', status: 'offline' },
-		{ name: 'Ethan', status: 'online' },
-		{ name: 'Kenny', status: 'online' },
-		{ name: 'Clement', status: 'offline' },
-		{ name: 'Tom', status: 'online' },
-		{ name: 'Kate', status: 'offline' },
-		{ name: 'Sam', status: 'playing' },
-		{ name: 'Sam', status: 'online' },
-		{ name: 'Sam', status: 'online' },
+	const [friendList, setFriendList] = useState([]);
 
-	];
+	// useEffect(() => {
+	// 	console.log("Fetching friend list...", token);
+	// 	const fetchData = async () => {
+	// 	  getFriendList(token);
+	// 	};
+	// 	fetchData();
+	//   }, []);
+
+	async function getFriendList(accessToken: string): Promise<any> {
+		try {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/getfriendlist', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `${accessToken}`
+				},
+			});
+			const data = await response.json();
+			if (data) {
+				setFriendList(data);
+			}
+			return data;
+		} catch (error) {
+			
+			console.error(error);
+			// handle error
+		}
+	}
+
+
+	// const friends = [
+	// 	{ name: 'Alex', status: 'online' },
+	// 	{ name: 'Mika', status: 'offline' },
+	// 	{ name: 'Ethan', status: 'online' },
+	// 	{ name: 'Kenny', status: 'online' },
+	// 	{ name: 'Clement', status: 'offline' },
+	// 	{ name: 'Tom', status: 'online' },
+	// 	{ name: 'Kate', status: 'offline' },
+	// 	{ name: 'Sam', status: 'playing' },
+	// 	{ name: 'Sam', status: 'online' },
+	// 	{ name: 'Sam', status: 'online' },
+
+	// ];
 
 	const games = [
 		{ player1: 'Mika', player2: 'Ethan', score: "3-2", date: "2023-01-02" },
@@ -346,7 +383,7 @@ export default function ProfilePage() {
 			</div>
 
 			<div className='Profile_tabs'>
-				<FriendList data={friends} />
+				<FriendList data={friendList} />
 				<GameHistory data={games} />
 			</div>
 			
