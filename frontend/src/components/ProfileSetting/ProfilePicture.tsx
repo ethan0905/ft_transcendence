@@ -31,6 +31,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({profilePicture, handleUp
 					bottom: '20px',
 					opacity: '1',
 					color: '#fefefefb',
+					cursor: 'pointer'
 				}}
 				onClick={() => { 
 					const input = document.getElementById('profile-picture-upload'); 

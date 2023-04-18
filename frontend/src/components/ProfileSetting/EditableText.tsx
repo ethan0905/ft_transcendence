@@ -28,8 +28,11 @@ const EditableText = ({ text, onSubmit }: EditableTextProps) => {
     <form onSubmit={handleSubmit}>
       <input type="text" value={value} onChange={handleChange}/>
       <button type="submit">Save</button>
-    </form>) 
-    : (<h1>{text+" "}<EditIcon onClick={handleEdit}/></h1>);
+    </form>) : (
+    <h1>
+      {text+" "}
+      <EditIcon onClick={handleEdit} style={{cursor: 'pointer'}}/>
+    </h1>);
 };
 
 export default EditableText;

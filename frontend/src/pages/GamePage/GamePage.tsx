@@ -83,12 +83,10 @@ export default function GamePage() {
 				{GameTable({ data })}
 				<div className='ButtonPlay'>
 					<img src="/rasengan.png" alt='ImgButton' id='ImgButton' onClick={() => { window.location.href = '/game' }} />
-					<span id='textPlay' onClick={() => { window.location.href = '/game' }}>
-						PLAY
-					</span>
 					<div className='MapOption'>
 						{/* <span>Default map</span> */}
 					</div>
+					<span id='textPlay' onClick={() => { window.location.href = '/game' }}>PLAY</span>
 				</div>
 			</div>
 		</>

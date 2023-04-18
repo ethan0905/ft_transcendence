@@ -3,6 +3,7 @@
     width: 75vw;
     height: 50vh;
     background-color: rgba(48, 48, 55, 0.25);
+    margin-top: 30px;
 }
 table {
     border-collapse: collapse;
@@ -15,7 +16,9 @@ thead {
 .maintitleTab {
     background-color: black;
     color: white;
-    font-size: 25px;
+    font-size: 30px;
+    font-family: 'Kocak';
+    padding-top: 20px;
 }
 .titlesTab {
     background-color: black;
