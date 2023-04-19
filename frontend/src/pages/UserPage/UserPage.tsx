@@ -12,13 +12,11 @@ import { CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 export default function UserPage() {
-	// let { id } = useParams();
 	const navigate = useNavigate();
 	let { username } = useParams();
 
 	const [userExists, setUserExists] = useState(false);
 	const [userIsMe, setUserIsMe] = useState(false);
-	// const [userName, setUserName] = useState('');
 	const [userId, setUserId] = useState<string>('');
 	const [profilePicture, setProfilePicture] = useState<File | null>(null);
 	const [imageIsLoaded, setImageIsLoaded] = useState(false);
@@ -82,7 +80,7 @@ export default function UserPage() {
 			const data = await response.json();
 			if (data.value === true) {
 				setUserExists(data.value);
-				console.log('user is me ? ', data.loggedUser); // getting properly if user is the user logged or not
+				// console.log('user is me ? ', data.loggedUser); // getting properly if user is the user logged or not
 				setUserIsMe(data.loggedUser);
 			} else {
 				setUserExists(false);
@@ -105,7 +103,6 @@ export default function UserPage() {
 				},
 			});
 			const data = await response.json();
-			// console.log('data: ', data);
 			if (data) {
 				// setUserName(data.username); // commented to test /profile/:username
 				// return data;
@@ -196,7 +193,6 @@ export default function UserPage() {
 			});
 			// console.log('response: ', response);
 			const data = await response.json();
-			console.log('data: ', data.value);
 			if (data.value) {
 				setFriendAdded(false);
 			}
@@ -219,7 +215,6 @@ export default function UserPage() {
 				},
 			});
 			const data = await response.json();
-			console.log('data: ', data);
 			if (data) {
 				id = data.id;
 			}
@@ -375,19 +370,7 @@ export default function UserPage() {
 	const [hasWon, setHasWon] = useState(false);
 	const [hasFriend, setHasFriend] = useState(false);
 
-	// useEffect(() => {
-	// 	if (token !== '' && username !== '')
-	// 	{
-	// 		const fetchAchievements = async () => {
-	// 			getUserAchievementStatus();
-	// 		};
-	// 		fetchAchievements();
-	// 	}
-	// }, [username]);
-
 	async function getUserAchievementStatus(): Promise<any> {
-
-		console.log('getUserAchievementStatus() called: ', username);
 
 		try {
 			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/achievements/get', {
