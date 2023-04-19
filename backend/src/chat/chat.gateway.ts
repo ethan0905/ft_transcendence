@@ -199,6 +199,29 @@ export class ChatGateway implements OnGatewayConnection {
     console.log("chan kicked");
   }
 
+  
+  @SubscribeMessage('mute')
+  async mute_chan(
+    @MessageBody()  data: QuitChanDto ,
+    @ConnectedSocket() client : Socket,
+  ) {
+    
+    await this.chatService.mute_Chan(data.username, data.chatId);
+    console.log("chan muteed");
+  }
+
+    
+  @SubscribeMessage('unmute')
+  async mute_chan(
+    @MessageBody()  data: QuitChanDto ,
+    @ConnectedSocket() client : Socket,
+  ) {
+    
+    await this.chatService.mute_Chan(data.username, data.chatId);
+    console.log("chan muteed");
+  }
+
+
   @SubscribeMessage('is ban')
   async isban_chan(
     @MessageBody()  data: QuitChanDto ,

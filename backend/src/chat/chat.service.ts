@@ -169,6 +169,47 @@ export class ChatService {
 
         }
 
+        
+        async mute_Chan(username: string, id : number)
+        {
+          await this.prisma.channel.update(
+            {
+              where: {
+                id: id,
+              },
+              data : {
+                mute : {
+                  connect : {
+                    username : username,
+                  },
+                },
+              },
+                //isPrivate : info.Private,
+              }
+          )
+        }
+
+        
+        
+        async unmute_Chan(username: string, id : number)
+        {
+          await this.prisma.channel.update(
+            {
+              where: {
+                id: id,
+              },
+              data : {
+                mute : {
+                  disconnect : {
+                    username : username,
+                  },
+                },
+              },
+                //isPrivate : info.Private,
+              }
+          )
+        }
+
         async join_Chan(data: JoinChanDto)
         {
           const chan = await this.prisma.channel.findUnique({
