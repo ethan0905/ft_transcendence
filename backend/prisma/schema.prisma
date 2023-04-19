@@ -152,3 +152,31 @@ enum GameStatus {
   PLAYING
   FINISHED
 }
+
+// model User {
+//   id        Int       @id @default(autoincrement())
+//   createdAt DateTime  @default(now())
+//   updatedAt DateTime  @updatedAt
+
+//   email     String  @unique
+//   username  String? @unique
+
+//   games Game[] @relation("player")
+
+//   @@map("users")
+//   @@unique([id, email])
+// }
+
+// model Game {
+//   id         Int       @id @default(autoincrement())
+//   createdAt  DateTime  @default(now())
+//   updatedAt  DateTime  @updatedAt
+//   duration   Int 
+
+//   status    GameStatus @default(WAITING)
+
+//   players  User[] @relation("player")
+//   score Int[]
+
+//   @@unique([id])
+// }

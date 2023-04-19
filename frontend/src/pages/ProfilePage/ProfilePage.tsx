@@ -12,6 +12,7 @@ import { styled } from '@mui/material/styles';
 import { red } from '@mui/material/colors';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import userEvent from '@testing-library/user-event';
 
 export default function ProfilePage() {
 	const [name, setName] = useState('');
@@ -25,27 +26,12 @@ export default function ProfilePage() {
 	useEffect(() => {
 		if (token !== '') {
 			getUsername(token);
-			getProfilePicture(token);
+			// getProfilePicture(token);
 			check2FAStatus(token).then((status: any) => status.json()).then((status: any) => {
 				// console.log("status: ", status);
 				setChecked(status.twoFactorAuth);
 				setTwoFAActivated(status.twoFactorActivated);
 			});
-			console.log("Fetching friend list...", token);
-			const fetchData = async () => {
-			  getFriendList(token);
-			};
-			fetchData();
-			console.log("Fetching game history...");
-			const fetchGameHistory = async () => {
-				getGameHistory(token);
-			};
-			fetchGameHistory();
-			console.log("Fetching achievements...");
-			const fetchAchievements = async () => {
-				getUserAchievementStatus(token);
-			};
-			fetchAchievements();
 		}
 		let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
 		if (cookieToken) {
@@ -56,7 +42,7 @@ export default function ProfilePage() {
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
 		setChecked(event.target.checked);
-		console.log("status: ", !checked);
+		// console.log("status: ", !checked);
 		if (!checked === false) {
 			setTwoFAActivated(false);
 			fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/auth/2fa/activated', {
@@ -119,6 +105,7 @@ export default function ProfilePage() {
 	}
 
 	async function activate2FA(): Promise<any> {
+
 		const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/auth/2fa/verify', {
 			method: 'POST',
 			headers: {
@@ -130,7 +117,7 @@ export default function ProfilePage() {
 		if (data) {
 			setTwoFAActivated(true);
 
-			console.log("DATA = ", data);
+			// console.log("DATA = ", data);
 			const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/auth/2fa/activated', {
 				method: 'POST',
 				headers: {
@@ -231,31 +218,21 @@ export default function ProfilePage() {
 		}
 	};
 
-	async function getProfilePicture(accessToken: string): Promise<any> {
-
-		let username: string = '';
-
-		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/username/get', {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-					'Authorization': `${accessToken}`
-				},
-			});
-			const data = await response.json();
-			if (data) {
-				setName(data.username);
-				username = data.username; // TMP : storing my name inside this variable
-			}
-		} catch (error) {
-
-			console.error(error);
-			// handle error
+	useEffect(() => {
+		if (token !== '' && name !== '')
+		{
+			// console.log("Fetching friend list...", token);
+			const fetchData = async () => {
+				getProfilePicture();
+			};
+			fetchData();
 		}
+	}, [name]);
+
+	async function getProfilePicture(): Promise<any> {
 
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/files/' + username, {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/files/' + name, {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
@@ -274,13 +251,16 @@ export default function ProfilePage() {
 
 	const [friendList, setFriendList] = useState([]);
 
-	// useEffect(() => {
-	// 	console.log("Fetching friend list...", token);
-	// 	const fetchData = async () => {
-	// 	  getFriendList(token);
-	// 	};
-	// 	fetchData();
-	//   }, []);
+	useEffect(() => {
+		if (token !== '' && name !== '')
+		{
+			// console.log("Fetching friend list...", token);
+			const fetchData = async () => {
+			  getFriendList(token);
+			};
+			fetchData();
+		}
+	}, [name]);
 
 	async function getFriendList(accessToken: string): Promise<any> {
 		
@@ -304,57 +284,27 @@ export default function ProfilePage() {
 		}
 	}
 
-
-	// const friends = [
-	// 	{ name: 'Alex', status: 'online' },
-	// 	{ name: 'Mika', status: 'offline' },
-	// 	{ name: 'Ethan', status: 'online' },
-	// 	{ name: 'Kenny', status: 'online' },
-	// 	{ name: 'Clement', status: 'offline' },
-	// 	{ name: 'Tom', status: 'online' },
-	// 	{ name: 'Kate', status: 'offline' },
-	// 	{ name: 'Sam', status: 'playing' },
-	// 	{ name: 'Sam', status: 'online' },
-	// 	{ name: 'Sam', status: 'online' },
-
-	// ];
-
 	const [gameList, setGameList] = useState([]);
-	
-	// useEffect(() => {
-	// 	console.log("Fetching game list...", token);
-	// 	const fetchData = async () => {
-	// 	  getGameList(token);
-	// 	};
-	// 	fetchData();
-	//   }, []);
 
-	async function getGameHistory(accessToken: string): Promise<any> {
-
-		let username: string = '';
-		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/username/get', {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-					'Authorization': `${accessToken}`
-				},
-			});
-			const data = await response.json();
-			if (data) {
-				username = data.username;
-			}
-		} catch (error) {
-			console.error(error);
-			// handle error
+	useEffect(() => {
+		if (token !== '' && name !== '')
+		{
+			// console.log("Fetching game history...");
+			const fetchGameHistory = async () => {
+				getGameHistory();
+			};
+			fetchGameHistory();
 		}
+	}, [name]);
+
+	async function getGameHistory(): Promise<any> {
 
 		try {
 			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/game/history/get', {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
-					'Username': `${username}`,
+					'Username': `${name}`,
 				},
 			});
 			const data = await response.json();
@@ -369,38 +319,6 @@ export default function ProfilePage() {
 		}
 	}
 
-	// const profileName = { username: name };
-
-	// const games = [
-	// 	{ player1: 'Mika', player2: 'Ethan', score: "3-2", date: "2023-01-02" },
-	// 	{ player1: 'Ethan', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-	// 	{ player1: 'Kenny', player2: 'Ethan', score: "3-2", date: "2023-01-02" },
-	// 	{ player1: 'Clem', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-	// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-	// ];
-
 	const RedSwitch = styled(Switch)(({ theme }) => ({
 		'& .MuiSwitch-switchBase.Mui-checked': {color: red[900]},
 		'& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {backgroundColor: red[900]},
@@ -410,48 +328,29 @@ export default function ProfilePage() {
 	const [hasWon, setHasWon] = useState(false);
 	const [hasFriend, setHasFriend] = useState(false);
 
-	// useEffect(() => {
-	// 	if (gameList.length > 0) {
-	// 		setHasPlayed(true);
-	// 	}
-	// }, [hasPlayed, hasWon, hasFriend]);
-
-	// const [achievementsData, setAchievementsData] = useState([]);
-
-	async function getUserAchievementStatus(accessToken:string): Promise<any> {
-
-		let username: string = '';
-
-		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/username/get', {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-					'Authorization': `${accessToken}`
-				},
-			});
-			const data = await response.json();
-			if (data) {
-				username = data.username; // TMP : storing my name inside this variable
-			}
-		} catch (error) {
-
-			console.error(error);
-			// handle error
+	useEffect(() => {
+		if (token !== '' && name !== '')
+		{
+			const fetchAchievements = async () => {
+				getUserAchievementStatus();
+			};
+			fetchAchievements();
 		}
+	}, [name]);
+
+	async function getUserAchievementStatus(): Promise<any> {
 
 		try {
 			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/achievements/get', {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
-					'Username' : username,
+					'Username' : name,
 				},
 			});
 			const data = await response.json();
 			if (data)
 			{
-				console.log("call api dans front", data);
 				setHasPlayed(data.hasPlayed);
 				setHasWon(data.hasWon);
 				setHasFriend(data.hasFriend);
@@ -459,6 +358,7 @@ export default function ProfilePage() {
 		} catch (error) {
 			console.log(error);
 		}
+
 	}
 
 	return (

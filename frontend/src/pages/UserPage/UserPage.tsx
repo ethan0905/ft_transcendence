@@ -16,36 +16,6 @@ export default function UserPage() {
 	const navigate = useNavigate();
 	let { username } = useParams();
 
-	const games = [
-		{ player1: 'Mika', player2: 'Ethan', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Ethan', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Kenny', player2: 'Ethan', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Clem', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-	];
-
 	const [userExists, setUserExists] = useState(false);
 	const [userIsMe, setUserIsMe] = useState(false);
 	// const [userName, setUserName] = useState('');
@@ -71,13 +41,17 @@ export default function UserPage() {
 			  getGameHistory();
 			};
 			fetchData();
+			console.log("Fetching achievement ...");
+			const fetchAchievements = async () => {
+				getUserAchievementStatus();
+			};
+			fetchAchievements();
 		}
 		let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
 		if (cookieToken) {
 			setToken(cookieToken);
 		}
 	}, [token, username]);
-	// }, [id, token]);
 
 	useEffect(() => {
 		if (profilePicture)
@@ -397,6 +371,45 @@ export default function UserPage() {
 		}
 	}
 
+	const [hasPlayed, setHasPlayed] = useState(false);
+	const [hasWon, setHasWon] = useState(false);
+	const [hasFriend, setHasFriend] = useState(false);
+
+	// useEffect(() => {
+	// 	if (token !== '' && username !== '')
+	// 	{
+	// 		const fetchAchievements = async () => {
+	// 			getUserAchievementStatus();
+	// 		};
+	// 		fetchAchievements();
+	// 	}
+	// }, [username]);
+
+	async function getUserAchievementStatus(): Promise<any> {
+
+		console.log('getUserAchievementStatus() called: ', username);
+
+		try {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/achievements/get', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'Username' : username || '',
+				},
+			});
+			const data = await response.json();
+			if (data)
+			{
+				setHasPlayed(data.hasPlayed);
+				setHasWon(data.hasWon);
+				setHasFriend(data.hasFriend);
+			}
+		} catch (error) {
+			console.log(error);
+		}
+
+	}
+
 	return (
 		<>
 			<Sidebar />
@@ -450,7 +463,7 @@ export default function UserPage() {
 							}
 						</div>
 					</div>
-					{/* <Achievements /> */}
+					<Achievements data={{ hasPlayed: hasPlayed, hasWon: hasWon, hasFriend: hasFriend }} />
 				</div>
 				<div className='UserPage_stats'>
 					<GameHistory data={gameHistoryList} />

@@ -466,6 +466,7 @@ export class UserService {
 			username: username
 		  },
 		  select: {
+			id: true,
 			games: true,
 			friends: true,
 		  }
@@ -474,11 +475,31 @@ export class UserService {
 		// check if user has played at least 1 game
 		const hasPlayed = user.games.length > 0;
 
+		// check if from the games played, user has won at least 1 game
+		// const games = user.games;
+
+		// // let hasWon = false;
+
+		// // games.forEach((game) => {
+		// //   if (game.player1 === username && game.score[0] > game.score[1]) {
+		// // 	hasWon = true;
+		// //   } else if (game.player2 === username && game.score[1] > game.score[0]) {
+		// // 	hasWon = true;
+		// //   }
+		// // });
+
+		// const hasWon = user.games.some((game) => {
+		// 	let player1Index = game.players.findIndex((player) => player.id === user.id);
+		// 	let player2Index = player1Index === 0 ? 1 : 0;
+		  
+		// 	let player1Score = game.score[player1Index];
+		// 	let player2Score = game.score[player2Index];
+		  
+		// 	return player1Score > player2Score;
+		//   });
+
 		// check if user has at least 1 friend
 		const hasFriend = user.friends.length > 0;
-
-		// check if user has won at least 1 game
-		// const hasWon = user.games.some(game => game.score > 0);
 
 		return {
 		  hasPlayed: hasPlayed,
