@@ -7,44 +7,20 @@ import './userPage.css';
 
 export default function UserPage() {
 	let { id } = useParams();
-	const games = [
-		{ player1: 'Mika', player2: 'Ethan', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Ethan', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Kenny', player2: 'Ethan', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Clem', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-		{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-	];
+	const userStatus = 'online' as 'online' | 'offline' | 'ingame';
 
 	return (
 		<>
 			<Sidebar />
 			<div className='UserPage'>
 				<div className='UserPage_header'>
-					<Avatar id='UserAvatar' alt='Profile Picture' src={"/sasuke.jpg"}/>
+				<Avatar id='UserAvatar' alt='Profile Picture' src={"/sasuke.jpg"}/>
 					<div className='UserPage_info'>
-						<h1>{id}</h1>
+						<h1>
+							{id}
+							<div className={`userStatus ${userStatus}`}></div>
+						</h1>
+
 						<div className='buttonList'>
 							<button style={{backgroundColor: 'green'}}>Add</button>
 							<button style={{backgroundColor: 'red'}}>Delete</button>
@@ -62,3 +38,33 @@ export default function UserPage() {
 		</>
 	);
 }
+
+const games = [
+	{ player1: 'Mika', player2: 'Ethan', score: "3-2", date: "2023-01-02" },
+	{ player1: 'Ethan', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	{ player1: 'Kenny', player2: 'Ethan', score: "3-2", date: "2023-01-02" },
+	{ player1: 'Clem', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
+];
