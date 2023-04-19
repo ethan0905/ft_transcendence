@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef, Component } from 'react';
 import UserAvatar from "./UserAvatar";
 import "./UserList.css";
+import { SocketContext } from '../ChatBody';
+import { useContext } from 'react';
 
 
 interface Pop {
@@ -25,6 +27,36 @@ const PopupButton: React.FC<Pop> = ({ buttonText }) => {
   }, []);
   const handleButtonClick = () => {
     setIsOpen(!isOpen);
+  }
+
+  //le chatId est un number, le username est un string sur la cible
+  
+  const socket = useContext(SocketContext);
+  
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    console.log(`chatId: ${chatId}, username: ${username}`);
+    socket.emit("kick", { chatId:chatId, username:username})
+  }
+
+    
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    console.log(`chatId: ${chatId}, username: ${username}`);
+    socket.emit("ban", { chatId:chatId, username:username})
+  }
+
+    
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    console.log(`chatId: ${chatId}, username: ${username}`);
+    socket.emit("mute", { chatId:chatId, username:username})
+  }
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    console.log(`chatId: ${chatId}, username: ${username}`);
+    socket.emit("unmute", { chatId:chatId, username:username})
   }
 
 
