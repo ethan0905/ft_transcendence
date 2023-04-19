@@ -69,14 +69,13 @@ export class WsGameGateway{
   @SubscribeMessage('StartGame')
   handleStartGame(@MessageBody() data:any) : void {
     this.wsGameService.startGame(data.room_name, this.server);
-    this.wsGameService.requestBallPosition(data.room_name, this.server);
+    // this.wsGameService.requestBallPosition(data.room_name, this.server);
   }
 
-  @Interval(1000/60);
-  @SubscribeMessage('RequestBallPosition')
-  handleRequestBallPosition(@MessageBody() data:any) : void {
-    this.wsGameService.requestBallPosition(data.room_name, this.server);
-  }
+  // @SubscribeMessage('RequestBallPosition')
+  // handleRequestBallPosition(@MessageBody() data:any) : void {
+  //   this.wsGameService.requestBallPosition(data.room_name, this.server);
+  // }
 
   // Function for join a room for playing
   // @SubscribeMessage('JoinRoom')

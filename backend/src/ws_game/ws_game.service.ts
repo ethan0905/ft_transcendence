@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { ConnectedSocket } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import {v4 as uuidv4} from 'uuid';
+import { SchedulerRegistry } from '@nestjs/schedule';
+
 
 type Ball={
 	x: number;
@@ -20,6 +22,7 @@ type Game = {
 	is_playing: boolean;
 	ball: Ball;
 }
+
 type Room = {
 	name: string;
 	player1: string;
@@ -30,6 +33,7 @@ type Room = {
 
 @Injectable()
 export class WsGameService {
+	constructor(private schedulerRegistry: SchedulerRegistry) {}
 	number_of_player: number = 0;
 	rooms: {[key:string]:Room} = {};
 	queue: string[] = [];
@@ -69,7 +73,7 @@ export class WsGameService {
 	}
 
 	createRoom(client1:string,client2:string,server:Server): void {
-		const room: Room = {
+		let room: Room = {
 			name: uuidv4(),
 			player1: client1,
 			player2: client2,
@@ -206,6 +210,7 @@ export class WsGameService {
 				}
 				server.to(room.name).emit('PlayerLeft', {player:1, score:[room.game.player1_score, room.game.player2_score]});
 				server.socketsLeave(room.name);
+				this.schedulerRegistry.deleteInterval(room.name);
 				// ajouter dans la bdd | efaccer la room de la liste
 				delete this.rooms[room_name];
 			}
@@ -219,6 +224,7 @@ export class WsGameService {
 				server.to(room.name).emit('PlayerLeft', {player:2, score:[room.game.player1_score, room.game.player2_score]});
 				server.to(room.name).emit('PlayerLeft', {player:1, score:[room.game.player1_score, room.game.player2_score]});
 				server.socketsLeave(room.name);
+				this.schedulerRegistry.deleteInterval(room.name);
 				// ajouter dans la bdd | efaccer la room de la liste
 				delete this.rooms[room_name];
 			}
@@ -237,18 +243,19 @@ export class WsGameService {
 			server.to(room.name).emit('StartGame', room.name);
 			server.emit('NewMatch', this.rooms);
 		}
+		const interval = setInterval(() => {
+			this.requestBallPosition(room_name, server)
+		}, 1000/60);
+		this.schedulerRegistry.addInterval(room.name, interval);
 	}
 
 	UpdateScore(room_name:string, player:number, server:Server): void {
-		const room: Room = this.rooms[room_name];
-		if (room !== undefined) {
-			if (player == 1)
-				room.game.player1_score++;
-			else
-				room.game.player2_score++;
-			server.to(room.name).emit('UpdateScore', {score:[room.game.player1_score,room.game.player2_score]});
-			if (room.game.player1_score == 11 || room.game.player2_score == 11)
+		if (this.rooms[room_name] !== undefined) {
+			server.to(room_name).emit('UpdateScore', {score:[this.rooms[room_name].game.player1_score,this.rooms[room_name].game.player2_score]});
+			if (this.rooms[room_name].game.player1_score == 11 || this.rooms[room_name].game.player2_score == 11){
+				this.schedulerRegistry.deleteInterval(room_name);
 				console.log("EndGame");
+			}
 			//this.endGame(room_name, server);
 		}
 	}

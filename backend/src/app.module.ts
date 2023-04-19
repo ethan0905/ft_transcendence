@@ -5,6 +5,7 @@ import { UserModule } from './user/user.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ChatModule } from './chat/chat.module';
 import { WsGameModule } from './ws_game/ws_game.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 // A module is a class anotated with a @Module decorator. The module decorator provide
 // metadata that Nest makes use of to organize the application structure
@@ -17,7 +18,8 @@ import { WsGameModule } from './ws_game/ws_game.module';
     UserModule,
     PrismaModule,
     ChatModule,
-    WsGameModule
+    WsGameModule,
+    ScheduleModule.forRoot()
   ],
 })
  
