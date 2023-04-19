@@ -27,7 +27,7 @@ export default function ProfilePage() {
 			getUsername(token);
 			getProfilePicture(token);
 			check2FAStatus(token).then((status: any) => status.json()).then((status: any) => {
-				console.log("status: ", status);
+				// console.log("status: ", status);
 				setChecked(status.twoFactorAuth);
 				setTwoFAActivated(status.twoFactorActivated);
 			});
@@ -41,6 +41,11 @@ export default function ProfilePage() {
 				getGameHistory(token);
 			};
 			fetchGameHistory();
+			console.log("Fetching achievements...");
+			const fetchAchievements = async () => {
+				getUserAchievementStatus(token);
+			};
+			fetchAchievements();
 		}
 		let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
 		if (cookieToken) {
@@ -88,7 +93,7 @@ export default function ProfilePage() {
 
 	const handleOnChange = (code: string) => {
 		setTwoFACode(code);
-		console.log("2fa code: ", code);
+		// console.log("2fa code: ", code);
 	};
 
 	async function generateQRCode(): Promise<any> {
@@ -364,6 +369,8 @@ export default function ProfilePage() {
 		}
 	}
 
+	// const profileName = { username: name };
+
 	// const games = [
 	// 	{ player1: 'Mika', player2: 'Ethan', score: "3-2", date: "2023-01-02" },
 	// 	{ player1: 'Ethan', player2: 'Mika', score: "3-2", date: "2023-01-02" },
@@ -398,6 +405,61 @@ export default function ProfilePage() {
 		'& .MuiSwitch-switchBase.Mui-checked': {color: red[900]},
 		'& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {backgroundColor: red[900]},
 	}));
+
+	const [hasPlayed, setHasPlayed] = useState(false);
+	const [hasWon, setHasWon] = useState(false);
+	const [hasFriend, setHasFriend] = useState(false);
+
+	// useEffect(() => {
+	// 	if (gameList.length > 0) {
+	// 		setHasPlayed(true);
+	// 	}
+	// }, [hasPlayed, hasWon, hasFriend]);
+
+	// const [achievementsData, setAchievementsData] = useState([]);
+
+	async function getUserAchievementStatus(accessToken:string): Promise<any> {
+
+		let username: string = '';
+
+		try {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/username/get', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `${accessToken}`
+				},
+			});
+			const data = await response.json();
+			if (data) {
+				username = data.username; // TMP : storing my name inside this variable
+			}
+		} catch (error) {
+
+			console.error(error);
+			// handle error
+		}
+
+		try {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/achievements/get', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'Username' : username,
+				},
+			});
+			const data = await response.json();
+			if (data)
+			{
+				console.log("call api dans front", data);
+				setHasPlayed(data.hasPlayed);
+				setHasWon(data.hasWon);
+				setHasFriend(data.hasFriend);
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	}
 
 	return (
 		<>
@@ -434,7 +496,7 @@ export default function ProfilePage() {
 						)}
 					</div>
 
-				<Achievements />
+				<Achievements data={{ hasPlayed: hasPlayed, hasWon: hasWon, hasFriend: hasFriend }} />
 				
 			</div>
 

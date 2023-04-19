@@ -355,52 +355,136 @@ export class UserService {
 		return Promise.all(friendList);
 	  }
 
+	// v3 of game history
+	// async getGameHistory(@Req() req: Request) {
+	// 	const username = Array.isArray(req.headers.username)
+	// 	  ? req.headers.username[0]
+	// 	  : req.headers.username;
+
+	// 	  const games = await this.prisma.game.findMany({
+	// 		where: {
+	// 		  players
+			
+	  // working on new game history
 	async getGameHistory(@Req() req: Request) {
 		const username = Array.isArray(req.headers.username)
 		  ? req.headers.username[0]
 		  : req.headers.username;
 
-		const games = await this.prisma.game.findMany({
-		  where: {
-			players: {
-			  some: {
-				username: username
-			  }
-			}
-		  },
-		  select: {
-			players: {
-			  where: {
-				NOT: {
+		  const games = await this.prisma.game.findMany({
+			where: {
+			  players: {
+				some: {
 				  username: username
 				}
-			  },
-			  select: {
-				username: true
 			  }
 			},
-			score: true,
-			createdAt: true
+			select: {
+			  players: true,
+			  score: true,
+			  createdAt: true
+			}
+		  });
+		
+		  return games.map(game => {
+			const sortedPlayers = game.players.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+			const player1 = sortedPlayers[0].username;
+			const player2 = sortedPlayers[1].username;
+		
+			// console.log({
+			// 	player1,
+			// 	player2,
+			// 	score: game.score,
+			// 	date: game.createdAt
+			// });
+
+			return {
+			  player1,
+			  player2,
+			  score: game.score,
+			  date: game.createdAt
+			};
+		  });
+		
+	}
+
+	// async getGameHistory(@Req() req: Request) {
+	// 	const username = Array.isArray(req.headers.username)
+	// 	  ? req.headers.username[0]
+	// 	  : req.headers.username;
+
+	// 	const games = await this.prisma.game.findMany({
+	// 	  where: {
+	// 		players: {
+	// 		  some: {
+	// 			username: username
+	// 		  }
+	// 		}
+	// 	  },
+	// 	  select: {
+	// 		players: {
+	// 		  where: {
+	// 			NOT: {
+	// 			  username: username
+	// 			}
+	// 		  },
+	// 		  select: {
+	// 			username: true
+	// 		  }
+	// 		},
+	// 		score: true,
+	// 		createdAt: true
+	// 	  }
+	// 	});
+
+	// 	return games.map(game => {
+	// 	  const [player1, player2] = game.players.map(player => player.username);
+
+	// 		// console.log({
+	// 		// player1,
+	// 		// player2: username,
+	// 		// score: game.score,
+	// 		// date: game.createdAt
+	// 		// });
+
+	// 	  return {
+	// 		player1,
+	// 		player2: username,
+	// 		score: game.score,
+	// 		date: game.createdAt
+	// 	  }
+	// 	});
+	// }
+
+	async getUserAchievementStatus(@Req() req: Request) {
+		const username = Array.isArray(req.headers.username)
+		  ? req.headers.username[0]
+		  : req.headers.username;
+
+		const user = await this.prisma.user.findUnique({
+		  where: {
+			username: username
+		  },
+		  select: {
+			games: true,
+			friends: true,
 		  }
 		});
 
-		return games.map(game => {
-		  const [player1, player2] = game.players.map(player => player.username);
+		// check if user has played at least 1 game
+		const hasPlayed = user.games.length > 0;
 
-			console.log({
-			player1,
-			player2: username,
-			score: game.score,
-			date: game.createdAt
-			});
+		// check if user has at least 1 friend
+		const hasFriend = user.friends.length > 0;
 
-		  return {
-			player1,
-			player2: username,
-			score: game.score,
-			date: game.createdAt
-		  }
-		});
+		// check if user has won at least 1 game
+		// const hasWon = user.games.some(game => game.score > 0);
+
+		return {
+		  hasPlayed: hasPlayed,
+		  hasWon: false, // need to change this
+		  hasFriend: hasFriend,
+		};
 	}
 
 }

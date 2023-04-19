@@ -93,4 +93,9 @@ export class UserController {
 	{
 		return this.userService.getGameHistory(req);
 	}
+
+	@Get('me/achievements/get')
+	getUserAchievementStatus(@Req() req: Request) {
+		return this.userService.getUserAchievementStatus(req);
+	}
 }

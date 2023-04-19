@@ -12,6 +12,23 @@ interface TableProps {
 const GameHistory = (props: TableProps) => {
 	const { data } = props;
 
+	const gamesPlayed = data.length;
+	let gamesWon = 0;
+	let gamesLost = 0;
+  
+	data.forEach((item) => {
+		const score1 = item.score[0];
+		const score2 = item.score[1];
+		
+		if (score1 > score2) {
+			gamesWon++;
+		} else if (score1 < score2) {
+			gamesLost++;
+		}
+	});
+  
+	const winrate = gamesPlayed > 0 ? ((gamesWon / gamesPlayed) * 100).toFixed(2) : "0.00";
+  
 	return (
 		<div style={{overflowY: 'scroll', minWidth: '60%', height: '100%'}}>
 			<table style={{ borderCollapse: 'collapse', width: '100%', height:'100%' }}>
@@ -22,11 +39,11 @@ const GameHistory = (props: TableProps) => {
 					</tr>
 					<tr>
 						<th style={stats}></th>
-						<th style={stats}>Winrate: 0%</th>
+						<th style={stats}>Winrate: {winrate}%</th>
 						<th style={stats}></th>
-						<th style={stats}>Games: 0</th>
-						<th style={stats}>Win: 0</th>
-						<th style={stats}>Lost: 0</th>
+						<th style={stats}>Games: {gamesPlayed}</th>
+						<th style={stats}>Win: {gamesWon}</th>
+						<th style={stats}>Lost: {gamesLost}</th>
 					</tr>
 					<tr>
 						<th style={titleCol}>#</th>

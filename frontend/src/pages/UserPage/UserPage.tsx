@@ -377,8 +377,6 @@ export default function UserPage() {
 
 	async function getGameHistory(): Promise<any> {
 
-		console.log("username : ", username);
-
 		try {
 			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/game/history/get', {
 				method: 'GET',
@@ -452,7 +450,7 @@ export default function UserPage() {
 							}
 						</div>
 					</div>
-					<Achievements />
+					{/* <Achievements /> */}
 				</div>
 				<div className='UserPage_stats'>
 					<GameHistory data={gameHistoryList} />

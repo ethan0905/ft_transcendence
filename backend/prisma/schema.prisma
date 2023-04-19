@@ -139,6 +139,7 @@ model Game {
   // player2   User? @relation("player2", fields: [player2Id], references: [id], onDelete: SetNull)
 
   players  User[] @relation("player")
+  // players String[]
   score Int[]
   // score1    Int
   // score2    Int
