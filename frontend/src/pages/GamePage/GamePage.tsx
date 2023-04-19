@@ -1,11 +1,10 @@
 import './gamePage.css';
 import Sidebar from '../../components/Sidebar/Sidebar';
-import Switch from '@mui/material/Switch';
 import { io, Socket } from 'socket.io-client';
 import { useEffect, useState } from 'react';
 import { createContext } from 'react';
 import axios from 'axios';
-import { useLocation, useParams , useNavigate} from 'react-router-dom';
+import { useLocation, useNavigate} from 'react-router-dom';
 import PlayPage from './PlayPage.tsx';
 
 
@@ -13,11 +12,11 @@ export const SocketContext = createContext({} as Socket);
 interface TableProps {
   data: {
 	player1: string;
-		player2: string;
-		player1_score: number;
-		player2_score: number;
-		name: string;
-		game: any;
+	player2: string;
+	player1_score: number;
+	player2_score: number;
+	name: string;
+	game: any;
   }[];
 }
 
@@ -79,22 +78,22 @@ export default function GamePage() {
 	const [socket, setSocket] = useState(io("http://localhost:4343/ws-game", {transports:["websocket"], autoConnect:false, reconnection:true,reconnectionAttempts: 3, reconnectionDelay: 1000}));
 	// const data = [];
 	let location = useLocation();
-	let params = useParams();
+	const navigate = useNavigate();
 	const [data, setData] = useState<any>([]);
 
 	useEffect(() => {
-		socket.connect();
+		if (!socket.connected)
+			socket.connect();
 		getRooms().then((values) => {
 			const rooms:any = Object.values(values);
-			// console.log(rooms);
 			setData(rooms);
+			// console.log(rooms);
 			// rooms.forEach((room:any) => {
 			// 	console.log(room.name + ":" + room.player1 + " " + room.player2 + " " + room.game.player1_score + " " + room.game.player2_score);
 			// })
 		})
 
 		socket.emit("ClientSession", "prout");
-
 		socket.on("RoomCreated", (value:any) => {
 			setData((rooms:any) => {
 				for (var i in rooms) {
@@ -105,31 +104,39 @@ export default function GamePage() {
 				return [...rooms, value];
 			});
 		})
-	}, [])
-return (
-<>
-	<SocketContext.Provider value={socket}>
-		<Sidebar />
-		{location.pathname === '/Game' ?
-			<div className='GamePage'>
-				<GameTable data={data} />
-				<div className='ButtonPlay'>
-					<img src="/rasengan.png" alt='ImgButton' id='ImgButton'
-						onClick={() => {
-							socket.emit("matchmaking", "prout")
-						}}
-					/>
-					<span id='textPlay' onClick={() => {socket.emit("matchmaking", "prout")}}>
-						PLAY
-					</span>
-					<div className='MapOption'>
-						{/* <span>Default map</span> */}
+	
+		socket.on("FindGame", (value:any) => {
+			console.log("FindGame: " + value)
+			navigate(value);
+		})
+
+	}, [socket])
+
+
+	return (
+	<>
+		<SocketContext.Provider value={socket}>
+			<Sidebar />
+			{location.pathname === '/Game' ?
+				<div className='GamePage'>
+					<GameTable data={data} />
+					<div className='ButtonPlay'>
+						<img src="/rasengan.png" alt='ImgButton' id='ImgButton'
+							onClick={() => {
+								socket.emit("matchmaking", "prout")
+							}}
+						/>
+						<span id='textPlay' onClick={() => {socket.emit("matchmaking", "prout")}}>
+							PLAY
+						</span>
+						<div className='MapOption'>
+							{/* <span>Default map</span> */}
+						</div>
 					</div>
-				</div>
-			</div>:
-			<PlayPage />
-		}
-	</SocketContext.Provider>
-</>
-);
+				</div>:
+				<PlayPage />
+			}
+		</SocketContext.Provider>
+	</>
+	);
 }

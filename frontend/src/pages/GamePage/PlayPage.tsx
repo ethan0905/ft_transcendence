@@ -28,7 +28,7 @@ function drawPlayer(canvas:HTMLCanvasElement){
 	const ctx = canvas.getContext('2d');
 	if (!ctx)
 		return;//console.log("ctx is null");
-	if (data.playground.orientation == 0){
+	if (data.playground.orientation === 0){
 		data.player1.x = 0;
 		data.player2.x = 1 - data.player2.width;
 		ctx.fillStyle = 'rgba(0, 0, 255, 1)'
@@ -36,7 +36,7 @@ function drawPlayer(canvas:HTMLCanvasElement){
 		ctx.fillStyle = 'rgba(255, 0, 0, 1)'
 		ctx.fillRect(0, data.player2.y * canvas.height, canvas.width * data.player2.width, canvas.height * data.player2.height)
 	}
-	else if (data.playground.orientation == 1){
+	else if (data.playground.orientation === 1){
 		data.player1.y = 0;
 		data.player2.y = data.player2.height;
 		ctx.fillStyle = 'rgba(0, 0, 255, 1)'
@@ -56,16 +56,13 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 		width: 0,
 		height: 0
 	});
-	const [prevPos, setPrevPos] = useState(0);
-	
-	
 	
 	function getCanvasSize(){
 		const width = window.innerWidth * 0.7;
 		const height = window.innerHeight * 0.8;
 
 		if (width > height){
-			if (data.playground.orientation == 1){
+			if (data.playground.orientation === 1){
 				let tmp = data.player1.x;
 				data.player1.x = data.player1.y;
 				data.player1.y = tmp;
@@ -91,7 +88,7 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 		}
 		else
 		{
-			if (data.playground.orientation == 0){
+			if (data.playground.orientation === 0){
 				let tmp = data.player1.x;
 				data.player1.x = data.player1.y;
 				data.player1.y = tmp;
@@ -118,36 +115,40 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 	}
 
 	useEffect(() => {
-		getCanvasSize();
-		console.log(size.width, size.height);
 		socket.on('UpdateCanvas', (player_info) => {
-			if (player_info.player_role == 1 && data.playground.orientation == 0)
+			if (player_info.player_role === 1 && data.playground.orientation === 0)
 				data.player1.y = player_info.position;	
-			else if (player_info.player_role == 2 && data.playground.orientation == 0)
+			else if (player_info.player_role === 2 && data.playground.orientation === 0)
 				data.player2.y = player_info.position;
-			else if (player_info.player_role == 1 && data.playground.orientation == 1)
+			else if (player_info.player_role === 1 && data.playground.orientation === 1)
 				data.player1.x = player_info.position;
-			else if (player_info.player_role == 2 && data.playground.orientation == 1)
+			else if (player_info.player_role === 2 && data.playground.orientation === 1)
 				data.player2.x = player_info.position;
 		});
+	
 		socket.on("GetBallPosition", (ball) => {
-			if (data.playground.orientation == 0){
+			if (data.playground.orientation === 0){
 				data.ballObj.x= ball.x;
 				data.ballObj.y= ball.y;
 			}
-			else if (data.playground.orientation == 1){
+			else if (data.playground.orientation === 1){
 				data.ballObj.x= 1 - ball.y;
 				data.ballObj.y= ball.x;
 			}
 			data.ballObj.speed= ball.speed;
 			data.ballObj.radius= ball.radius;
-
+	
 		})
+	},[socket]);
+
+	useEffect(() => {
+		getCanvasSize();
+		console.log(size.width, size.height);
 		const canvas = canvasRef.current;
 		if (!canvas)
 			return;//console.log("canvas is null");
 		const render = () => {
-			socket.emit("RequestBallPosition", {room_name:id_game})
+			// socket.emit("RequestBallPosition", {room_name:id_game})
 			const ctx = canvas.getContext('2d');
 			if (!ctx)
 			return;//console.log("ctx is null");
@@ -157,12 +158,13 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 			drawPlayer(canvas);
 			requestAnimationFrame(render);
 		};
-		render();
+		requestAnimationFrame(render);
+		// render();
 		window.addEventListener('resize', getCanvasSize);
 		return () => {
 			window.removeEventListener('resize', getCanvasSize);
 		}
-	}, [])
+	}, [id_game, socket, size.height, size.width])
 
 	return (
 		<div className="h-[90vh] w-full flex flex-col justify-center items-center">
@@ -171,8 +173,8 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 				const canvas = canvasRef.current;
 				if (!canvas)
 					return;// throw new Error("Canvas not found");
-				if (size.orientation == 0){
-					if (role == 1){
+				if (size.orientation === 0){
+					if (role === 1){
 						data.player1.y = evt.nativeEvent.offsetY/(canvas.height);
 						if (data.player1.y < 0)
 							data.player1.y = 0;
@@ -180,7 +182,7 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 							data.player1.y = 0.8;
 						socket.emit('MakeMove', {id_game:id_game,player:1, position: data.player1.y})
 					}
-					else if (role == 2){
+					else if (role === 2){
 						data.player2.y = evt.nativeEvent.offsetY/(canvas.height);
 						if (data.player2.y < 0)
 							data.player2.y = 0;
@@ -189,8 +191,8 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 						socket.emit('MakeMove', {id_game:id_game,player:2, position: data.player2.y})
 					}
 				}
-				else if (size.orientation == 1){
-					if (role == 1){
+				else if (size.orientation === 1){
+					if (role === 1){
 						data.player1.x = 1-(evt.nativeEvent.offsetX/(canvas.width));
 						if (data.player1.x < 0)
 							data.player1.x = 0;
@@ -198,7 +200,7 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 							data.player1.x = 0.8;
 						socket.emit('MakeMove', {id_game:id_game,player:1, position: data.player1.x})
 					}
-					else if (role == 2){
+					else if (role === 2){
 						data.player2.x = 1-(evt.nativeEvent.offsetX/(canvas.width));
 						if (data.player2.x < 0)
 							data.player2.x = 0;
@@ -211,8 +213,8 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 				const canvas = canvasRef.current;
 				if (!canvas)
 					return;// throw new Error("Canvas not found");
-				if (size.orientation == 0){
-					if (role == 1){
+				if (size.orientation === 0){
+					if (role === 1){
 						data.player1.y = evt.nativeEvent.offsetY/(canvas.height);
 						if (data.player1.y < 0)
 							data.player1.y = 0;
@@ -220,7 +222,7 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 							data.player1.y = 0.8;
 						socket.emit('MakeMove', {id_game:id_game,player:1, position: data.player1.y})
 					}
-					else if (role == 2){
+					else if (role === 2){
 						data.player2.y = evt.nativeEvent.offsetY/(canvas.height);
 						if (data.player2.y < 0)
 							data.player2.y = 0;
@@ -229,8 +231,8 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 						socket.emit('MakeMove', {id_game:id_game,player:2, position: data.player2.y})
 					}
 				}
-				else if (size.orientation == 1){
-					if (role == 1){
+				else if (size.orientation === 1){
+					if (role === 1){
 						data.player1.x = 1-(evt.nativeEvent.offsetX/(canvas.width));
 						if (data.player1.x < 0)
 							data.player1.x = 0;
@@ -238,7 +240,7 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 							data.player1.x = 0.8;
 						socket.emit('MakeMove', {id_game:id_game,player:1, position: data.player1.x})
 					}
-					else if (role == 2){
+					else if (role === 2){
 						data.player2.x = 1-(evt.nativeEvent.offsetX/(canvas.width));
 						if (data.player2.x < 0)
 							data.player2.x = 0;
@@ -252,41 +254,77 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 	);
 }
 
+enum StatusGame {
+	Waiting = 0,
+	Playing = 1,
+	End = 2
+}
 
-function PlayPage({}) {
+function PlayPage() {
 	let params = useParams();
 	const navigate = useNavigate();
 	const [id_game, setId_game] = useState<string>("");
 	const socket = useContext(SocketContext);
 	const [role, setPlayer_role] = useState<number>(0);
+	const [isWinner, setIsWinner] = useState<boolean>(false);
+	const [status_game, setStatus_game] = useState<StatusGame>(StatusGame.Waiting);
+	const [score, setScore] = useState<[number, number]>([0,0]);
 	
 	useEffect(() => {
 		if (!socket.connected)
 			socket.connect();
-	},[]);
+	},[socket]);
 
 	useEffect(() => {
 		setId_game(params.id_game as string);
 		socket.emit("ClientSession", "prout");
 		socket.emit('JoinRoom', {room_name:id_game, playerId:"prout"});
-		if (id_game != ""){
+		if (id_game !== ""){
 			fetchRole(id_game, "prout").then((data:number) => {
 				setPlayer_role(data);
 			})
 		}
-	},[id_game, role]);
+
+		socket.on('StartGame', (value:any) => {
+			console.log("StartGame:"+value);
+			setStatus_game(StatusGame.Playing);
+		});
+		socket.on('PlayerLeft', (values:any) => {
+			setStatus_game(StatusGame.End);
+			setScore(values.score);
+			if (role !== values.player)
+				setIsWinner(true);
+		})
+	
+		socket.on('UpdateScore', (values:any) => {
+			// console.log("UpdateScore:"+values.score)
+			setScore(values.score);
+		})
+
+	},[params.id_game, id_game, role, socket]);
+
 
 	return (
-		<div className="w-full h-screen flex flex-col items-center justify-center">
-			{/* <div className="w-screen h-screen absolute top-0 left-0 z-10 bg-black opacity-25">
-			</div>
-			<div className="absolute w-[90%] h-[70%] bg-white z-20 flex flex-col items-center justify-around">
-				<h1 className="w-fit text-5xl">YOU WIN!!!!</h1>
-				<h1 className="w-fit text-5xl">Score: 1:0</h1>
-				<button className="bg-red-200 p-3 rounded-xl w-fit text-2xl">GO BACK TO MENU</button>
-			</div> */}
+		<div className="w-full h-screen flex flex-col items-center justify-center relative">
+			{status_game === StatusGame.Playing ?
+				null
+			:
+				<div className="absolute w-[100%] h-[100%] bg-opacity-20 bg-black z-20 flex flex-col items-center justify-around">
+					{status_game === StatusGame.Waiting ? 
+						<>
+							<h1 className="w-fit text-5xl">Waiting Player</h1>
+						</>
+					: 
+						<>
+							<h1 className="w-fit text-5xl">{isWinner ? "YOU WIN!!!!" : "YOU LOSE"}</h1>
+							<h1 className="w-fit text-5xl">Score: {score[0]}:{score[1]}</h1>
+							<button className="bg-red-200 p-3 rounded-xl w-fit text-2xl">GO BACK TO MENU</button>
+						</>
+					}
+				</div>
+			}
 			<div className="w-full h-[10vh] inline-flex justify-center items-center gap-2">
-				<h1 className="w-fit h-min sm:text-4xl text-sm">1:0</h1>
+				<h1 className="w-fit h-min sm:text-4xl text-sm">{score[0]}:{score[1]}</h1>
 				<div className="">
 					<button className="sm:text-2xl text-sm bg-red-200 rounded-lg p-2" onClick={() => {
 						socket.emit('LeaveRoom', {room_name:id_game, playerId:"prout"});

@@ -23,12 +23,10 @@ export class WsGameGateway{
   }
 
   handleConnection(client: Socket) {
-    console.log("New Connection")
     this.wsGameService.newUserConnected(client, this.server);
   }
 
   handleDisconnect(client: Socket) {
-    console.log("New Disconnection")
     this.wsGameService.userDisconnected(client, this.server);
   }
 
@@ -71,8 +69,10 @@ export class WsGameGateway{
   @SubscribeMessage('StartGame')
   handleStartGame(@MessageBody() data:any) : void {
     this.wsGameService.startGame(data.room_name, this.server);
+    this.wsGameService.requestBallPosition(data.room_name, this.server);
   }
 
+  @Interval(1000/60);
   @SubscribeMessage('RequestBallPosition')
   handleRequestBallPosition(@MessageBody() data:any) : void {
     this.wsGameService.requestBallPosition(data.room_name, this.server);

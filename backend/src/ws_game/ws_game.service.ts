@@ -48,6 +48,17 @@ export class WsGameService {
 	userDisconnected(client:Socket, server:Server): void {
 		this.number_of_player--;
 		server.except(client.id).emit('ConnectedPlayer', this.number_of_player);
+		if (this.queue.includes(client.id))
+			this.queue.splice(this.queue.indexOf(client.id), 1);
+		let playerid = Object.keys(this.clients).find(key => this.clients[key].id === client.id);
+		for (let room in this.rooms) {
+			if (this.rooms[room].player1 === playerid) {
+				this.leaveRoom(this.rooms[room].name, playerid, server);
+			}
+			else if (this.rooms[room].player2 === playerid) {
+				this.leaveRoom(this.rooms[room].name, playerid, server);
+			}
+		};
 		console.log("Disconnected "+client.id + " ConnectedClient:" + this.getNumberOfConnectedPeople());
 	}
 
@@ -56,25 +67,6 @@ export class WsGameService {
 		server.emit('ConnectedPlayer', this.number_of_player);
 		console.log("Reconnected "+client.id + " ConnectedClient:" + this.getNumberOfConnectedPeople());
 	}
-
-	// createRoom(client:Socket,server:Server): void {
-	//   const room: Room = {
-	//     room_name: uuidv4(),
-	//     player1: client.id,
-	//     player2: '',
-	//     spectators: [],
-	//     player1_score: 0,
-	//     player2_score: 0,
-	//     is_playing: false
-	//   }
-
-	//   this.rooms.push(room);
-	
-	//   client.join(room.room_name);
-	//   console.log("Room created: " + room.room_name);
-	//   server.to(room.room_name).emit('RoomCreated', room.room_name);
-	//   server.emit('newRoom', this.rooms);
-	// }
 
 	createRoom(client1:string,client2:string,server:Server): void {
 		const room: Room = {
@@ -93,7 +85,7 @@ export class WsGameService {
 					y: 0.5,
 					vx: 0.001,
 					vy: 0.001,
-					speed: 1,
+					speed: 0,
 					radius: 0.015,
 				}
 			}
@@ -174,13 +166,23 @@ export class WsGameService {
 		const room: Room = this.rooms[room_name];
 		if (room !== undefined) {
 			console.log("JoinRoom: " + room_name + " " + client_id + " P1 :" + room.player1 + " P2:" + room.player2)
-			if (room.player1 === client_id) {
+			if (room.player1 === client_id){
+				server.in(room.name).fetchSockets().then((sockets) => {
+					for (let i = 0; i < sockets.length; i++) {
+						if (sockets[i].id === this.clients[room.player2].id)
+							this.startGame(room.name,server);
+					}
+				})
 				this.clients[client_id].join(room.name);
 			}
 			else if (room.player2 === client_id) {
 				this.clients[client_id].join(room.name);
-				server.emit('NewMatch', this.rooms);
-				console.log('NewMatch')
+				server.in(room.name).fetchSockets().then((sockets) => {
+					for (let i = 0; i < sockets.length; i++) {
+						if (sockets[i].id === this.clients[room.player1].id)
+							this.startGame(room.name,server);
+					}
+				})
 			}
 			else {
 				room.spectators.push(client_id);
@@ -192,19 +194,36 @@ export class WsGameService {
 	leaveRoom(room_name:string, client_id:string,server:Server): void {
 		const room: Room = this.rooms[room_name];
 		if (room !== undefined) {
+			console.log("LeaveRoom: " + room_name + " " + client_id + " P1 :" + room.player1 + " P2:" + room.player2)
 			if (room.player1 === client_id) {
-				this.clients[client_id].leave(room.name);
+				// this.clients[client_id].leave(room.name);
 				room.player1 = "";
-				server.to(room.name).emit('PlayerLeft', 1);
+				if (room.game.is_playing === true){
+					room.game.player1_score = 0;
+					room.game.player2_score = 11;
+					room.game.is_playing = false;
+					room.game.ball.speed = 0;
+				}
+				server.to(room.name).emit('PlayerLeft', {player:1, score:[room.game.player1_score, room.game.player2_score]});
+				server.socketsLeave(room.name);
+				// ajouter dans la bdd | efaccer la room de la liste
+				delete this.rooms[room_name];
 			}
 			else if (room.player2 === client_id) {
-				this.clients[client_id].leave(room.name);
+				// this.clients[client_id].leave(room.name);
 				room.player2 = "";
-				server.to(room.name).emit('PlayerLeft', 2);
+				if (room.game.is_playing === true){
+					room.game.player1_score = 11;
+					room.game.player2_score = 0;
+				}
+				server.to(room.name).emit('PlayerLeft', {player:2, score:[room.game.player1_score, room.game.player2_score]});
+				server.to(room.name).emit('PlayerLeft', {player:1, score:[room.game.player1_score, room.game.player2_score]});
+				server.socketsLeave(room.name);
+				// ajouter dans la bdd | efaccer la room de la liste
+				delete this.rooms[room_name];
 			}
 			else {
 				room.spectators.splice(room.spectators.indexOf(client_id), 1);
-				this.clients[client_id].leave(room.name);
 				server.to(room.name).emit('SpectatorLeft', room.spectators);
 			}
 		}
@@ -214,7 +233,9 @@ export class WsGameService {
 		const room: Room = this.rooms[room_name];
 		if (room !== undefined) {
 			room.game.is_playing = true;
+			room.game.ball.speed = 1;
 			server.to(room.name).emit('StartGame', room.name);
+			server.emit('NewMatch', this.rooms);
 		}
 	}
 
@@ -225,7 +246,10 @@ export class WsGameService {
 				room.game.player1_score++;
 			else
 				room.game.player2_score++;
-			server.to(room.name).emit('UpdateScore', {player1_score: room.game.player1_score, player2_score: room.game.player2_score});
+			server.to(room.name).emit('UpdateScore', {score:[room.game.player1_score,room.game.player2_score]});
+			if (room.game.player1_score == 11 || room.game.player2_score == 11)
+				console.log("EndGame");
+			//this.endGame(room_name, server);
 		}
 	}
 
@@ -235,29 +259,33 @@ export class WsGameService {
 			let ball = room.game.ball;
 			server.to(room.name).emit('GetBallPosition', ball);
 			if (ball.x - ball.radius <= 0.02 && (ball.y >= this.rooms[room_name].game.player2_position && ball.y <= this.rooms[room_name].game.player2_position + 0.2) ){
-				ball.vx = -ball.vx;
+				ball.vx = (-ball.vx * ball.speed);
 			}
 			else if (ball.x + ball.radius >= 1 - (0.02) && (ball.y >= this.rooms[room_name].game.player1_position && ball.y <= this.rooms[room_name].game.player1_position + 0.2)){
-				ball.vx = -ball.vx;
+				ball.vx = (-ball.vx * ball.speed);
 			}
 			else if (ball.x - ball.radius <= 0.02){
 				console.log("GOAL 1: ORIENTATION 0")
 				ball.x = 0.5;
 				ball.y = 0.5;
+				this.rooms[room_name].game.player1_score++;
+				this.UpdateScore(room_name, 1, server);
 			}
 			else if (ball.x + ball.radius >= (1 - 0.02)){
 				console.log("GOAL 2 Orientation 0")
 				ball.x = 0.5;
 				ball.y = 0.5;
+				this.rooms[room_name].game.player2_score++;
+				this.UpdateScore(room_name, 2, server);
 			}
 			else if (ball.y - ball.radius < 0){
-				ball.vy = -ball.vy;
+				ball.vy = (-ball.vy * ball.speed);
 			}
 			else if (ball.y + ball.radius  >= 1){
-				ball.vy = -ball.vy;
+				ball.vy = (-ball.vy * ball.speed);
 			}
-			ball.x += ball.vx;
-			ball.y += ball.vy;
+			ball.x += (ball.vx * ball.speed);
+			ball.y += (ball.vy * ball.speed);
 			this.rooms[room_name].game.ball = ball;
 			// console.log("Ball Position: " + ball.x + ":" + ball.y + ":" + ball.vx + ":" + ball.vy);
 		}
