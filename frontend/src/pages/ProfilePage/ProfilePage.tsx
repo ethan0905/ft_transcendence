@@ -265,7 +265,7 @@ export default function ProfilePage() {
 	async function getFriendList(accessToken: string): Promise<any> {
 		
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/getfriendlist', {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/friend/list/get', {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',

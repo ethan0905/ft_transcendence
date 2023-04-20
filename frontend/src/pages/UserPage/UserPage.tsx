@@ -165,7 +165,7 @@ export default function UserPage() {
 
 		console.log('Add friend button clicked! : ', token);
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/addfriend', {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/friend/add', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -189,7 +189,7 @@ export default function UserPage() {
 		console.log('Remove friend button clicked! : ', token);
 
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/removefriend', {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/friend/remove', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -229,7 +229,7 @@ export default function UserPage() {
 		}
 
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/getfriendstatus', {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/friend/status/get', {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
@@ -260,7 +260,7 @@ export default function UserPage() {
 
 		console.log('Block button clicked! : ', token);
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/blockuser', {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/user/block', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -284,7 +284,7 @@ export default function UserPage() {
 		console.log('Unblock button clicked! : ', token);
 
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/unblockuser', {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/user/unblock', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -324,7 +324,7 @@ export default function UserPage() {
 		}
 
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/getblockstatus', {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/block/status/get', {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
@@ -412,7 +412,7 @@ export default function UserPage() {
 		let config = {
 			method: 'get',
 			maxBodyLength: Infinity,
-			url: `${process.env.REACT_APP_BACKEND_URL}` + '/users/username/status/get',
+			url: `${process.env.REACT_APP_BACKEND_URL}` + '/users/user/status/get',
 			headers: {
 				'Content-Type': 'application/json',
 				'Username': username || '',

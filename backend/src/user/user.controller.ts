@@ -45,44 +45,44 @@ export class UserController {
 	}
 
 	// friend part
-	@Post('me/addfriend')
+	@Post('me/friend/add')
 	addFriend(@Body() data : FriendDto)
 	{
 		return this.userService.addFriend(data);
 	}
 
-	@Post('me/removefriend')
+	@Post('me/friend/remove')
 	removeFriend(@Body() data : FriendDto)
 	{
 		return this.userService.removeFriend(data);
 	}
 
-	@Get('me/getfriendstatus')
+	@Get('me/friend/status/get')
 	getFriendStatusById(@Req() req: Request)
 	{
 		return this.userService.getFriendStatusById(req);
 	}
 
 	// block part
-	@Post('me/blockuser')
+	@Post('me/user/block')
 	blockUser(@Body() data : BlockDto)
 	{
 		return this.userService.blockUser(data);
 	}
 
-	@Post('me/unblockuser')
+	@Post('me/user/unblock')
 	unblockUser(@Body() data : BlockDto)
 	{
 		return this.userService.unblockUser(data);
 	}
 
-	@Get('me/getblockstatus')
+	@Get('me/block/status/get')
 	getBlockStatusById(@Req() req: Request)
 	{
 		return this.userService.getBlockStatusById(req);
 	}
 
-	@Get('me/getfriendlist')
+	@Get('me/friend/list/get')
 	getFriendListByToken(@Req() req: Request)
 	{
 		return this.userService.getFriendListByToken(req);
@@ -99,7 +99,7 @@ export class UserController {
 		return this.userService.getUserAchievementStatus(req);
 	}
 
-	@Get('username/status/get')
+	@Get('user/status/get')
 	getUserStatus(@Req() req: Request) {
 		return this.userService.getUserStatus(req);
 	}
