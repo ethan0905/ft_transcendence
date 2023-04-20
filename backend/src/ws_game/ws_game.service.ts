@@ -82,7 +82,23 @@ export class WsGameService {
 		};
 	}
 
-	createRoom(client1:string,client2:string,server:Server): void {
+	async createRoom(client1:string,client2:string,server:Server): Promise<void> {
+		let userplayers = await  this.prisma.user.findMany({
+			where:{
+				OR:[
+					{username:client1},
+					{username:client2}
+				]
+			}
+		});
+
+		// let new_game = await this.prisma.game.create({
+		// 	data:{
+		// 		players:[userplayers[0], userplayers[1]],
+		// 		duration:10,
+		// 		score:[0,0],
+		// 	}
+		// })
 		let room: Room = {
 			name: uuidv4(),
 			player1: client1,
