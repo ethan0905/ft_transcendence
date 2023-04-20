@@ -79,21 +79,30 @@ export default function GamePage() {
 	// const data = [];
 	let location = useLocation();
 	const navigate = useNavigate();
+	const [token, setToken] = useState<string>("");
 	const [data, setData] = useState<any>([]);
 
 	useEffect(() => {
-		if (!socket.connected)
-			socket.connect();
+		let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+		if (!cookieToken) {
+			setToken("prout");
+		}
+		else
+			setToken(cookieToken);
 		getRooms().then((values) => {
 			const rooms:any = Object.values(values);
 			setData(rooms);
-			// console.log(rooms);
-			// rooms.forEach((room:any) => {
-			// 	console.log(room.name + ":" + room.player1 + " " + room.player2 + " " + room.game.player1_score + " " + room.game.player2_score);
-			// })
 		})
+	},[]);
 
-		socket.emit("ClientSession", "prout");
+	useEffect(() => {
+		if (!socket.connected){
+			if (token !== ''){
+				socket.auth = {token: token};
+				console.log(token);
+				socket.connect();
+			}
+		}
 		socket.on("RoomCreated", (value:any) => {
 			setData((rooms:any) => {
 				for (var i in rooms) {
@@ -104,14 +113,26 @@ export default function GamePage() {
 				return [...rooms, value];
 			});
 		})
-	
+		
 		socket.on("FindGame", (value:any) => {
 			console.log("FindGame: " + value)
 			navigate(value);
 		})
 
-	}, [socket])
+		socket.on("RoomDeleted", (value:string) => {
+			setData((rooms:any)=>{
+				let tab = rooms.filter((room:any,index:any) => room.name !== value);
+				console.log(tab);
+				console.log(value);
+				return (tab);
+			})
+		});
 
+		return (() =>{
+			socket.off("RoomCreated");
+			socket.off("FindGame");
+		})
+	}, [socket, token, navigate])
 
 	return (
 	<>
@@ -123,10 +144,10 @@ export default function GamePage() {
 					<div className='ButtonPlay'>
 						<img src="/rasengan.png" alt='ImgButton' id='ImgButton'
 							onClick={() => {
-								socket.emit("matchmaking", "prout")
+								socket.emit("matchmaking")
 							}}
 						/>
-						<span id='textPlay' onClick={() => {socket.emit("matchmaking", "prout")}}>
+						<span id='textPlay' onClick={() => {socket.emit("matchmaking")}}>
 							PLAY
 						</span>
 						<div className='MapOption'>

@@ -3,6 +3,8 @@ import { ConnectedSocket } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import {v4 as uuidv4} from 'uuid';
 import { SchedulerRegistry } from '@nestjs/schedule';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { Req } from '@nestjs/common';
 
 
 type Ball={
@@ -33,43 +35,51 @@ type Room = {
 
 @Injectable()
 export class WsGameService {
-	constructor(private schedulerRegistry: SchedulerRegistry) {}
+	constructor(private schedulerRegistry: SchedulerRegistry, private prisma: PrismaService) {}
 	number_of_player: number = 0;
 	rooms: {[key:string]:Room} = {};
 	queue: string[] = [];
 	clients:{[key:string]:Socket} = {};
 
-	getNumberOfConnectedPeople(): number {
-		return this.number_of_player;
+	async getUsernameFromToken(token:string): Promise<string> {
+		let user = await this.prisma.user.findUnique({
+			where: {
+				accessToken: token
+			},
+			select:{
+				username: true
+			}
+		});
+		return user.username;
 	}
 
-	newUserConnected(client:Socket, server:Server): void {
-		this.number_of_player++;
-		server.emit('ConnectedPlayer', this.number_of_player);
-		console.log("Connected "+ client.id + " ConnectedClient:" + this.getNumberOfConnectedPeople());
+	getUsernameFromId(id:string): string {
+		return Object.keys(this.clients).find(key => this.clients[key].id === id);
+	}
+
+	async newUserConnected(client:Socket, server:Server): Promise<void> {
+		if (client.handshake.auth.token === '')
+			return;
+		let user = await this.getUsernameFromToken(client.handshake.auth.token);
+		console.log("Connection:"+user);
+		this.clients[user] = client;
 	}
 	
 	userDisconnected(client:Socket, server:Server): void {
-		this.number_of_player--;
-		server.except(client.id).emit('ConnectedPlayer', this.number_of_player);
-		if (this.queue.includes(client.id))
-			this.queue.splice(this.queue.indexOf(client.id), 1);
-		let playerid = Object.keys(this.clients).find(key => this.clients[key].id === client.id);
+		let user = this.getUsernameFromId(client.id);
+		if (user === undefined)
+			return;
+		console.log("Deconnection:"+user);
+		if (this.queue.includes(user))
+			this.queue.splice(this.queue.indexOf(user), 1);
 		for (let room in this.rooms) {
-			if (this.rooms[room].player1 === playerid) {
-				this.leaveRoom(this.rooms[room].name, playerid, server);
+			if (this.rooms[room].player1 === user) {
+				this.leaveRoom(client, this.rooms[room].name, server);
 			}
-			else if (this.rooms[room].player2 === playerid) {
-				this.leaveRoom(this.rooms[room].name, playerid, server);
+			else if (this.rooms[room].player2 === user) {
+				this.leaveRoom(client,this.rooms[room].name, server);
 			}
 		};
-		console.log("Disconnected "+client.id + " ConnectedClient:" + this.getNumberOfConnectedPeople());
-	}
-
-	userReconnected(client:Socket, server:Server): void {
-		this.number_of_player++;
-		server.emit('ConnectedPlayer', this.number_of_player);
-		console.log("Reconnected "+client.id + " ConnectedClient:" + this.getNumberOfConnectedPeople());
 	}
 
 	createRoom(client1:string,client2:string,server:Server): void {
@@ -94,46 +104,20 @@ export class WsGameService {
 				}
 			}
 		}
-
 		this.rooms[room.name] = room;
-	
-		// client1.join(room.room_name.toString());
-		// client2.join(room.room_name.toString());
-		console.log("Room created: " + room.name);
-		// server.to(room.name).emit('RoomCreated', room);
 		server.emit('RoomCreated', room);
+		console.log(this.clients[client1].id +"|"+this.clients[client2].id)
 		server.to([this.clients[client1].id, this.clients[client2].id]).emit('FindGame', room.name);
-		// server.in(room.room_name).fetchSockets().then((sockets) => {
-		//   console.log(sockets.length)
-		// })
 	}
 
-	// joinRoom(client:Socket, server:Server, room_name:string): void {
-	//   const room: Room = this.rooms.find(room => room.room_name === room_name);
-	//   if (room) {
-	//     if (room.player2 === '') {
-	//       room.player2 = client.id;
-	//       client.join(room.room_name);
-	//       server.to(room.room_name).emit('RoomJoined', room.room_name);
-	//     } else {
-	//       room.spectators.push(client.id);
-	//       client.join(room.room_name);
-	//       server.to(room.room_name).emit('RoomJoined', room.room_name);
-	//     }
-	//   }
-	// }
-
-	ClientSession(client:Socket, server:Server, playerId:string): void {
-		console.log("SessionId: " + playerId + " newclient:"+ client.id);
-		// console.log("Clients: " + this.clients);
-		this.clients[playerId] = client;
-	}
-
-	matchmaking(client:string, server:Server): void {
-		if (this.queue.includes(client))
+	matchmaking(client:Socket, server:Server): Promise<void> {
+		let user = this.getUsernameFromId(client.id);
+		if (user === undefined)
+			return;
+		if (this.queue.includes(user))
 			return; // already in queue
 		// Verifier si le client est connecte
-		this.queue.push(client);
+		this.queue.push(user);
 		if (this.queue.length > 1) {
 			const player1: string = this.queue[0];
 			const player2: string = this.queue[1];
@@ -143,22 +127,26 @@ export class WsGameService {
 	}
 
 	MakeMove(client: Socket, server:Server, data: any): void {
-		console.log("MakeMove: " + data.id_game + ":" + data.player + ":" + data.position);
+		let user = this.getUsernameFromId(client.id);
+		if (user === undefined)
+			return;
 		if (this.rooms[data.id_game] !== undefined) {
-			if (data.player == 1)
+			if (data.player == 1 && this.rooms[data.id_game].player1 === user)
 				this.rooms[data.id_game].game.player1_position = data.position;
-			else if (data.player == 2)
+			else if (data.player == 2 && this.rooms[data.id_game].player2 === user)
 				this.rooms[data.id_game].game.player2_position = data.position;
 		}
 		server.to(data.id_game.toString()).except(client.id).emit('UpdateCanvas', {player_role: data.player, position: data.position});
 	}
 
-	getRoles(room_name: string, playerId: string): number {
+	async getRoles(@Req() req:Request, room_name: string): Promise<number> {
 		const room: Room = this.rooms[room_name];
+		let playerId = req.headers["authorization"];
+		let user = await this.getUsernameFromToken(playerId)
 		if (room !== undefined) {
-			if (room.player1 == playerId)
+			if (room.player1 == user)
 				return 1;
-			else if (room.player2 == playerId)
+			else if (room.player2 == user)
 				return 2;
 			else
 				return 3;
@@ -166,21 +154,22 @@ export class WsGameService {
 		return 0;
 	}
 
-	joinRoom(room_name:string, client_id:string,server:Server): void {
+	joinRoom(client:Socket,room_name:string,server:Server): void {
 		const room: Room = this.rooms[room_name];
+		let user = this.getUsernameFromId(client.id);
 		if (room !== undefined) {
-			console.log("JoinRoom: " + room_name + " " + client_id + " P1 :" + room.player1 + " P2:" + room.player2)
-			if (room.player1 === client_id){
+			// console.log("JoinRoom: " + room_name + " " + user + " P1 :" + room.player1 + " P2:" + room.player2)
+			if (room.player1 === user){
 				server.in(room.name).fetchSockets().then((sockets) => {
 					for (let i = 0; i < sockets.length; i++) {
 						if (sockets[i].id === this.clients[room.player2].id)
 							this.startGame(room.name,server);
 					}
 				})
-				this.clients[client_id].join(room.name);
+				this.clients[user].join(room.name);
 			}
-			else if (room.player2 === client_id) {
-				this.clients[client_id].join(room.name);
+			else if (room.player2 === user) {
+				this.clients[user].join(room.name);
 				server.in(room.name).fetchSockets().then((sockets) => {
 					for (let i = 0; i < sockets.length; i++) {
 						if (sockets[i].id === this.clients[room.player1].id)
@@ -189,17 +178,20 @@ export class WsGameService {
 				})
 			}
 			else {
-				room.spectators.push(client_id);
-				this.clients[client_id].join(room.name);
+				room.spectators.push(user);
+				this.clients[user].join(room.name);
 			}
 		}
 	}
 
-	leaveRoom(room_name:string, client_id:string,server:Server): void {
+	leaveRoom(client:Socket,room_name:string,server:Server): void {
 		const room: Room = this.rooms[room_name];
+		let user = this.getUsernameFromId(client.id);
+		if (user === undefined)
+			return;
 		if (room !== undefined) {
-			console.log("LeaveRoom: " + room_name + " " + client_id + " P1 :" + room.player1 + " P2:" + room.player2)
-			if (room.player1 === client_id) {
+			console.log("LeaveRoom: " + room_name + " " + user + " P1 :" + room.player1 + " P2:" + room.player2)
+			if (room.player1 === user) {
 				// this.clients[client_id].leave(room.name);
 				room.player1 = "";
 				if (room.game.is_playing === true){
@@ -213,8 +205,10 @@ export class WsGameService {
 				this.schedulerRegistry.deleteInterval(room.name);
 				// ajouter dans la bdd | efaccer la room de la liste
 				delete this.rooms[room_name];
+				server.emit("RoomDeleted", room_name);
+
 			}
-			else if (room.player2 === client_id) {
+			else if (room.player2 === user) {
 				// this.clients[client_id].leave(room.name);
 				room.player2 = "";
 				if (room.game.is_playing === true){
@@ -227,9 +221,10 @@ export class WsGameService {
 				this.schedulerRegistry.deleteInterval(room.name);
 				// ajouter dans la bdd | efaccer la room de la liste
 				delete this.rooms[room_name];
+				server.emit("RoomDeleted", room_name);
 			}
 			else {
-				room.spectators.splice(room.spectators.indexOf(client_id), 1);
+				room.spectators.splice(room.spectators.indexOf(user), 1);
 				server.to(room.name).emit('SpectatorLeft', room.spectators);
 			}
 		}
@@ -238,15 +233,17 @@ export class WsGameService {
 	startGame(room_name:string, server:Server): void {
 		const room: Room = this.rooms[room_name];
 		if (room !== undefined) {
+			if (room.game.is_playing === true)
+				return;
 			room.game.is_playing = true;
 			room.game.ball.speed = 10;
 			server.to(room.name).emit('StartGame', room.name);
 			server.emit('NewMatch', this.rooms);
+			const interval = setInterval(() => {
+				this.requestBallPosition(room_name, server)
+			}, 1000/60);
+			this.schedulerRegistry.addInterval(room_name, interval);
 		}
-		const interval = setInterval(() => {
-			this.requestBallPosition(room_name, server)
-		}, 1000/60);
-		this.schedulerRegistry.addInterval(room.name, interval);
 	}
 
 	UpdateScore(room_name:string, player:number, server:Server): void {
@@ -264,10 +261,10 @@ export class WsGameService {
 			let ball = room.game.ball;
 			server.to(room.name).emit('GetBallPosition', ball);
 			if (ball.x - ball.radius <= 0.02 && (ball.y >= this.rooms[room_name].game.player2_position && ball.y <= this.rooms[room_name].game.player2_position + 0.2) ){
-				ball.vx = (-ball.vx * ball.speed);
+				ball.vx = -ball.vx;
 			}
 			else if (ball.x + ball.radius >= 1 - (0.02) && (ball.y >= this.rooms[room_name].game.player1_position && ball.y <= this.rooms[room_name].game.player1_position + 0.2)){
-				ball.vx = (-ball.vx * ball.speed);
+				ball.vx = -ball.vx;
 			}
 			else if (ball.x - ball.radius <= 0.02){
 				// console.log("GOAL 1: ORIENTATION 0")
@@ -284,10 +281,10 @@ export class WsGameService {
 				this.UpdateScore(room_name, 2, server);
 			}
 			else if (ball.y - ball.radius < 0){
-				ball.vy = (-ball.vy * ball.speed);
+				ball.vy = -ball.vy;
 			}
 			else if (ball.y + ball.radius  >= 1){
-				ball.vy = (-ball.vy * ball.speed);
+				ball.vy = -ball.vy;
 			}
 			ball.x += (ball.vx * ball.speed);
 			ball.y += (ball.vy * ball.speed);
@@ -299,7 +296,12 @@ export class WsGameService {
 	endGame(room_name:string, server:Server): void {
 		// console.log("END GAME:"+room_name);
 		this.schedulerRegistry.deleteInterval(room_name);
-		server.to(room_name).emit('EndGame', {score:[this.rooms[room_name].game.player1_score,this.rooms[room_name].game.player2_score]});
+		if (this.rooms[room_name].game.player1_score > this.rooms[room_name].game.player2_score){
+			server.to(room_name).emit('EndGame', {score:[this.rooms[room_name].game.player1_score,this.rooms[room_name].game.player2_score], winner:1});
+		}
+		else
+			server.to(room_name).emit('EndGame', {score:[this.rooms[room_name].game.player1_score,this.rooms[room_name].game.player2_score], winner:2});
+		server.emit("RoomDeleted", room_name);
 		this.rooms[room_name].game.ball.speed = 0;
 		this.rooms[room_name].game.is_playing = false;
 		// Enregistrer le score dans la bdd

@@ -6,8 +6,14 @@ import { useParams } from 'react-router-dom';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-async function fetchRole(id_game:string, playerId:string){
-	const res = await fetch("http://localhost:3333/ws-game/rooms/"+ id_game + "/"+ playerId);
+async function fetchRole(id_game:string, token:string){
+	const res = await fetch("http://localhost:3333/ws-game/rooms/"+ id_game +"/role", {
+		method:'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			'Authorization':token,
+		}
+	});
 	const data = await res.json();
 	return data;
 }
@@ -139,6 +145,10 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 			data.ballObj.radius= ball.radius;
 	
 		})
+		return(() => {
+			socket.off('UpdateCanvas');
+			socket.off('GetBallPosition');
+		})
 	},[socket]);
 
 	useEffect(() => {
@@ -269,20 +279,31 @@ function PlayPage() {
 	const [isWinner, setIsWinner] = useState<boolean>(false);
 	const [status_game, setStatus_game] = useState<StatusGame>(StatusGame.Waiting);
 	const [score, setScore] = useState<[number, number]>([0,0]);
+	const [token, setToken] = useState<string>('');
 	
 	useEffect(() => {
-		if (!socket.connected)
+		let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+		if (!cookieToken)
+			setToken("prout")
+		else
+			setToken(cookieToken);
+	},[])
+
+	useEffect(() => {
+		if (!socket.connected && token !== ''){
+			socket.auth= {token: token};
 			socket.connect();
-	},[socket]);
+		}
+	},[socket, token]);
 
 	useEffect(() => {
 		setId_game(params.id_game as string);
-		socket.emit("ClientSession", "prout");
-		socket.emit('JoinRoom', {room_name:id_game, playerId:"prout"});
-		if (id_game !== ""){
-			fetchRole(id_game, "prout").then((data:number) => {
+		// socket.emit("ClientSession", "prout");
+		if (id_game !== "" && token !== ''){
+			fetchRole(id_game, token).then((data:number) => {
 				setPlayer_role(data);
 			})
+			socket.emit('JoinRoom', {room_name:id_game});
 		}
 
 		socket.on('StartGame', (value:any) => {
@@ -306,7 +327,13 @@ function PlayPage() {
 			if (role === values.winner)
 				setIsWinner(true);
 		})
-	},[params.id_game, id_game, role, socket]);
+		return (() => {
+			socket.off('StartGame');
+			socket.off('PlayerLeft');
+			socket.off('UpdateScore');
+			socket.off('EndGame');
+		})
+	},[params.id_game, id_game, role, socket, token]);
 
 
 	return (
@@ -332,7 +359,7 @@ function PlayPage() {
 				<h1 className="w-fit h-min sm:text-4xl text-sm">{score[0]}:{score[1]}</h1>
 				<div className="">
 					<button className="sm:text-2xl text-sm bg-red-200 rounded-lg p-2" onClick={() => {
-						socket.emit('LeaveRoom', {room_name:id_game, playerId:"prout"});
+						socket.emit('LeaveRoom', {room_name:id_game});
 						navigate("/Game");
 					}}>QUIT</button>
 				</div>
