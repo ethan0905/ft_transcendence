@@ -159,17 +159,24 @@ export default function ChatContent(props: ChatContentProps) {
     console.log("NEW USE EFFECT");
     socket.on("NewMessage", (value:any) => {
       setChat(chats => {
+        let id = Number(location.pathname.split("/")[2]); //added this line
+        if (id !== value.channelId){ //added this line
+          return chats; //added this line
+        }
         for (var i in chats){
+          
           if (chats[i].id === value.id){
+            console.log("message already exists");
             return chats;
           }
         }
+        console.log("message added");
         return ([...chats, value]);
       })
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     })
     
-  },[location.pathname, socket, chat]) // mistake was here
+  },[location.pathname, socket]) // mistake was here
 
   const onStateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMsg(e.target.value);
