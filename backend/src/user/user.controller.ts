@@ -98,4 +98,14 @@ export class UserController {
 	getUserAchievementStatus(@Req() req: Request) {
 		return this.userService.getUserAchievementStatus(req);
 	}
+
+	@Get('username/status/get')
+	getUserStatus(@Req() req: Request) {
+		return this.userService.getUserStatus(req);
+	}
+
+	@Post('me/status/edit')
+	editUserStatus(@Req() req: Request) {
+		return this.userService.editUserStatus(req);
+	}
 }

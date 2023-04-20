@@ -5,6 +5,7 @@ import { Req } from '@nestjs/common';
 import { FriendDto } from './dto/friend.dto';
 import { GetFriendDTO } from './dto/friend.dto';
 import { BlockDto } from './dto/friend.dto';
+import { Status } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -508,4 +509,40 @@ export class UserService {
 		};
 	}
 
+	async getUserStatus(@Req() req: Request) {
+		const username = Array.isArray(req.headers.username)
+		  ? req.headers.username[0]
+		  : req.headers.username;
+
+		console.log("getting user status... ", username);
+
+		const user = await this.prisma.user.findUnique({
+		  where: {
+			username: username,
+		  },
+		  select: {
+			status: true,
+		  },
+		});
+
+		return { status: user.status };
+	}
+
+	async editUserStatus(@Req() req: Request) {
+
+		const status = Status.ONLINE;
+
+		const user = await this.prisma.user.update({
+		  where: {
+			accessToken: req.headers.authorization,
+		  },
+		  data: {
+			status: status,
+		  },
+		});
+
+		return { message: "Status updated!" };
+	}
+
+	
 }

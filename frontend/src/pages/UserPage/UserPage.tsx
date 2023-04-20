@@ -8,8 +8,8 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import ProfilePicture from '../../components/ProfileSetting/ProfilePicture';
 import { CircularProgress } from '@mui/material';
-
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export default function UserPage() {
 	const navigate = useNavigate();
@@ -44,6 +44,11 @@ export default function UserPage() {
 				getUserAchievementStatus();
 			};
 			fetchAchievements();
+			// console.log("Fetching user status ...");
+			// const fetchUserStatus = async () => {
+			// 	getUserStatus();
+			// };
+			// fetchUserStatus();
 		}
 		let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
 		if (cookieToken) {
@@ -393,6 +398,41 @@ export default function UserPage() {
 
 	}
 
+	const [userStatus, setUserStatus] = useState(null);
+
+	useEffect(() => {
+		if (username)
+		{
+			fetchUserStatus();
+		}
+	  }, [username]);
+	
+
+	  async function fetchUserStatus() {
+		let config = {
+			method: 'get',
+			maxBodyLength: Infinity,
+			url: `${process.env.REACT_APP_BACKEND_URL}` + '/users/username/status/get',
+			headers: {
+				'Content-Type': 'application/json',
+				'Username': username || '',
+			}
+		  };
+	  const response = await axios.request(config);
+	  console.log('response from axios: ', response);
+	  setUserStatus(response.data.status);
+	}
+	
+	  function getStatusLabel() {
+		if (userStatus === 'ONLINE') {
+		  return 'Online';
+		} else if (userStatus === 'OFFLINE') {
+		  return 'Offline';
+		} else {
+		  return 'Unknown';
+		}
+	  }
+
 	return (
 		<>
 			<Sidebar />
@@ -444,6 +484,7 @@ export default function UserPage() {
 									</>
 								)
 							}
+							<div> Status: {userStatus ? getStatusLabel() : 'Loading...'}</div>
 						</div>
 					</div>
 					<Achievements data={{ hasPlayed: hasPlayed, hasWon: hasWon, hasFriend: hasFriend }} />
