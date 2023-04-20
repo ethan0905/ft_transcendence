@@ -12,7 +12,6 @@ import Verify2FA from "./pages/2faVerify/2faVerify"
 function App() {
 
     return (
-     
       <div className="App">
         <Routes>
           <Route path='/' element={<AuthPage/>} />
@@ -79,6 +78,15 @@ function App() {
               <PrivateRoute>
                 <GamePage />
               </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/Game/:id_game"
+            element={
+              // <PrivateRoute>
+                <GamePage />
+              // </PrivateRoute>
             }
           />
 
