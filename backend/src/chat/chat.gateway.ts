@@ -212,13 +212,13 @@ export class ChatGateway implements OnGatewayConnection {
 
     
   @SubscribeMessage('unmute')
-  async mute_chan(
+  async unmute_chan(
     @MessageBody()  data: QuitChanDto ,
     @ConnectedSocket() client : Socket,
   ) {
     
-    await this.chatService.mute_Chan(data.username, data.chatId);
-    console.log("chan muteed");
+    await this.chatService.unmute_Chan(data.username, data.chatId);
+    console.log("chan unmuteed");
   }
 
 

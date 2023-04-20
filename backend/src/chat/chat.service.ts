@@ -178,7 +178,7 @@ export class ChatService {
                 id: id,
               },
               data : {
-                mute : {
+                muted : {
                   connect : {
                     username : username,
                   },
@@ -199,7 +199,7 @@ export class ChatService {
                 id: id,
               },
               data : {
-                mute : {
+                muted : {
                   disconnect : {
                     username : username,
                   },

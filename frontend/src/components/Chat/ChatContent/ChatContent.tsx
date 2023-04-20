@@ -28,7 +28,7 @@ const FormButton = () => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log('Form submitted:', formValues);
+    // console.log('Form submitted:', formValues);
     setFormValues(initialFormValues);
     setIsOpen(false);
   }
@@ -98,10 +98,9 @@ export default function ChatContent(props: ChatContentProps) {
   const [token, setToken] = useState('');
   const [msgInput, setMsgInput] = useState("Type a message here");
 
-
   useEffect(() => {
 		if (token !== '') {
-			console.log("Le token est valide !", token);
+			// console.log("Le token est valide !", token);
 			getUsermail(token);
       getUserId(token);
 		}
@@ -128,7 +127,7 @@ export default function ChatContent(props: ChatContentProps) {
         });
         const data = await response.json();
         if (data) {
-          console.log("data id: ", data.id)
+          // console.log("data id: ", data.id)
           setUserID(data.id);
         }
       } catch (error) {
@@ -147,7 +146,7 @@ export default function ChatContent(props: ChatContentProps) {
         });
         const data = await response.json();
         if (data) {
-          console.log("data email: ", data)
+          // console.log("data email: ", data)
           setEmail(data.email);
         }
       } catch (error) {
@@ -156,22 +155,21 @@ export default function ChatContent(props: ChatContentProps) {
     }
 
   useEffect(() => {
+
+    console.log("NEW USE EFFECT");
     socket.on("NewMessage", (value:any) => {
-      if (location.pathname !== "/Chat"){
-        let id = Number(location.pathname.split("/")[2]);
-        if (value.channelId === id){
-          setChat(chats => {
-            for (var i in chats){
-              if (chats[i].id === value.id){
-                return chats;
-              }
-            }
-            return ([...chats, value]);
-          })
+      setChat(chats => {
+        for (var i in chats){
+          if (chats[i].id === value.id){
+            return chats;
+          }
         }
-      }
+        return ([...chats, value]);
+      })
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     })
-  },[location.pathname, socket, chat])
+    
+  },[location.pathname, socket, chat]) // mistake was here
 
   const onStateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMsg(e.target.value);
@@ -179,12 +177,15 @@ export default function ChatContent(props: ChatContentProps) {
 
   useEffect(() => {
     if (location.pathname !== "/Chat"){
+      console.log("inside useEffect 2");
+
       let id = Number(location.pathname.split("/")[2]);
       getAllMessages(id).then((values:any) => {
-        setChat(values)
+        setChat(values);
       });
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
-  }, [location.pathname])
+  }, [location.pathname, msgInput]) //mistake was here
 
   return (  <div className="main__chatcontent">
         
@@ -219,6 +220,7 @@ export default function ChatContent(props: ChatContentProps) {
     />
     <button className="btnSendMsg" id="sendMsgBtn" onClick={() => {
       clearInput();
+      console.log("chatId: ", Number(location.pathname.split("/")[2]), " | mail: ", email, " | msg: ", msg);
       socket.emit("sendMsgtoC", {
         "chatId":Number(location.pathname.split("/")[2]),
         "mail":email,

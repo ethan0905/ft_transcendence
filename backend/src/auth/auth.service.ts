@@ -77,7 +77,7 @@ export class AuthService{
 	async accessToken(req: string) {
 
 		const client_id = "u-s4t2ud-c3680374c7c94850b80d768576ab99300705487e1f5c7f758876aaf8fbf5fbdb";
-		const client_secret = "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"
+		const client_secret = "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"
 
 		try {
 		  const response = await fetch("https://api.intra.42.fr/oauth/token", {

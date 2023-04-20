@@ -36,18 +36,18 @@ export class AuthController {
   async getToken( @Req() req: Request, @Res() res: Response) {
 
     const code = req.query.code as string;
-    console.log('req.query.code = ' + code);
-    console.log('\n');
+    // console.log('req.query.code = ' + code);
+    // console.log('\n');
 
     const token = await this.authService.accessToken(code);
-    console.log(token);
-    console.log('\n');
+    // console.log(token);
+    // console.log('\n');
 
     const user = await this.authService.get42User(
       token.access_token,
     );
-    console.log(user.email);
-    console.log('\n');
+    // console.log(user.email);
+    // console.log('\n');
 
     if (token)
     {
@@ -68,12 +68,12 @@ export class AuthController {
       const userExist = await this.authService.findUserByEmail(user.email);
       if (!userExist)
       {
-        console.log("User does not exist, so we create it! \n\n");
+        // console.log("User does not exist, so we create it! \n\n");
         const user42 = await this.authService.create42User(token, user);
       }
       else
       {
-        console.log("User already exists, so we update it! \n\n");
+        // console.log("User already exists, so we update it! \n\n");
         this.authService.updateCookies(res, token, user);
       }
 
@@ -113,7 +113,7 @@ export class AuthController {
 
     const test = req.cookies.token;
     
-    console.log("Inside get token2 fucntion: ", test);
+    // console.log("Inside get token2 fucntion: ", test);
     return;
   }
 
