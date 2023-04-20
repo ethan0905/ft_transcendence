@@ -408,7 +408,7 @@ export default function UserPage() {
 	  }, [username]);
 	
 
-	  async function fetchUserStatus() {
+	async function fetchUserStatus() {
 		let config = {
 			method: 'get',
 			maxBodyLength: Infinity,
@@ -418,11 +418,12 @@ export default function UserPage() {
 				'Username': username || '',
 			}
 		  };
-	  const response = await axios.request(config);
-	  console.log('response from axios: ', response);
-	  setUserStatus(response.data.status);
+
+		const response = await axios.request(config);
+		console.log('response from axios: ', response);
+		setUserStatus(response.data.status);
 	}
-	
+
 	  function getStatusLabel() {
 		if (userStatus === 'ONLINE') {
 		  return 'Online';

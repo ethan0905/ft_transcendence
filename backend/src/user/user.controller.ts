@@ -104,8 +104,18 @@ export class UserController {
 		return this.userService.getUserStatus(req);
 	}
 
-	@Post('me/status/edit')
-	editUserStatus(@Req() req: Request) {
-		return this.userService.editUserStatus(req);
+	@Post('me/status/online/set')
+	updateUserStatusOnline(@Req() req: Request) {
+		return this.userService.updateUserStatusOnline(req);
+	}
+
+	@Post('me/status/offline/set')
+	updateUserStatusOffline(@Req() req: Request) {
+		return this.userService.updateUserStatusOffline(req);
+	}
+
+	@Post('me/status/playing/set')
+	updateUserStatusPlaying(@Req() req: Request) {
+		return this.userService.updateUserStatusPlaying(req);
 	}
 }

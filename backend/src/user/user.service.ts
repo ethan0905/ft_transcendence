@@ -528,7 +528,7 @@ export class UserService {
 		return { status: user.status };
 	}
 
-	async editUserStatus(@Req() req: Request) {
+	async updateUserStatusOnline(@Req() req: Request) {
 
 		const status = Status.ONLINE;
 
@@ -541,7 +541,41 @@ export class UserService {
 		  },
 		});
 
-		return { message: "Status updated!" };
+		return { message: "Status updated to online !" };
+	}
+
+	async updateUserStatusOffline(@Req() req: Request) {
+
+		console.log("updating user status to offline...: ", req.headers.authorization);
+
+		const status = Status.OFFLINE;
+
+		const user = await this.prisma.user.update({
+		  where: {
+			accessToken: req.headers.authorization,
+		  },
+		  data: {
+			status: status,
+		  },
+		});
+
+		return { message: "Status updated to offline!" };
+	}
+
+	async updateUserStatusPlaying(@Req() req: Request) {
+
+		const status = Status.PLAYING;
+
+		const user = await this.prisma.user.update({
+		  where: {
+			accessToken: req.headers.authorization,
+		  },
+		  data: {
+			status: status,
+		  },
+		});
+
+		return { message: "Status updated to playing!" };
 	}
 
 	
