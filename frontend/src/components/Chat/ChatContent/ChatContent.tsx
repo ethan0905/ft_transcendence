@@ -96,7 +96,6 @@ export default function ChatContent(props: ChatContentProps) {
   const [userID, setUserID] = useState<number>()
   const [email, setEmail] = useState<string>()
   const [token, setToken] = useState('');
-  const [msgInput, setMsgInput] = useState("Type a message here");
 
   useEffect(() => {
 		if (token !== '') {
@@ -112,7 +111,6 @@ export default function ChatContent(props: ChatContentProps) {
 
 
   function clearInput() {
-    setMsgInput("Type a message here");
     setMsg("");
   }
   
@@ -192,7 +190,7 @@ export default function ChatContent(props: ChatContentProps) {
       });
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
-  }, [location.pathname, msgInput]) //mistake was here
+  }, [location.pathname]) //mistake was here
 
   return (  <div className="main__chatcontent">
         
@@ -220,7 +218,7 @@ export default function ChatContent(props: ChatContentProps) {
   </div>
 
   <div className="sendNewMessage">
-    <input type="text" placeholder={msgInput}
+    <input type="text" placeholder={"Type a message here"}
       onChange={onStateChange}
       value={msg}
       onFocus={() => {return false;}}
