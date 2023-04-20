@@ -239,7 +239,7 @@ export class WsGameService {
 		const room: Room = this.rooms[room_name];
 		if (room !== undefined) {
 			room.game.is_playing = true;
-			room.game.ball.speed = 1;
+			room.game.ball.speed = 10;
 			server.to(room.name).emit('StartGame', room.name);
 			server.emit('NewMatch', this.rooms);
 		}
@@ -253,10 +253,8 @@ export class WsGameService {
 		if (this.rooms[room_name] !== undefined) {
 			server.to(room_name).emit('UpdateScore', {score:[this.rooms[room_name].game.player1_score,this.rooms[room_name].game.player2_score]});
 			if (this.rooms[room_name].game.player1_score == 11 || this.rooms[room_name].game.player2_score == 11){
-				this.schedulerRegistry.deleteInterval(room_name);
-				console.log("EndGame");
+				this.endGame(room_name, server);
 			}
-			//this.endGame(room_name, server);
 		}
 	}
 
@@ -272,14 +270,14 @@ export class WsGameService {
 				ball.vx = (-ball.vx * ball.speed);
 			}
 			else if (ball.x - ball.radius <= 0.02){
-				console.log("GOAL 1: ORIENTATION 0")
+				// console.log("GOAL 1: ORIENTATION 0")
 				ball.x = 0.5;
 				ball.y = 0.5;
 				this.rooms[room_name].game.player1_score++;
 				this.UpdateScore(room_name, 1, server);
 			}
 			else if (ball.x + ball.radius >= (1 - 0.02)){
-				console.log("GOAL 2 Orientation 0")
+				// console.log("GOAL 2 Orientation 0")
 				ball.x = 0.5;
 				ball.y = 0.5;
 				this.rooms[room_name].game.player2_score++;
@@ -293,11 +291,21 @@ export class WsGameService {
 			}
 			ball.x += (ball.vx * ball.speed);
 			ball.y += (ball.vy * ball.speed);
-			this.rooms[room_name].game.ball = ball;
-			// console.log("Ball Position: " + ball.x + ":" + ball.y + ":" + ball.vx + ":" + ball.vy);
+			if (this.rooms[room_name] !== undefined)
+				this.rooms[room_name].game.ball = ball;
 		}
 	}
 
+	endGame(room_name:string, server:Server): void {
+		// console.log("END GAME:"+room_name);
+		this.schedulerRegistry.deleteInterval(room_name);
+		server.to(room_name).emit('EndGame', {score:[this.rooms[room_name].game.player1_score,this.rooms[room_name].game.player2_score]});
+		this.rooms[room_name].game.ball.speed = 0;
+		this.rooms[room_name].game.is_playing = false;
+		// Enregistrer le score dans la bdd
+		delete this.rooms[room_name];
+		server.socketsLeave(room_name);
+	}
 	getRooms(): {[key:string]:Room}{
 		return this.rooms;
 	}

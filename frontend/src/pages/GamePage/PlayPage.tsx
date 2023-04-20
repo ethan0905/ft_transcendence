@@ -300,7 +300,12 @@ function PlayPage() {
 			// console.log("UpdateScore:"+values.score)
 			setScore(values.score);
 		})
-
+		socket.on('EndGame', (values:any) => {
+			setStatus_game(StatusGame.End);
+			setScore(values.score);
+			if (role === values.winner)
+				setIsWinner(true);
+		})
 	},[params.id_game, id_game, role, socket]);
 
 
