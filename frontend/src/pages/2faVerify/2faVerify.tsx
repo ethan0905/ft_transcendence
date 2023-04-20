@@ -1,5 +1,6 @@
 import React from 'react';
 import AuthCode from 'react-auth-code-input';
+import {Button} from '../../components/Button/button';
 import './2faVerify.css';
 
 function Verify2FA() {
@@ -37,7 +38,7 @@ return (
 			allowedCharacters='numeric' 
 			onChange={handleOnChange}
 		/>
-		<button onClick={check2FACode}>Submit code</button>
+		<Button text="Submit" onClick={check2FACode}/>
 	</div>
 	);
 }

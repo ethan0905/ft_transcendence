@@ -24,8 +24,8 @@ export default function Auth() {
 				justifyContent: 'center',
 			}}>
 				<h1 style={	{
-					color: '#d62222',
-					textShadow: '0 0 10px #c2bdbd',
+					color: '#000000',
+					textShadow: '0px 1px 8px #f6d21d',
 				}}>Are you ready ?</h1>
 
 				<Button 

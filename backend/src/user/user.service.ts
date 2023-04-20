@@ -6,6 +6,7 @@ import { FriendDto } from './dto/friend.dto';
 import { GetFriendDTO } from './dto/friend.dto';
 import { BlockDto } from './dto/friend.dto';
 import { Status } from '@prisma/client';
+import { EditUserDto } from './dto';
 
 @Injectable()
 export class UserService {
@@ -579,4 +580,32 @@ export class UserService {
 	}
 
 	
+	// async addfriend(data : FriendDto)
+	// {
+	// 	console.log("data: ", data)
+	// 	const userid = await this.prisma.user.findUnique({
+	// 		where: { username: data.username},
+	// 		select: { id: true }
+	// 	})
+	// 	console.log("userid: ", userid.id)
+	// 	const friendid = await this.prisma.user.findUnique({
+	// 		where: { accessToken: data.Tokensource},
+	// 		select: { friends: true}
+	// 	})
+	// 	friendid.friends.push(userid.id);
+	// 	console.log("fiendid: ", friendid.friends);
+	// 	await this.prisma.user.update({
+	// 		where: { accessToken: data.Tokensource},
+	// 		data: { friends: {set: friendid.friends}}
+	// 	})
+	// }
+
+	// async getfriend(data : GetFriendDTO)
+	// {
+	// 	const user = this.prisma.user.findUnique({
+	// 		where: { accessToken: data.Tokensource},
+	// 		select: { friends: true }
+	// 	})
+	// 	return (user)
+	// }
 }

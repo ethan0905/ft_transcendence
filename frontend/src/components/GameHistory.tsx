@@ -88,7 +88,9 @@ const titleTable: CSS.Properties = {
 	backgroundColor: 'black', 
 	color: 'white', 
 	textAlign: 'center', 
-	padding: '10px' 
+	padding: '8px',
+	fontFamily: 'Kocak',
+	fontSize: '30px',
 }
 
 const lineTable: CSS.Properties = {

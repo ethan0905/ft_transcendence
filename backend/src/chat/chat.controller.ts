@@ -46,42 +46,42 @@ export class ChatController {
 	//@UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
 	async create_one(@Body()dto: ChannelCreateDto)
     {
-		console.log(dto);
-        const chat = await this.chat_service.newChannel(dto);
-        console.log("channel created");
+		// console.log(dto);
+        return this.chat_service.newChannel(dto);
+        // console.log("channel created");
     }
 
 	@Delete("/:id/deletechat")
 	async delete_one(@Param("id") id: string)
 	{
 		var nb_id : number = parseInt(id);
-		const chat = await this.chat_service.delChanById(nb_id);
-        console.log("channel delete");
+		return this.chat_service.delChanById(nb_id);
+        // console.log("channel delete");
 	}
 	@Post("/:id/newmsg")
 	//@UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
 	async addMsg(@Body()dto: ChannelMessageSendDto, @Param("id") id: string)
     {
 		var nb_id : number = parseInt(id);
-        const chat = await this.chat_service.newMsg(dto, nb_id);
-        console.log("cMsg added");
+        return this.chat_service.newMsg(dto, nb_id);
+        // console.log("cMsg added");
     }
 
 	@Get('/channels/:username')
 	async take_all_channel(@Param("username") username: string)
 	{
-		const channel = await this.chat_service.get__channelsUserIn(username);
-		console.log("channel : ", channel);
-		return channel;
+		return this.chat_service.get__channelsUserIn(username);
+		// console.log("channel : ", channel);
+		// return channel;
 	}
 
 
 	@Get('/channels/:id')
 	async take_all_channelbyId(@Param("id") id: string)
 	{
-		const channel = await this.chat_service.get__chanNamebyId(parseInt(id));
-		console.log("channel : ", channel);
-		return channel;
+		return this.chat_service.get__chanNamebyId(parseInt(id));
+		// console.log("channel : ", channel);
+		// return channel;
 	}
 
 	@Get('/channels/users/:id')
@@ -97,6 +97,7 @@ export class ChatController {
 	{
 		const idChan : number = parseInt(id); 
 		const messages = await this.chat_service.get__MsgIn(idChan);
+		console.log("msg: ", messages)
 		return messages[0].messages;
 	}
 
