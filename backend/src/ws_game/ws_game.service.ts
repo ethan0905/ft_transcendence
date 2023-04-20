@@ -99,8 +99,25 @@ export class WsGameService {
 		// 		score:[0,0],
 		// 	}
 		// })
+
+		const uuid = uuidv4();
+
+		const new_game = await this.prisma.game.create({
+			data: {
+				players: {
+					connect: [
+						{ username: client1 },
+						{ username: client2 },
+					],
+				},
+				duration: 10,
+				score: [0, 0],
+				roomName: uuid,
+			},
+		});
+
 		let room: Room = {
-			name: uuidv4(),
+			name: uuid,
 			player1: client1,
 			player2: client2,
 			spectators: [],
@@ -309,21 +326,71 @@ export class WsGameService {
 		}
 	}
 
+	// endGame(room_name:string, server:Server): void {
+	// 	// console.log("END GAME:"+room_name);
+
+	// 	console.log("score 1 : ", this.rooms[room_name].game.player1_score, "score 2 : ", this.rooms[room_name].game.player2_score);
+
+	// 	const scoreArray = [this.rooms[room_name].game.player1_score, this.rooms[room_name].game.player2_score];
+
+	// 	console.log("scoreArray : ", scoreArray);
+
+	// 	const game = this.prisma.game.update({
+	// 		where: {
+	// 			roomName: room_name,
+	// 		},
+	// 		data: {
+	// 			score: scoreArray,
+	// 		}
+	// 	})
+
+	// 	this.schedulerRegistry.deleteInterval(room_name);
+	// 	if (this.rooms[room_name].game.player1_score > this.rooms[room_name].game.player2_score){
+	// 		server.to(room_name).emit('EndGame', {score:[this.rooms[room_name].game.player1_score,this.rooms[room_name].game.player2_score], winner:1});
+	// 	}
+	// 	else
+	// 		server.to(room_name).emit('EndGame', {score:[this.rooms[room_name].game.player1_score,this.rooms[room_name].game.player2_score], winner:2});
+	// 	server.emit("RoomDeleted", room_name);
+	// 	this.rooms[room_name].game.ball.speed = 0;
+	// 	this.rooms[room_name].game.is_playing = false;
+	// 	// Enregistrer le score dans la bdd
+	// 	delete this.rooms[room_name];
+	// 	server.socketsLeave(room_name);
+	// }
+
 	endGame(room_name:string, server:Server): void {
-		// console.log("END GAME:"+room_name);
-		this.schedulerRegistry.deleteInterval(room_name);
-		if (this.rooms[room_name].game.player1_score > this.rooms[room_name].game.player2_score){
-			server.to(room_name).emit('EndGame', {score:[this.rooms[room_name].game.player1_score,this.rooms[room_name].game.player2_score], winner:1});
-		}
-		else
-			server.to(room_name).emit('EndGame', {score:[this.rooms[room_name].game.player1_score,this.rooms[room_name].game.player2_score], winner:2});
-		server.emit("RoomDeleted", room_name);
-		this.rooms[room_name].game.ball.speed = 0;
-		this.rooms[room_name].game.is_playing = false;
-		// Enregistrer le score dans la bdd
-		delete this.rooms[room_name];
-		server.socketsLeave(room_name);
+		// console.log("score 1 : ", this.rooms[room_name].game.player1_score, "score 2 : ", this.rooms[room_name].game.player2_score);
+	
+		const scoreArray = [this.rooms[room_name].game.player1_score, this.rooms[room_name].game.player2_score];
+	
+		// console.log("scoreArray : ", scoreArray);
+	
+		this.prisma.game.update({
+			where: {
+				roomName: room_name,
+			},
+			data: {
+				score: scoreArray,
+			}
+		}).then(() => {
+			this.schedulerRegistry.deleteInterval(room_name);
+			if (this.rooms[room_name].game.player1_score > this.rooms[room_name].game.player2_score){
+				server.to(room_name).emit('EndGame', {score:[this.rooms[room_name].game.player1_score,this.rooms[room_name].game.player2_score], winner:1});
+			}
+			else
+				server.to(room_name).emit('EndGame', {score:[this.rooms[room_name].game.player1_score,this.rooms[room_name].game.player2_score], winner:2});
+			server.emit("RoomDeleted", room_name);
+			this.rooms[room_name].game.ball.speed = 0;
+			this.rooms[room_name].game.is_playing = false;
+			// Enregistrer le score dans la bdd
+			delete this.rooms[room_name];
+			server.socketsLeave(room_name);
+		}).catch((err) => {
+			console.log(err);
+		});
 	}
+	
+
 	getRooms(): {[key:string]:Room}{
 		return this.rooms;
 	}

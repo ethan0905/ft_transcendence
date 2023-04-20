@@ -119,6 +119,8 @@ model Game {
   // player1Id Int?
   // player2Id Int?
 
+  roomName   String @unique
+
   status    GameStatus @default(WAITING)
 
   // player1   User? @relation("player1", fields: [player1Id], references: [id], onDelete: SetNull)
