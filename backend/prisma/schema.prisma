@@ -41,7 +41,8 @@ model User {
   invited Channel[] @relation("invited")
   
   friends Int[]
-  blocked Blocked[] @relation("blocked")
+  blocked Int[]
+  // blocked Blocked[] @relation("blocked")
 
   // player1 Game[] @relation("player1")
   // player2 Game[] @relation("player2")
@@ -78,14 +79,14 @@ enum Status {
 //   @@id([friendId])
 // }
 
-model Blocked {
-  createdAt DateTime  @default(now())
+// model Blocked {
+//   createdAt DateTime  @default(now())
 
-  blocked    User @relation("blocked", fields: [blockedId], references: [id], onDelete: Cascade)
-  blockedId  Int
+//   blocked    User @relation("blocked", fields: [blockedId], references: [id], onDelete: Cascade)
+//   blockedId  Int
 
-  @@id([blockedId])
-}
+//   @@id([blockedId])
+// }
 
 model Message {
   id        Int       @id @default(autoincrement())
@@ -138,6 +139,7 @@ model Game {
   // player2   User? @relation("player2", fields: [player2Id], references: [id], onDelete: SetNull)
 
   players  User[] @relation("player")
+  // players String[]
   score Int[]
   // score1    Int
   // score2    Int
@@ -150,3 +152,31 @@ enum GameStatus {
   PLAYING
   FINISHED
 }
+
+// model User {
+//   id        Int       @id @default(autoincrement())
+//   createdAt DateTime  @default(now())
+//   updatedAt DateTime  @updatedAt
+
+//   email     String  @unique
+//   username  String? @unique
+
+//   games Game[] @relation("player")
+
+//   @@map("users")
+//   @@unique([id, email])
+// }
+
+// model Game {
+//   id         Int       @id @default(autoincrement())
+//   createdAt  DateTime  @default(now())
+//   updatedAt  DateTime  @updatedAt
+//   duration   Int 
+
+//   status    GameStatus @default(WAITING)
+
+//   players  User[] @relation("player")
+//   score Int[]
+
+//   @@unique([id])
+// }

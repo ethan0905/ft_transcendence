@@ -36,12 +36,21 @@ function App() {
             }
           />
 
-          <Route
+          {/* <Route
             path="/Profile/:id"
             element={
-              <PrivateRoute>
+              // <PrivateRoute>
                 <UserPage />
-              </PrivateRoute>
+              // </PrivateRoute>
+            }
+          /> */}
+
+          <Route
+            path="/Profile/:username"
+            element={
+              // <PrivateRoute>
+                <UserPage />
+              // </PrivateRoute>
             }
           />
 

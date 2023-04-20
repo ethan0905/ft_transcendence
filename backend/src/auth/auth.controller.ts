@@ -3,12 +3,14 @@ import { Body, Controller, Post, Get, ParseIntPipe, HttpCode, HttpStatus, Req, R
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { AuthDto, Auth42Dto } from './dto';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService,
-              private prismaService: PrismaService) {}
+              private prismaService: PrismaService,
+              private userService: UserService ) {}
 
   // @HttpCode(HttpStatus.OK) //send a 200 code for clarity
 
@@ -63,6 +65,8 @@ export class AuthController {
       if (updatedUser.twoFactorActivated === false)
       {
         // console.log("Hello 1\n");
+        req.headers.authorization = token.access_token;
+        this.userService.updateUserStatusOnline(req);
         res.redirect(
           `${process.env.FRONTEND_URL}/myProfile`,
           );
@@ -80,8 +84,13 @@ export class AuthController {
   }
 
   @Get('42/logout')
-  async logout( @Res() res: Response) {
+  async logout(@Req() req: Request, @Res() res: Response) {
+    // req.headers.authorization = res.cookie.("token");
+    req.headers.authorization = req.cookies['token'];
+    // console.log("req.headers.authorization = " + req.headers.authorization);
+
     this.authService.deleteCookies(res);
+    this.userService.updateUserStatusOffline(req);
     res.redirect(`${process.env.FRONTEND_URL}/login`);
   }
 

@@ -1,55 +1,121 @@
 import { Controller, Get, UseGuards, Req, Patch, Body, Post } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
-// import { JwtGuard } from '../auth/guard';
-import { GetUser } from '../auth/decorator';
-import { User } from '@prisma/client';
-import { EditUserDto } from './dto';
 import { UserService } from './user.service';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { UseInterceptors } from '@nestjs/common';
-import { UploadedFile } from '@nestjs/common';
-
+import { FriendDto } from './dto/friend.dto';
+import { GetFriendDTO } from './dto/friend.dto';
+import { BlockDto } from './dto/friend.dto';
 
 // @UseGuards(JwtGuard)
 @Controller('users')
 export class UserController {
 	constructor(private userService: UserService) {} //dependency injection
 
-	@Get('me')
-	getMe(@GetUser() user: User) {
-		return user;
-	}
-
-	@Patch()
-	editUser(@GetUser('id') userId: number, @Body() dto: EditUserDto) {
-		return this.userService.editUser(userId, dto);
-	}
-	
-	@Get('me')
-	getUserbyId(@GetUser() user: User) {
-		return user;
-	}
-
 	@Get('me/username/get')
-	getUsername(@Req () req: Request) {
+	getUsername(@Req() req: Request) {
 		return this.userService.getUsername(req);
 	}
 
 	@Post('me/username/edit')
-	editUsername(@Req () req: Request) {
+	editUsername(@Req() req: Request) {
 		return this.userService.editUsername(req);
 	}
 
-	@Get('me/avatar/get')
-	getAvatar(@Req () req: Request) {
-		return this.userService.getAvatar(req);
+	@Get('me/email/get')
+	getEmail(@Req() req: Request) {
+		return this.userService.getEmail(req);
+	}
+	@Get('me/id/get')
+	getId(@Req() req: Request) {
+		return this.userService.getId(req);
 	}
 
-	@Post('me/avatar/upload')
-	@UseInterceptors(FileInterceptor('file'))
-	uploadAvatar(@UploadedFile() file, @Req() req: Request) {
-		return this.userService.uploadAvatar(file, req);
+	@Get('username/get')
+	getUserNameById(@Req() req: Request) {
+		return this.userService.getUserNameById(req);
 	}
 
+	@Get('username/valid')
+	userExistsInDatabase(@Req() req: Request) {
+		return this.userService.userExistsInDatabase(req);
+	}
+
+	@Get('id/get')
+	getUserIdByUserName(@Req() req: Request) {
+		return this.userService.getUserIdByUserName(req);
+	}
+
+	// friend part
+	@Post('me/friend/add')
+	addFriend(@Body() data : FriendDto)
+	{
+		return this.userService.addFriend(data);
+	}
+
+	@Post('me/friend/remove')
+	removeFriend(@Body() data : FriendDto)
+	{
+		return this.userService.removeFriend(data);
+	}
+
+	@Get('me/friend/status/get')
+	getFriendStatusById(@Req() req: Request)
+	{
+		return this.userService.getFriendStatusById(req);
+	}
+
+	// block part
+	@Post('me/user/block')
+	blockUser(@Body() data : BlockDto)
+	{
+		return this.userService.blockUser(data);
+	}
+
+	@Post('me/user/unblock')
+	unblockUser(@Body() data : BlockDto)
+	{
+		return this.userService.unblockUser(data);
+	}
+
+	@Get('me/block/status/get')
+	getBlockStatusById(@Req() req: Request)
+	{
+		return this.userService.getBlockStatusById(req);
+	}
+
+	@Get('me/friend/list/get')
+	getFriendListByToken(@Req() req: Request)
+	{
+		return this.userService.getFriendListByToken(req);
+	}
+	
+	@Get('me/game/history/get')
+	getGameHistory(@Req() req: Request)
+	{
+		return this.userService.getGameHistory(req);
+	}
+
+	@Get('me/achievements/get')
+	getUserAchievementStatus(@Req() req: Request) {
+		return this.userService.getUserAchievementStatus(req);
+	}
+
+	@Get('user/status/get')
+	getUserStatus(@Req() req: Request) {
+		return this.userService.getUserStatus(req);
+	}
+
+	@Post('me/status/online/set')
+	updateUserStatusOnline(@Req() req: Request) {
+		return this.userService.updateUserStatusOnline(req);
+	}
+
+	@Post('me/status/offline/set')
+	updateUserStatusOffline(@Req() req: Request) {
+		return this.userService.updateUserStatusOffline(req);
+	}
+
+	@Post('me/status/playing/set')
+	updateUserStatusPlaying(@Req() req: Request) {
+		return this.userService.updateUserStatusPlaying(req);
+	}
 }

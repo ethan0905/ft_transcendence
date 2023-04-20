@@ -2,6 +2,7 @@ import React, { ChangeEventHandler, useEffect} from 'react';
 import Avatar from '@mui/material/Avatar';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import Skeleton from '@mui/material/Skeleton';
+import CircularProgress from '@mui/material/CircularProgress';
 
 interface ProfilePictureProps {
 	profilePicture: File | null;
@@ -59,7 +60,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({profilePicture, handleUp
 		if (profilePicture) {
 			setTimeout(() => {
 				setImageIsLoaded(true);
-			  }, 1400); // 1 second delay
+			  }, 400); // 1 second delay
 		}
 	}, [profilePicture]);
 
@@ -81,24 +82,32 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({profilePicture, handleUp
 						border: '#f8f8f8 4px solid',
 						margin: '10px 20px 10px 10px'
 					}}
-					src={profilePicture ? URL.createObjectURL(profilePicture) : "empty.jpg"}
+					src={profilePicture ? URL.createObjectURL(profilePicture) : undefined }
 				/>
 			) : (
-				<Skeleton
-					className='Avatar'
-					variant='circular' 
-					sx={{
-						width: 150,
-						height: 150,
-						verticalAlign: 'middle',
-						border: '#f8f8f8 4px solid',
-						backgroundColor: '#f8f8f8',
-						margin: '10px 20px 10px 10px',
-						// animation: 'wave 1s infinite'
-					}}
-					>
+				// <Skeleton
+				// 	className='Avatar'
+				// 	variant='circular' 
+				// 	sx={{
+				// 		width: 150,
+				// 		height: 150,
+				// 		verticalAlign: 'middle',
+				// 		border: '#f8f8f8 4px solid',
+				// 		backgroundColor: '#f8f8f8',
+				// 		margin: '10px 20px 10px 10px',
+				// 		// animation: 'wave 1s infinite'
+				// 	}}
+				// 	>
 
-				</Skeleton>
+				// </Skeleton>
+				<CircularProgress
+					id='LoadingAvatar'
+					size={150}
+					thickness={2}
+					sx={{	
+					color: '#f8f8f8'
+					}}
+		  		/>
 			)}
 
 			<AddAPhotoIcon sx={{ 
