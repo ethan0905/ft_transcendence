@@ -424,15 +424,19 @@ export default function UserPage() {
 		setUserStatus(response.data.status);
 	}
 
-	  function getStatusLabel() {
+	function getStatusLabel() {
 		if (userStatus === 'ONLINE') {
-		  return 'Online';
+			return 'online';
 		} else if (userStatus === 'OFFLINE') {
-		  return 'Offline';
+			return 'offline';
+		} else if (userStatus === 'PLAYING') {
+			return 'ingame';
 		} else {
-		  return 'Unknown';
+			return 'Unknown';
 		}
-	  }
+	}
+
+	let userStatusDot = getStatusLabel() as 'online' | 'offline' | 'ingame';
 
 	return (
 		<>
@@ -463,7 +467,9 @@ export default function UserPage() {
 						)
 					}
 					<div className='UserPage_info'>
-						<h1>{username}</h1>
+						<h1>{username}
+							<div className={`userStatus ${userStatusDot}`}></div>
+						</h1>
 						<div className='buttonList'>
 							{ userIsMe ? (
 									<button>Edit Profile</button>
@@ -485,7 +491,7 @@ export default function UserPage() {
 									</>
 								)
 							}
-							<div> Status: {userStatus ? getStatusLabel() : 'Loading...'}</div>
+							{/* <div> Status: {userStatus ? getStatusLabel() : 'Loading...'}</div> */}
 						</div>
 					</div>
 					<Achievements data={{ hasPlayed: hasPlayed, hasWon: hasWon, hasFriend: hasFriend }} />

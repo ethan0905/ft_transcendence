@@ -57,3 +57,23 @@
   justify-content: center;
   align-items: center;
 }
+
+.userStatus {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 10px;
+}
+
+.userStatus.online {
+  background-color: #00fc3f;
+}
+
+.userStatus.offline {
+  background-color: red;
+}
+
+.userStatus.ingame {
+  background-color: orange;
+}
