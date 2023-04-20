@@ -29,6 +29,15 @@
   border-bottom: #faf9f9 1px solid;
   padding: 10px 10px;
 }
+
+#UserAvatar {
+  width: 150px;
+  height: 150px;
+  vertical-align: middle;
+  border: #f8f8f8 4px solid;
+  margin: 10px 10px;
+}
+
 .UserPage_info {
   display: flex;
   color: white;

@@ -14,7 +14,9 @@ const FriendList = (props: TableProps) => {
 		backgroundColor: 'black', 
 		color: 'white', 
 		textAlign: 'center', 
-		paddingTop: '10px' 
+		paddingTop: '8px' ,
+		fontFamily: 'Kocak',
+		fontSize: '30px',
 	}
 
 	const titleCol: CSS.Properties = {

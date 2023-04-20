@@ -3,6 +3,8 @@ import Sidebar from '../components/Sidebar/Sidebar'
 import { createContext } from 'react'
 import {io, Socket} from 'socket.io-client'
 import { useState } from 'react'
+
+
 export const SocketContext = createContext({} as Socket);
 
 export default function ChatPage() {

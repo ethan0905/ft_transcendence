@@ -5,7 +5,7 @@ import axios from 'axios';
 import { SocketContext } from '../ChatBody';
 import { useContext } from 'react';
 
-async function getAllChannels(username: string) {
+async function getAllChannels(username: any) {
   let config = {
     method: 'get',
     maxBodyLength: Infinity,
@@ -51,12 +51,46 @@ const FormButton = () => {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [isPrivate, setIsPrivate] = useState(false);
+  const [username, setUsername] = useState('');
+  const [token, setToken] = useState('');
+
+  useEffect(() => {
+		if (token !== '') {
+			console.log("Le token est valide !", token);
+			getUsername(token);
+		}
+		let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+		if (cookieToken) {
+			setToken(cookieToken);
+		}
+	}, [token]);
+
+  async function getUsername(accessToken: string): Promise<any> {
+    try {
+        const response = await fetch('http://localhost:3333/users/me/username/get', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `${accessToken}`
+          },
+        });
+        const data = await response.json();
+        if (data) {
+          setUsername(data.username);
+        }
+        // return data;
+      } catch (error) {
+  
+        console.error(error);
+        // handle error
+      }
+    }
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    console.log(`Name: ${name}, Password: ${password}, Private: ${isPrivate}`);
-    // createNewChannel(name, password, isPrivate);
-    socket.emit("create channel", {chatName:name, Password:password, isPrivate:isPrivate, username:"esafar"})
+    getUsername(token);
+    console.log(`Name: ${name}, Password: ${password}, Private: ${isPrivate}, Username: ${username}`);
+    socket.emit("create channel", {chatName:name, Password:password, isPrivate:isPrivate, username:username})
     setIsOpen(false);
   }
 
@@ -112,8 +146,43 @@ interface Channel {
 }
 
 export default function ChanList() {
+	const [name, setName] = useState('');
   const socket = useContext(SocketContext)
   const [allChannels, setAllChannels] = useState<Channel[]>([])
+  const [username, setUsername] = useState<string>()
+  const [token, setToken] = useState('');
+
+  useEffect(() => {
+		if (token !== '') {
+			console.log("Le token est valide !", token);
+			getUsername(token);
+		}
+		let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+		if (cookieToken) {
+			setToken(cookieToken);
+		}
+	}, [token]);
+
+  async function getUsername(accessToken: string): Promise<any> {
+    try {
+        const response = await fetch('http://localhost:3333/users/me/username/get', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `${accessToken}`
+          },
+        });
+        const data = await response.json();
+        if (data) {
+          setUsername(data.username);
+        }
+        // return data;
+      } catch (error) {
+  
+        console.error(error);
+        // handle error
+      }
+    }
 
   useEffect(() => {
     socket.on("Channel Created", (value:any) => {
@@ -129,9 +198,35 @@ export default function ChanList() {
 
     
   }, [socket]);
+
+  // async function getUsername(): Promise<any> {
+  // let accessToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+
+  // try {
+	// 		const response = await fetch(`http://localhost:3333` + '/users/me/username/get', {
+	// 			method: 'GET',
+	// 			headers: {
+	// 				'Content-Type': 'application/json',
+	// 				'Authorization': `${accessToken}`
+	// 			},
+	// 		});
+	// 		const data = await response.json();
+	// 		if (data) {
+	// 			console.log("NAME : ", data);
+	// 			setName(data.username);
+	// 		}
+	// 		// return data;
+	// 	} catch (error) {
+
+	// 		console.error(error);
+	// 		// handle error
+	// 	}
+	// }
   
-  useEffect(() => {    
-    getAllChannels("esafar").then((value: any) => {
+  useEffect(() => {
+    // getUsername();
+
+    getAllChannels(username).then((value: any) => {
       console.log(value);
       setAllChannels(value);
     })
@@ -141,7 +236,7 @@ export default function ChanList() {
     <div className="main__chatlist">
 
       <div className="chatlist__heading">
-        <h2>Channels</h2>
+        <h2 style={{fontFamily: 'Kocak', color: 'white', textShadow: '1px 1px 1px black'}}>Channels</h2>
       </div>
 
       <FormButton />

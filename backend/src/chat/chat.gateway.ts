@@ -92,6 +92,7 @@ export class ChatGateway implements OnGatewayConnection {
     @MessageBody() data: ChannelCreateDto,
     @ConnectedSocket() client: Socket,
   ) {
+    console.log("data: ", data);
       const chat = await this.chatService.newChannel(data);
       const id_room = await this.prisma.channel.findMany({
         where : {
@@ -197,6 +198,29 @@ export class ChatGateway implements OnGatewayConnection {
     await this.chatService.kick_Chan(data.username, data.chatId);
     console.log("chan kicked");
   }
+
+  
+  @SubscribeMessage('mute')
+  async mute_chan(
+    @MessageBody()  data: QuitChanDto ,
+    @ConnectedSocket() client : Socket,
+  ) {
+    
+    await this.chatService.mute_Chan(data.username, data.chatId);
+    console.log("chan muteed");
+  }
+
+    
+  @SubscribeMessage('unmute')
+  async unmute_chan(
+    @MessageBody()  data: QuitChanDto ,
+    @ConnectedSocket() client : Socket,
+  ) {
+    
+    await this.chatService.unmute_Chan(data.username, data.chatId);
+    console.log("chan unmuteed");
+  }
+
 
   @SubscribeMessage('is ban')
   async isban_chan(
