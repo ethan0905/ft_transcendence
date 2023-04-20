@@ -85,16 +85,15 @@ export default function UserList() {
   }, [socket]);
   
   useEffect(() => {
-    if (location.pathname !== "/Chat"){
+    if (location.pathname !== "/Chat" && username !== undefined){
       let id = Number(location.pathname.split("/")[2]);
-      console.log("id channel:"+ id);
       socket.emit("join",{chatId:id, username:username}); // Ne pas oublier MDP
       getAllUserInChat(id).then((value: any) => {
         console.log(value);
         setAllUsers(value);
       })
     }
-  }, [location.pathname, socket]);
+  }, [location.pathname, socket, username]);
 
   return (
       <div className="main__userlist">
