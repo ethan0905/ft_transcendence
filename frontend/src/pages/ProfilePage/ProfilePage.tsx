@@ -12,7 +12,7 @@ import { styled } from '@mui/material/styles';
 import { red } from '@mui/material/colors';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import userEvent from '@testing-library/user-event';
+// import userEvent from '@testing-library/user-event';
 
 export default function ProfilePage() {
 	const [name, setName] = useState('');
@@ -309,6 +309,7 @@ export default function ProfilePage() {
 			});
 			const data = await response.json();
 			if (data) {
+				console.log(data);
 				setGameList(data);
 			}
 			return data;
