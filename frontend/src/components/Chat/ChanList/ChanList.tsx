@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './ChanList.css';
 import ChanItems from './ChanItems';
 import axios from 'axios';
-import { SocketContext } from '../ChatBody';
+import { SocketContext } from '../../../pages/ChatPage';
 import { useContext } from 'react';
 
 async function getAllChannels(accessToken:string) {
@@ -201,30 +201,6 @@ export default function ChanList() {
 
     
   }, [socket]);
-
-  // async function getUsername(): Promise<any> {
-  // let accessToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-
-  // try {
-	// 		const response = await fetch(`http://localhost:3333` + '/users/me/username/get', {
-	// 			method: 'GET',
-	// 			headers: {
-	// 				'Content-Type': 'application/json',
-	// 				'Authorization': `${accessToken}`
-	// 			},
-	// 		});
-	// 		const data = await response.json();
-	// 		if (data) {
-	// 			console.log("NAME : ", data);
-	// 			setName(data.username);
-	// 		}
-	// 		// return data;
-	// 	} catch (error) {
-
-	// 		console.error(error);
-	// 		// handle error
-	// 	}
-	// }
   
   useEffect(() => {
       // getUsername();

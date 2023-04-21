@@ -21,9 +21,6 @@ export class ChannelCreateDto {
     @IsArray()
     @IsOptional()
     members :   Array<Tag>
-
-    @IsNotEmpty()
-    username : string
 }
 
 export class sendMsgDto {

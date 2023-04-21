@@ -47,6 +47,11 @@ import { QuitChanDto, JoinChanDto, EditChannelCreateDto } from "./dto/edit-chat.
 //   }
 // }
 
+export interface User {
+  id: number;
+  username: string;
+  email: string;
+}
 @UsePipes(new ValidationPipe())
  @WebSocketGateway({
      cors: {
@@ -57,6 +62,7 @@ import { QuitChanDto, JoinChanDto, EditChannelCreateDto } from "./dto/edit-chat.
 export class ChatGateway implements OnGatewayConnection {
   @WebSocketServer()
   server: Server;
+  clients: {[key:string]:User} = {};
 
   constructor(
     private readonly chatService: ChatService,
@@ -71,10 +77,29 @@ export class ChatGateway implements OnGatewayConnection {
   async handleConnection(client: Socket) : Promise<any> {
     try
     {
-      console.log('someone test connection');
-      client.emit('test', {client}); // join all rooms
+      const user = await this.prisma.user.findUnique({
+        where : {
+          accessToken : client.handshake.auth.token,
+        },
+        select:{
+          id: true,
+          username: true,
+          email: true,
+        }
+      })
+      this.clients[client.id] = user;
+      console.log("Connect")
+      console.log(this.clients);
     }
-    catch {}
+    catch (e){
+      console.log(e);
+      client.disconnect();
+      return;
+    }
+  }
+
+  handleReconnect(client: Socket) {
+    console.log("Reconnect")
   }
 
   // async handleJoinSocket(id: number, @ConnectedSocket() client: Socket) {
@@ -86,27 +111,21 @@ export class ChatGateway implements OnGatewayConnection {
 	// 	// 	}
 	// }
 
+  handleDisconnect(client: Socket) {
+    console.log("Disconnect")
+    delete this.clients[client.id];
+  }
 
   @SubscribeMessage('create channel')
   async chat(
     @MessageBody() data: ChannelCreateDto,
     @ConnectedSocket() client: Socket,
   ) {
-    console.log("data: ", data);
-      const chat = await this.chatService.newChannel(data);
-      const id_room = await this.prisma.channel.findMany({
-        where : {
-          channelName: data.chatName,
-        },
-        select: {
-          id: true,
-          isPrivate:true,
-        },
-      })
-      const id = id_room[0].id;
-      client.join(id.toString());
-      if (!id_room[0].isPrivate)
-        this.server.emit("Channel Created", {channelName:data.chatName, id: id});
+      const chat = await this.chatService.newChannel(data, this.clients[client.id].username);
+      if (!chat.isPrivate)
+        this.server.emit("Channel Created", {channelName:data.chatName, id: chat.id});
+      else
+        this.server.to(client.id).emit("Channel Created", {channelName:data.chatName, id: chat.id});
     }
 
   @SubscribeMessage('sendMsgtoC')
@@ -114,15 +133,11 @@ export class ChatGateway implements OnGatewayConnection {
     @MessageBody()  data: ChannelMessageSendDto,
     @ConnectedSocket() client : Socket,
   ) {
-    const user = await this.prisma.user.findUnique({
-      where : {
-        email : data.mail,
-      },
-    }
-    )
-    const chat = await this.chatService.newMsg(data, user.id);
-    console.log("cMsg added");
+    const chat = await this.chatService.newMsg(data, this.clients[client.id].id);
+    if (chat == null)
+      return "error";
     this.server.to(data.chatId.toString()).emit("NewMessage",chat); // emit to the room
+    console.log("cMsg added");
   }
 
   // @SubscribeMessage('sendMsgtoC')

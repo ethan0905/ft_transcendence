@@ -16,7 +16,7 @@ export class ChatService {
         private readonly auth: AuthService,
         ) {}
 
-        async newChannel(info: ChannelCreateDto) {
+        async newChannel(info: ChannelCreateDto, username: string) {
             const password = info.Password ?? null;
             if (info.isPrivate === undefined)
               info.isPrivate = false;
@@ -24,7 +24,7 @@ export class ChatService {
               info.isPassword = false;
             console.log(info.isPrivate)
             console.log(info.Password)
-            const user = await this.userService.getUser(info.username);
+            const user = await this.userService.getUser(username);
             const channel = await this.prisma.channel.create({
               data: {
                 channelName: info.chatName,
@@ -33,21 +33,22 @@ export class ChatService {
                 isPassword: info.isPassword,
                 owner: {
                   connect: {
-                    username : info.username,
+                    username : username,
                   }
                 },
                 admins: {
                   connect: {
-                    username : info.username,
+                    username : username,
                   }
                 },
                 members: {
                   connect: {
-                    username : info.username,
+                    username : username,
                   }
                 }
               }
             });
+            return channel;
           }
 
         async delChanById(id : number)
@@ -318,22 +319,25 @@ export class ChatService {
         async newMsg(info : ChannelMessageSendDto, id : number)
         {
           const channelid = info.chatId;
-          const user = this.prisma.user.findUnique({
+          const user = await this.prisma.user.findUnique({
             where: {
-             id: id,
+              id: id,
             },
           });
-          const userid = (await user).id;
           const channel = this.prisma.channel.findUnique({
             where: {
              id: channelid,
             },
           });
+          const isInChan = await this.userIsInChan(user.accessToken, channelid);
+          const isMuted = await this.userIsChanMuted(user.accessToken, channelid);
+          if (!isInChan && isMuted)
+            return (null);
           const message: Message = await this.prisma.message.create({
             data: {
               owner :{
                 connect: {
-                  id : userid,
+                  id : user.id,
                 }
               },
               channel : {
@@ -573,6 +577,22 @@ export class ChatService {
             })
             for (let i = 0; i < channels.members.length; i++){
               if (channels.members[i].id === id_channel)
+                return true;
+            }
+            return false;
+          }
+
+          async userIsChanMuted(token:string, id_channel:number):Promise<boolean>{
+            const channels = await this.prisma.user.findUnique({
+              where:{
+                accessToken:token
+              },
+              select:{
+                muted:true
+              }
+            })
+            for (let i = 0; i < channels.muted.length; i++){
+              if (channels.muted[i].id === id_channel)
                 return true;
             }
             return false;

@@ -5,10 +5,6 @@ export class ChannelMessageSendDto {
     @IsNumber()
     chatId : number;
 
-    @IsNotEmpty()
-    @IsEmail()
-    public mail: string = "";
-
 	@IsNotEmpty()
 	@IsString()
 	public msg: string = "";

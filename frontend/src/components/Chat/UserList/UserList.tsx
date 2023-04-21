@@ -3,7 +3,8 @@ import "./UserList.css";
 import UserItems from "./UserItems";
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { SocketContext } from '../ChatBody';
+import { SocketContext } from '../../../pages/ChatPage';
+
 
 interface ChanUser {
   image: string;

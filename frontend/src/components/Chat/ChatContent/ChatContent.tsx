@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useContext} from "react";
 import ChatItem from "./ChatItem";
 import "./ChatContent.css";
-import { SocketContext } from "../ChatBody";
+import { SocketContext } from '../../../pages/ChatPage';
 import { useLocation } from "react-router-dom";
 import axios from 'axios';
 
@@ -232,7 +232,6 @@ export default function ChatContent(props: ChatContentProps) {
       console.log("chatId: ", Number(location.pathname.split("/")[2]), " | mail: ", email, " | msg: ", msg);
       socket.emit("sendMsgtoC", {
         "chatId":Number(location.pathname.split("/")[2]),
-        "mail":email,
         "msg":msg
       })
     }}><i className="fa fa-paper-plane"></i></button>
