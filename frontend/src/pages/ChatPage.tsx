@@ -8,7 +8,7 @@ import { useState } from 'react'
 export const SocketContext = createContext({} as Socket);
 
 export default function ChatPage() {
-  const [socket, setSocket] = useState(io(`${process.env.REACT_APP_BACKEND_URL}` + '/chat', {transports:["websocket"], autoConnect:false, reconnection:true,reconnectionAttempts: 3, reconnectionDelay: 1000}));
+  const [socket, setSocket] = useState(io(`${import.meta.env.VITE_BACKEND_URL}` + '/chat', {transports:["websocket"], autoConnect:false, reconnection:true,reconnectionAttempts: 3, reconnectionDelay: 1000}));
 
   return (
     <>

@@ -25,7 +25,7 @@ const SidebarData = [
     {
       title: 'Logout',
       icon: <LogoutIcon />,
-      onClick: () => { window.open(`${process.env.REACT_APP_BACKEND_URL}` + '/auth/42/logout', "_self");},
+      onClick: () => { window.open(`${import.meta.env.VITE_BACKEND_URL}` + '/auth/42/logout', "_self");},
       link: '/login',
     },
 

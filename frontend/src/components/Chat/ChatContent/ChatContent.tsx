@@ -62,7 +62,7 @@ async function getAllMessages(id_channel:number){
   let config = {
     method: 'get',
     maxBodyLength: Infinity,
-    url: `${process.env.REACT_APP_BACKEND_URL}` + '/chat/channels/' + id_channel+"/msg",
+    url: `${import.meta.env.VITE_BACKEND_URL}` + '/chat/channels/' + id_channel+"/msg",
     headers: {}
   };
   

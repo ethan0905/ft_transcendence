@@ -10,7 +10,7 @@ import { io, Socket } from 'socket.io-client';
 export const SocketContext = createContext({} as Socket);
 
 const ChatBody: React.FC = () => {
-  const socket = io(`${process.env.REACT_APP_BACKEND_URL}` + '/chat', {transports:["websocket"], autoConnect:false, reconnection:true,reconnectionAttempts: 3, reconnectionDelay: 1000});
+  const socket = io(`${import.meta.env.VITE_BACKEND_URL}` + '/chat', {transports:["websocket"], autoConnect:false, reconnection:true,reconnectionAttempts: 3, reconnectionDelay: 1000});
   let location = useLocation();
 
   useEffect(() => {

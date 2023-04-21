@@ -1,5 +1,6 @@
 import './App.css';
 import { Routes, Route } from "react-router-dom"
+import { BrowserRouter as Router } from "react-router-dom"
 import AuthPage from "./pages/AuthPage"
 import ProfilePage from "./pages/ProfilePage/ProfilePage"
 import ChatPage from "./pages/ChatPage"
@@ -13,6 +14,7 @@ function App() {
 
     return (
       <div className="App">
+        <Router>
         <Routes>
           <Route path='/' element={<AuthPage/>} />
           <Route path='/login' element={<AuthPage/>} />
@@ -24,7 +26,7 @@ function App() {
                 <Verify2FA />
               </PrivateRoute>
             }
-          />
+            />
           
           <Route
             path="/myProfile"
@@ -33,13 +35,13 @@ function App() {
                 <ProfilePage />
               </PrivateRoute>
             }
-          />
+            />
 
           {/* <Route
             path="/Profile/:id"
             element={
               // <PrivateRoute>
-                <UserPage />
+              <UserPage />
               // </PrivateRoute>
             }
           /> */}
@@ -48,10 +50,10 @@ function App() {
             path="/Profile/:username"
             element={
               // <PrivateRoute>
-                <UserPage />
+              <UserPage />
               // </PrivateRoute>
             }
-          />
+            />
 
           <Route
             path="/Chat"
@@ -60,7 +62,7 @@ function App() {
                 <ChatPage />
               </PrivateRoute>
             }
-          />
+            />
 
           <Route
             path='/Chat/:id'
@@ -69,7 +71,7 @@ function App() {
               <ChatPage />
             </PrivateRoute>
             }
-          />
+            />
 
 
           <Route
@@ -79,16 +81,16 @@ function App() {
                 <GamePage />
               </PrivateRoute>
             }
-          />
+            />
 
           <Route
             path="/Game/:id_game"
             element={
               // <PrivateRoute>
-                <GamePage />
+              <GamePage />
               // </PrivateRoute>
             }
-          />
+            />
 
           <Route
             path="/*"
@@ -97,9 +99,10 @@ function App() {
                 <ErrorPage />
               </PrivateRoute>
             }
-          />
+            />
 
         </Routes>
+      </Router>
       </div>
 
     );

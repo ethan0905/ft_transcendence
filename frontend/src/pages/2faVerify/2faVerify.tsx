@@ -10,7 +10,7 @@ function Verify2FA() {
 	async function check2FACode(): Promise<any> {
 		let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
 
-		const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/auth/2fa/verify', {
+		const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/auth/2fa/verify', {
 			method: 'POST',
 			headers: {'Content-Type': 'application/json'},
 			body: JSON.stringify({ twoFACode: twoFACode, token: cookieToken })
@@ -20,12 +20,12 @@ function Verify2FA() {
 		if (data === true)
 		{
 			// console.log("SUCCESS");
-			await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/auth/2fa/success', {
+			await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/auth/2fa/success', {
 				method: 'POST',
 				headers: {'Content-Type': 'application/json'},
 				body: JSON.stringify({ token: cookieToken, status: true })
 			});
-			window.location.href = `${process.env.REACT_APP_FRONTEND_URL}` + "/myProfile";
+			window.location.href = `${import.meta.env.VITE_FRONTEND_URL}` + "/myProfile";
 		}
 		return data;
 	}

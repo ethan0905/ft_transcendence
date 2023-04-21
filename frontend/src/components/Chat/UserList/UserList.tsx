@@ -17,7 +17,7 @@ async function getAllUserInChat(id: number){
   let config = {
     method: 'get',
     maxBodyLength: Infinity,
-    url: `${process.env.REACT_APP_BACKEND_URL}` + '/chat/channels/users/'+id,
+    url: `${import.meta.env.VITE_BACKEND_URL}` + '/chat/channels/users/'+id,
     headers: { }
   };
   

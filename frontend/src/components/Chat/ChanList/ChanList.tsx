@@ -9,7 +9,7 @@ async function getAllChannels(username: any) {
   let config = {
     method: 'get',
     maxBodyLength: Infinity,
-    url: `${process.env.REACT_APP_BACKEND_URL}` + '/chat/channels/' + username,
+    url: `${import.meta.env.VITE_BACKEND_URL}` + '/chat/channels/' + username,
     headers: {}
   };
 
