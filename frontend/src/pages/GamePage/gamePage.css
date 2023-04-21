@@ -1,10 +1,11 @@
 .tableau {
-    overflow-y: scroll;
+    overflow-y: auto;
     width: 75vw;
-    height: 50vh;
+    max-height: 50vh;
     background-color: rgba(48, 48, 55, 0.25);
     margin-top: 30px;
     margin-bottom: 20px;
+    border-radius: 10px;
 }
 table {
     border-collapse: collapse;
@@ -19,12 +20,15 @@ thead {
     color: white;
     font-size: 30px;
     font-family: 'Kocak';
-    padding-top: 20px;
+    padding: 15px;
 }
 .titlesTab {
     background-color: black;
     color: white;
     text-align: center;
+}
+.titlesTab th {
+    padding-bottom: 10px;
 }
 .lineTab {
     border-bottom: 1px solid rgb(171, 169, 169);
@@ -54,27 +58,35 @@ thead {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-}
-
-#ImgButton {
+  }
+  
+  #ImgButton {
     width: 230px;
-}
-#textPlay {
-    color: #fbda059b;
+    transition: transform 0.1s ease-in-out;
+  }
+  
+  #textPlay {
+    color: rgba(243, 217, 51, 0.637);
     font-size: 30px;
     text-shadow: 2px 2px 3px rgb(171, 171, 171);
     position: absolute;
     font-family: 'Kocak';
-}
+    transition: transform 0.1s ease-in-out;
 
-#ImgButton:hover {
-    width: 250px;
-}
-#ImgButton:hover + #textPlay {
-    font-size: 35px;
-    color: #fbdb05;
-    text-shadow: 3px 3px 4px rgb(127, 127, 127);
-}
+  }
+  
+  .ButtonPlay:hover #ImgButton {
+    transform: scale(1.1);
+  }
+  
+  .ButtonPlay:hover #textPlay {
+    transform: scale(1.1);
+    color: rgb(243, 217, 51);
+    text-shadow: 0px 2px 3px rgb(255, 255, 255);
+  }
+
+
+
 
 div.btn-container{
     display: table-cell;

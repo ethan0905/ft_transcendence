@@ -30,20 +30,20 @@ const GameHistory = (props: TableProps) => {
 	const winrate = gamesPlayed > 0 ? ((gamesWon / gamesPlayed) * 100).toFixed(2) : "0.00";
   
 	return (
-		<div style={{overflowY: 'scroll', minWidth: '60%', height: '100%'}}>
+	<div style={{overflowY: 'auto', minWidth: '60%', height: '100%', borderRadius: '10px',}}>
 			<table style={{ borderCollapse: 'collapse', width: '100%', height:'100%' }}>
 
 				<thead style={{ position: 'sticky', top: '0' }}>
 					<tr>
 						<th colSpan={6} style={titleTable}>Game history</th>
 					</tr>
-					<tr>
-						<th style={stats}></th>
-						<th style={stats}>Winrate: {winrate}%</th>
-						<th style={stats}></th>
-						<th style={stats}>Games: {gamesPlayed}</th>
-						<th style={stats}>Win: {gamesWon}</th>
-						<th style={stats}>Lost: {gamesLost}</th>
+					<tr style={stats}>
+						<th></th>
+						<th>Winrate: {winrate}%</th>
+						<th></th>
+						<th>Games: {gamesPlayed}</th>
+						<th>Win: {gamesWon}</th>
+						<th>Lost: {gamesLost}</th>
 					</tr>
 					<tr>
 						<th style={titleCol}>#</th>
@@ -57,23 +57,23 @@ const GameHistory = (props: TableProps) => {
 
 				<tbody style={{ paddingTop: '100px' }}>
 					{data.map((item, index) => (
-						<tr key={index}>
-							<td style={lineTable}>{index + 1}</td>
-							<td style={lineTable}>{item.player1}</td>
-							<td style={lineTable}>VS</td>
-							<td style={lineTable}>{item.player2}</td>
-							<td style={lineTable}>{item.score.at(0)} - {item.score.at(1)}</td>
-							<td style={lineTable}>{item.date}</td>
+						<tr style={lineTable} key={index}>
+							<td>{index + 1}</td>
+							<td>{item.player1}</td>
+							<td>VS</td>
+							<td>{item.player2}</td>
+							<td>{item.score.at(0)} - {item.score.at(1)}</td>
+							<td>{item.date}</td>
 						</tr>
 					))}
 					{Array(9 - data.length).fill('').map((item, index) => (
-						<tr key={data.length + index}>
-								<td style={lineTable}>-</td>
-								<td style={lineTable}>-</td>
-								<td style={lineTable}>VS</td>
-								<td style={lineTable}>-</td>
-								<td style={lineTable}>-</td>
-								<td style={lineTable}>-</td>
+						<tr style={lineTable} key={data.length + index}>
+								<td>-</td>
+								<td>-</td>
+								<td>VS</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
 
 						</tr>
 					))}
@@ -86,21 +86,18 @@ const GameHistory = (props: TableProps) => {
 const stats: CSS.Properties = {
 	backgroundColor: '#b62f2ff8',
 	textAlign: 'center',
-	padding: '5px',
 }
 
 const titleCol: CSS.Properties = {
 	backgroundColor: 'black', 
 	color: 'white', 
 	textAlign: 'center',
-	padding: '10px',
 }
 
 const titleTable: CSS.Properties = {
 	backgroundColor: 'black', 
 	color: 'white', 
 	textAlign: 'center', 
-	padding: '8px',
 	fontFamily: 'Kocak',
 	fontSize: '30px',
 }
@@ -108,7 +105,7 @@ const titleTable: CSS.Properties = {
 const lineTable: CSS.Properties = {
 	borderBottom: '1px solid #ddd',
 	textAlign: 'center',
-	backgroundColor: '#fff9f932',
+	backgroundColor: '#e94b4b32',
 	height: '30px',
 	fontWeight: 'bold',
 	color: 'white',

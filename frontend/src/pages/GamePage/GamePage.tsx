@@ -31,9 +31,9 @@ const GameTable = (props: TableProps) => {
 				<th colSpan={6} className='maintitleTab'>Live Matches</th>
 				<tr className='titlesTab'>
 					<th>#</th>
-					<th className='cellPlayer'></th>
+					<th className='cellPlayer'>P1</th>
 					<th></th>
-					<th className='cellPlayer'></th>
+					<th className='cellPlayer'>P2</th>
 					<th>Score</th>
 					<th>Watch</th>
 				</tr>
@@ -50,7 +50,7 @@ const GameTable = (props: TableProps) => {
 						<td onClick={() => {navigate(item.name)}}>link</td>
 					</tr>
 				))}
-				{Array(8 - data.length).fill('').map((item, index) => (
+				{Array(7 - data.length).fill('').map((item, index) => (
 				<tr key={data.length + index}>
 					<td className='lineTab'>-</td>
 					<td className='lineTab'>-</td>

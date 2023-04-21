@@ -12,7 +12,7 @@ const FriendList = (props: TableProps) => {
 
 	
 	return (
-		<div style={{ overflowY: 'scroll', minWidth: '35%', height: '100%',}}>
+		<div style={{ overflowY: 'auto', minWidth: '35%', height: '100%', borderRadius: '10px'}}>
 		<table style={{borderCollapse: 'collapse', width: '100%', height:'20%' }}>
 			
 			<thead style={{ position: 'sticky', top: '0' }}>
@@ -26,17 +26,17 @@ const FriendList = (props: TableProps) => {
 
 			<tbody>
 			{data.map((item, index) => (
-				<tr key={index}>
-					<td style={lineTable}>{index + 1}</td>
-					<td style={lineTable}>{item.name}</td>
-					<td style={lineTable}>{item.status}</td>
+				<tr style={lineTable} key={index}>
+					<td>{index + 1}</td>
+					<td>{item.name}</td>
+					<td>{item.status}</td>
 				</tr>
 			))}
-			{Array(11 - data.length).fill('').map((item, index) => (
-				<tr key={data.length + index}>
-					<td style={lineTable}>-</td>
-					<td style={lineTable}>-</td>
-					<td style={lineTable}>-</td>
+			{Array(12 - data.length).fill('').map((item, index) => (
+				<tr style={lineTable}key={data.length + index}>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
 				</tr>
 			))}
 			</tbody>
@@ -50,7 +50,7 @@ const titleTable: CSS.Properties = {
 	backgroundColor: 'black', 
 	color: 'white', 
 	textAlign: 'center', 
-	paddingTop: '8px' ,
+	padding: '10px 0' ,
 	fontFamily: 'Kocak',
 	fontSize: '30px',
 }
@@ -60,7 +60,6 @@ const titleCol: CSS.Properties = {
 	color: 'white', 
 	borderBottom: '1px solid #ddd', 
 	textAlign: 'center',
-	padding: '12px '
 }
 
 const lineTable: CSS.Properties = {
