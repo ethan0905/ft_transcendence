@@ -383,6 +383,7 @@ export class UserService {
 			},
 			select: {
 			  players: true,
+			  player1Name: true,
 			  score: true,
 			  createdAt: true
 			}
@@ -392,17 +393,20 @@ export class UserService {
 			const sortedPlayers = game.players.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
 			const player1 = sortedPlayers[0].username;
 			const player2 = sortedPlayers[1].username;
+			const p1Name = game.player1Name;
 		
-			// console.log({
-			// 	player1,
-			// 	player2,
-			// 	score: game.score,
-			// 	date: game.createdAt
-			// });
+			console.log({
+				player1,
+				player2,
+				player1Name: p1Name,
+				score: game.score,
+				date: game.createdAt
+			});
 
 			return {
 			  player1,
 			  player2,
+			  player1Name: p1Name,
 			  score: game.score,
 			  date: game.createdAt
 			};
