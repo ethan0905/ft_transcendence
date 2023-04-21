@@ -5,12 +5,15 @@ import axios from 'axios';
 import { SocketContext } from '../ChatBody';
 import { useContext } from 'react';
 
-async function getAllChannels(username: any) {
+async function getAllChannels(accessToken:string) {
   let config = {
     method: 'get',
     maxBodyLength: Infinity,
-    url: `${import.meta.env.VITE_BACKEND_URL}` + '/chat/channels/' + username,
-    headers: {}
+    url: `${import.meta.env.VITE_BACKEND_URL}` + '/chat/channels/',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `${accessToken}`
+    }
   };
 
   const value = axios.request(config)
@@ -224,13 +227,14 @@ export default function ChanList() {
 	// }
   
   useEffect(() => {
-    // getUsername();
-
-    getAllChannels(username).then((value: any) => {
-      console.log(value);
-      setAllChannels(value);
-    })
-  }, []);
+      // getUsername();
+    if (token !== ''){
+      getAllChannels(token).then((value: any) => {
+        console.log(value);
+        setAllChannels(value);
+      })
+    }
+  }, [token]);
 
   return (
     <div className="main__chatlist">

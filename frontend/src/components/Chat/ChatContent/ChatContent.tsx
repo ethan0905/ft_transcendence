@@ -58,12 +58,15 @@ const FormButton = () => {
   );
 }
 
-async function getAllMessages(id_channel:number){
+async function getAllMessages(id_channel:number, accessToken:string){
   let config = {
     method: 'get',
     maxBodyLength: Infinity,
     url: `${import.meta.env.VITE_BACKEND_URL}` + '/chat/channels/' + id_channel+"/msg",
-    headers: {}
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `${accessToken}`
+    }
   };
   
   const value = axios.request(config)
@@ -91,6 +94,7 @@ export default function ChatContent(props: ChatContentProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   let location = useLocation();
   const socket = useContext(SocketContext);
+  const [channel_name,setChannel_name] = useState<string>("OK")
   const [chat, setChat] = useState<ChatItm[]>([]);
   const [msg, setMsg] = useState<string>('');
   const [userID, setUserID] = useState<number>()
@@ -181,23 +185,23 @@ export default function ChatContent(props: ChatContentProps) {
   };
 
   useEffect(() => {
-    if (location.pathname !== "/Chat"){
+    if (location.pathname !== "/Chat" && token !== ''){
       console.log("inside useEffect 2");
 
       let id = Number(location.pathname.split("/")[2]);
-      getAllMessages(id).then((values:any) => {
+      getAllMessages(id, token).then((values:any) => {
         setChat(values);
       });
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
-  }, [location.pathname]) //mistake was here
+  }, [location.pathname, token]) //mistake was here
 
   return (  <div className="main__chatcontent">
         
   <div className="content__header">
     <div></div>
     <h1>
-      Channel Name
+      {channel_name}
     </h1>
     <FormButton/>
   </div>

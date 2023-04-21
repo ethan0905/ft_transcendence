@@ -395,7 +395,7 @@ export class ChatService {
           return (message);
         }
 
-        async get__channelsUserIn(username: string) {
+        async get__channelsUserIn(token:string) {
           try {
             const source = await this.prisma.channel.findMany({
               where: {
@@ -403,8 +403,8 @@ export class ChatService {
                 {
                     isPrivate: false
                 },
-                {invited : { some : { username : username}}},
-                {members : { some : {username : username}}},
+                {invited : { some : { accessToken : token}}},
+                {members : { some : {accessToken : token}}},
               ]
               },
               select: {
@@ -452,7 +452,13 @@ export class ChatService {
                 id : id,
               },
               select: {
-                members: true,
+                members: {
+                  select:{
+                    username:true,
+                    status:true,
+                    avatarUrl:true,
+                  }
+                }
               },
             });
             return source
@@ -556,4 +562,30 @@ export class ChatService {
               return (2);
           }
 
+          async userIsInChan(token:string, id_channel:number):Promise<boolean>{
+            const channels = await this.prisma.user.findUnique({
+              where:{
+                accessToken:token
+              },
+              select:{
+                members:true
+              }
+            })
+            for (let i = 0; i < channels.members.length; i++){
+              if (channels.members[i].id === id_channel)
+                return true;
+            }
+            return false;
+          }
+
+          async getUsername(token:string){
+            return this.prisma.user.findUnique({
+              where: {
+                accessToken: token,
+              },
+              select: {
+                username: true,
+              },
+            });
+          }
   }
