@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, createContext } from 'react';
+import { useLocation } from 'react-router-dom';
+import { io, Socket } from 'socket.io-client';
 import ChatList from './ChanList/ChanList';
 import ChatContent from './ChatContent/ChatContent';
 import UserList from './UserList/UserList';
 import './ChatBody.css';
-import { useLocation } from 'react-router-dom';
-import { createContext } from 'react';
-import { io, Socket } from 'socket.io-client';
 
 export const SocketContext = createContext({} as Socket);
 

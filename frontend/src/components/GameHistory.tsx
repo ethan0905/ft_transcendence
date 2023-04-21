@@ -64,7 +64,19 @@ const GameHistory = (props: TableProps) => {
 							<td style={lineTable}>{item.player2}</td>
 							<td style={lineTable}>{item.score.at(0)} - {item.score.at(1)}</td>
 							<td style={lineTable}>{item.date}</td>
-						</tr>))}
+						</tr>
+					))}
+					{Array(9 - data.length).fill('').map((item, index) => (
+						<tr key={data.length + index}>
+								<td style={lineTable}>-</td>
+								<td style={lineTable}>-</td>
+								<td style={lineTable}>VS</td>
+								<td style={lineTable}>-</td>
+								<td style={lineTable}>-</td>
+								<td style={lineTable}>-</td>
+
+						</tr>
+					))}
 				</tbody>
 			</table>
 		</div>
@@ -81,7 +93,7 @@ const titleCol: CSS.Properties = {
 	backgroundColor: 'black', 
 	color: 'white', 
 	textAlign: 'center',
-	padding: '5px',
+	padding: '10px',
 }
 
 const titleTable: CSS.Properties = {
@@ -96,15 +108,18 @@ const titleTable: CSS.Properties = {
 const lineTable: CSS.Properties = {
 	borderBottom: '1px solid #ddd',
 	textAlign: 'center',
-	backgroundColor: '#fff9f955',
-
+	backgroundColor: '#fff9f932',
+	height: '30px',
+	fontWeight: 'bold',
+	color: 'white',
+	textShadow: '1px 1px 1px black',
 }
 
 const playerCol: CSS.Properties = {
 	backgroundColor: 'black', 
 	color: 'white', 
 	textAlign: 'center',
-	width: '130px'
+	width: '20%'
 }
 
 export default GameHistory;
