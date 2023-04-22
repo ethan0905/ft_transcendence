@@ -102,12 +102,6 @@ export default function ChatContent(props: ChatContentProps) {
   const [token, setToken] = useState('');
 
   useEffect(() => {
-    if (socket.disconnected){
-      socket.auth={token: document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1")}
-      socket.connect();
-    }
-  }, [socket]);
-  useEffect(() => {
     console.log(location.state);
     if (location.pathname !== "/Chat"){
       let id = Number(location.pathname.split("/")[2]);
