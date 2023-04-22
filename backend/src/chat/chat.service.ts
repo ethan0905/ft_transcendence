@@ -472,6 +472,7 @@ export class ChatService {
                     username:true,
                     status:true,
                     avatarUrl:true,
+                    id:true
                   }
                 }
               },
