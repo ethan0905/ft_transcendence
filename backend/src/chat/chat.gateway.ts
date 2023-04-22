@@ -27,7 +27,7 @@ import { QuitChanDto, JoinChanDto, EditChannelCreateDto } from "./dto/edit-chat.
 
 //   constructor() {
 //     this.server = new Server();
-//   }
+  
 
 //    handleConnection() {
 //     // A client has connected
@@ -89,17 +89,13 @@ export class ChatGateway implements OnGatewayConnection {
       })
       this.clients[client.id] = user;
       console.log("Connect")
-      console.log(this.clients);
+      // console.log(this.clients);
     }
     catch (e){
       console.log(e);
       client.disconnect();
       return;
     }
-  }
-
-  handleReconnect(client: Socket) {
-    console.log("Reconnect")
   }
 
   // async handleJoinSocket(id: number, @ConnectedSocket() client: Socket) {
@@ -137,7 +133,6 @@ export class ChatGateway implements OnGatewayConnection {
     if (chat == null)
       return "error";
     this.server.to(data.chatId.toString()).emit("NewMessage",chat); // emit to the room
-    console.log("cMsg added");
   }
 
   // @SubscribeMessage('sendMsgtoC')
@@ -160,18 +155,28 @@ export class ChatGateway implements OnGatewayConnection {
     @MessageBody()  data: JoinChanDto ,
     @ConnectedSocket() client : Socket,
   ) {
-    const ret = await this.chatService.join_Chan(data);
-    if (ret == 0 ){
-      const user = await this.userService.getUser(data.username)
+    if (this.clients[client.id] === undefined)
+    {
+      this.server.to(client.id).emit("error", "Error refresh the page!!!");
+      return;
+    }
+    const user = await this.userService.getUser(this.clients[client.id].username);
+    const ret = await this.chatService.join_Chan(data, user);
+    console.log(ret);
+    if (ret == 0){
       client.join(data.chatId.toString());
-      client.to(data.chatId.toString()).emit("NewUserJoin", user)
+      client.to(data.chatId.toString()).emit("NewUserJoin", {username: user.username, id: user.id, status: user.status, avatarUrl: user.avatarUrl})
     }
     else if (ret  == 1)
-      console.log("chan is Private");
+      this.server.to(client.id).emit("error", "NotInvited");
     else if (ret == 2)
-      console.log("user has ban");
-    else if (ret == 3)
-      console.log("wrong password");
+      this.server.to(client.id).emit("error", "Banned");
+    else if (ret == 3){
+      this.server.to(client.id).emit("error", "Wrong password");
+    }
+    else{
+      this.server.to(client.id).emit("error", "This channel does not exist!!!");
+    }
   }
 
   @SubscribeMessage('quit')

@@ -53,10 +53,6 @@ export class JoinChanDto{
     @IsNumber()
     chatId?: number;
 
-    //@IsUser()
-    @IsString()
-    username?: string;
-
     // @IsTrue()
     // @IsOptional()
     // isPrivate?: boolean;

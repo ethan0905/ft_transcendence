@@ -102,6 +102,23 @@ export default function ChatContent(props: ChatContentProps) {
   const [token, setToken] = useState('');
 
   useEffect(() => {
+    if (socket.disconnected){
+      socket.auth={token: document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1")}
+      socket.connect();
+    }
+  }, [socket]);
+  useEffect(() => {
+    console.log(location.state);
+    if (location.pathname !== "/Chat"){
+      let id = Number(location.pathname.split("/")[2]);
+      if (location.state === null || (location.state && location.state.password === null))
+        socket.emit("join",{chatId:id});
+      else
+        socket.emit("join",{chatId:id, Password:location.state.password})
+    }
+  }, [socket, location.pathname, location.state])
+
+  useEffect(() => {
 		if (token !== '') {
 			// console.log("Le token est valide !", token);
 			getUsermail(token);
@@ -195,6 +212,7 @@ export default function ChatContent(props: ChatContentProps) {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   }, [location.pathname, token]) //mistake was here
+  
 
   return (  <div className="main__chatcontent">
         

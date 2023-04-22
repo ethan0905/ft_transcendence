@@ -1,12 +1,35 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import ChatList from './ChanList/ChanList';
 import ChatContent from './ChatContent/ChatContent';
 import UserList from './UserList/UserList';
 import './ChatBody.css';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate} from 'react-router-dom';
+import { SocketContext } from '../../pages/ChatPage';
+import Swal from 'sweetalert2/dist/sweetalert2.all.js';
+import withReactContent from 'sweetalert2-react-content';
+
+const MySwal = withReactContent(Swal);
 
 const ChatBody: React.FC = () => {
+  const socket = useContext(SocketContext);
+  const navigate = useNavigate();
   let location = useLocation();
+
+  useEffect(() => {
+    socket.on("error",(value:string) =>{
+      navigate('/Chat');
+      Alert(value);
+    })
+  },[])
+
+  const Alert = (value:string) =>{
+    MySwal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: value,
+    })
+  }
+
   return (
     <div className='main__chatbody'>
       <ChatList />

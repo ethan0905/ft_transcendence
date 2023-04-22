@@ -22,8 +22,6 @@ export class ChatService {
               info.isPrivate = false;
             if (info.isPassword === undefined)
               info.isPassword = false;
-            console.log(info.isPrivate)
-            console.log(info.Password)
             const user = await this.userService.getUser(username);
             const channel = await this.prisma.channel.create({
               data: {
@@ -211,8 +209,11 @@ export class ChatService {
           )
         }
 
-        async join_Chan(data: JoinChanDto)
+        async join_Chan(data: JoinChanDto, user: User)
         {
+          const isInChan = await this.userIsInChan(user.accessToken, data.chatId);
+          if (isInChan)
+            return (0);
           const chan = await this.prisma.channel.findUnique({
             where : {
               id : data.chatId,
@@ -225,27 +226,22 @@ export class ChatService {
               invited : true,
             }
           })
-          if (chan.isPrivate === undefined)
-            chan.isPrivate = false;
-          const isPriv = chan.isPrivate.valueOf()
-          if (chan.isPassword === undefined)
-          {
-            chan.isPassword = false;
-            chan.password = null;
-          }
-            const isPass = chan.isPassword.valueOf()
-          const isban = chan.banned.find(banned => banned.username == data.username)
-          const isinvit = chan.invited.find(invited => invited.username == data.username)
+          if (chan === null)
+            return (4);
+          const isban = chan.banned.find(banned => banned.username == user.username)
+          const isinvit = chan.invited.find(invited => invited.username == user.username)
+          const isPriv = chan.isPrivate;
           if (isPriv || isban)
           {
             if (isPriv && !isinvit)
-              return (1);
+            return (1);
             else if (isban)
-              return (2);
+            return (2);
           }
-          else if (isPass)
-            if (data.Password && data.Password != chan.password)
+          else if (chan.password !== ''){
+            if (data.Password === undefined || data.Password != chan.password)
               return (3);
+          }
           await this.prisma.channel.update(
             {
               where: {
@@ -254,7 +250,7 @@ export class ChatService {
               data : {
                 members : {
                   connect : {
-                    username : data.username,
+                    username : user.username,
                   },
                 },
               },
@@ -270,7 +266,7 @@ export class ChatService {
                 data : {
                   invited : {
                     disconnect : {
-                      username : data.username,
+                      username : user.username,
                     },
                   },
                 },
@@ -324,15 +320,11 @@ export class ChatService {
               id: id,
             },
           });
-          const channel = this.prisma.channel.findUnique({
-            where: {
-             id: channelid,
-            },
-          });
           const isInChan = await this.userIsInChan(user.accessToken, channelid);
           const isMuted = await this.userIsChanMuted(user.accessToken, channelid);
-          if (!isInChan && isMuted)
+          if (!isInChan || isMuted){
             return (null);
+          }
           const message: Message = await this.prisma.message.create({
             data: {
               owner :{
@@ -487,6 +479,22 @@ export class ChatService {
           }
         }
 
+        async getChannelProtection(id : number) {
+          try {
+            const source = await this.prisma.channel.findUnique({
+              where: {
+                id : id,
+              },
+              select: {
+                password: true,
+                members:true,
+              },
+            });
+            return source
+          } catch (error) {
+            console.log('get__channels error:', error);
+          }
+        }
 
         async get__MsgIn(id : number) {
           try {

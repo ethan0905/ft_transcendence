@@ -82,16 +82,28 @@ export class ChatController {
 		return channel_name;
 	}
 
+	@Get('/channels/:id/isprotected')
+	async getChannelsProtection(@Req() req:Request, @Param("id") id: string)
+	{	
+		const pwd = await this.chat_service.getChannelProtection(parseInt(id));
+		const userIsInChan = await this.chat_service.userIsInChan(req.headers["authorization"],parseInt(id));
+		if (userIsInChan)
+			return false;
+		if (pwd.password === '')
+			return false;
+		return true;
+	}
+
 	@Get('/channels/users/:id')
 	async getChannelUsers(@Req() req: Request,@Param("id") id : string)
 	{
 		const idChan : number = parseInt(id); 
 		const users = await this.chat_service.get__UserIn(idChan);
 		const user = await this.chat_service.getUsername(req.headers["authorization"])
+		if (users.length === 0)
+			return [];
 		for (let i = 0; i < users[0].members.length; i++){
 			if (user.username === users[0].members[i].username){
-				console.log("WO")
-				console.log(users[0].members);
 				return users[0].members;
 			}
 		}
@@ -106,7 +118,6 @@ export class ChatController {
 		if (isInChan)
 		{
 			const messages = await this.chat_service.get__MsgIn(idChan);
-			console.log("msg: ", messages)
 			return messages[0].messages;
 		}
 		return [];// Send Error
@@ -118,7 +129,6 @@ export class ChatController {
 	{
 		const idChan : number = parseInt(id); 
 		const users = await this.chat_service.get__UserBanIn(idChan);
-		console.log("users's ban in channel : ", users[0].banned);
 		return users[0].banned;
 	}
 
