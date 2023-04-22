@@ -93,7 +93,7 @@ const ChanItems: React.FC<Props> = ({ name, active, animationDelay, id_channel }
       </div>
       <div className="QuitButton">
         <DisabledByDefaultIcon id='DisabledByDefaultIcon' sx={{ fontSize: 15 }}
-          onClick={() => { }}
+          onClick={() => {socket.emit("quit",{chatId:id_channel})}}
         />
       </div>
     </div>

@@ -71,8 +71,9 @@ export class ChatController {
 	async getUserChannels(@Req() req:Request)
 	{
 		const channels = await this.chat_service.get__channelsUserIn(req.headers["authorization"]);
+		const channels_to_join = await this.chat_service.get__channelsUserCanJoin(req.headers["authorization"]);
 		// Check if throw error
-		return channels;
+		return {MyChannels:channels, ChannelsToJoin:channels_to_join};
 	}
 
 	@Get('/channels/:id')

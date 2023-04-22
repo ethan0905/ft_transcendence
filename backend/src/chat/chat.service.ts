@@ -62,7 +62,7 @@ export class ChatService {
 
         async quit_Chan(username: string, id : number)
         {
-          await this.prisma.channel.update(
+          const value = await this.prisma.channel.update(
             {
               where: {
                 id: id,
@@ -77,6 +77,7 @@ export class ChatService {
                 //isPrivate : info.Private,
               }
           )
+          console.log(value);
         }
 
         async invit_Chan(username: string, id : number)
@@ -391,7 +392,7 @@ export class ChatService {
           return (message);
         }
 
-        async get__channelsUserIn(token:string) {
+        async get__channelsUserCanJoin(token:string) {
           try {
             const source = await this.prisma.channel.findMany({
               where: {
@@ -400,13 +401,31 @@ export class ChatService {
                     isPrivate: false
                 },
                 {invited : { some : { accessToken : token}}},
-                {members : { some : {accessToken : token}}},
-              ]
+              ],
+              NOT : {
+                members : { some : { accessToken : token}},
+              }
               },
               select: {
                 id : true,
                 channelName: true,
-                password: true,
+              },
+            });
+            return source;
+          } catch (error) {
+            console.log('get__channels error:', error);
+          }
+        }
+
+        async get__channelsUserIn(token:string) {
+          try {
+            const source = await this.prisma.channel.findMany({
+              where: {
+                members : { some : {accessToken : token}},
+              },
+              select: {
+                id : true,
+                channelName: true,
               },
             });
             return source;

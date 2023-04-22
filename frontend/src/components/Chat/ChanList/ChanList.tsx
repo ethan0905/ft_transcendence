@@ -4,6 +4,12 @@ import ChanItems from './ChanItems';
 import axios from 'axios';
 import { SocketContext } from '../../../pages/ChatPage';
 import { useContext } from 'react';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import Typography from '@mui/material/Typography';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
 
 async function getAllChannels(accessToken:string) {
   let config = {
@@ -28,25 +34,44 @@ async function getAllChannels(accessToken:string) {
   return (value);
 }
 
-// async function getme(username: string) {
-//   let config = {
-//     method: 'get',
-//     maxBodyLength: Infinity,
-//     url: 'http://localhost:3333/users/me' + username,
-//     headers: {}
-//   };
-
-//   const value = axios.request(config)
-//     .then((response) => {
-//       return response.data;
-//     })
-//     .catch((error) => {
-//       console.log(error);
-//       return [];
-//     });
-
-//   return (value);
-// }
+function MenuChat({name, channels}:{name:string, channels:any}){
+  return (
+<Accordion 
+        style={{width:"95%",backgroundColor:'rgba(52, 52, 52, 0)',color:'black', boxShadow:'none'}}
+        >
+            
+          <AccordionSummary
+            style={{backgroundColor:'rgba(255, 255, 255, 1)', borderRadius:'10px'}}
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+            >
+            <Typography>{name}</Typography>
+          </AccordionSummary>
+          <AccordionDetails
+            style={{padding:"0px", display:"flex", flexDirection:"column", alignItems:"center"}}
+            >
+            <div className="chatlist__items">
+              
+              {channels.map((item:any, index:number) => {
+                // console.log(item.channelName);
+                // console.log(item.id);
+                return (
+                  <ChanItems
+                  name={item.channelName}
+                  id_channel={item.id}
+                  key={item.id}
+                  animationDelay={index + 1}
+                  active={item.active ? "active" : ""}
+                  isOnline={item.isOnline ? "active" : ""}
+                  />
+                  );
+                })}
+            </div>
+          </AccordionDetails>
+        </Accordion>
+  );
+}
 
 const FormButton = () => {
   const socket = useContext(SocketContext)
@@ -151,7 +176,8 @@ interface Channel {
 export default function ChanList() {
 	const [name, setName] = useState('');
   const socket = useContext(SocketContext)
-  const [allChannels, setAllChannels] = useState<Channel[]>([])
+  const [myChannels, setMyChannels] = useState<Channel[]>([]);
+  const [channelsToJoin, setChannelToJoin] = useState<Channel[]>([]);
   const [username, setUsername] = useState<string>()
   const [token, setToken] = useState('');
 
@@ -189,25 +215,57 @@ export default function ChanList() {
 
   useEffect(() => {
     socket.on("Channel Created", (value:any) => {
-      setAllChannels(data => {
+      if (value.client_id === socket.id){
+        setMyChannels(data => {
+          for (var i in data){
+            if (data[i].id === value.id)
+              return data;
+          }
+          return ([...data, value]);
+        });
+      }
+      else{
+        setChannelToJoin(data => {
+          for (var i in data){
+            if (data[i].id === value.id)
+              return data;
+          }
+          return ([...data, value]);
+        });
+      }
+      console.log("New Channel");
+    });
+
+    socket.on("Joined", (value:any) => {
+      let channel:any = undefined;
+      setChannelToJoin(data => {
+        for (var i in data){
+          if (data[i].id === value.chatId){
+            channel = data[i];
+            return data.filter((channel: Channel) => channel.id !== value.chatId);
+          }
+        }
+        return data;
+      });
+      if (channel === undefined)
+        return;
+      setMyChannels(data => {
         for (var i in data){
           if (data[i].id === value.id)
             return data;
         }
-        return ([...data, value]);
+        return ([...data, {channelName:channel.channelName, id:channel.id, active:false, isOnline:false}]);
       });
-      console.log("New Channel");
-    });
-
-    
+    }
+    );
   }, [socket]);
   
   useEffect(() => {
       // getUsername();
     if (token !== ''){
       getAllChannels(token).then((value: any) => {
-        console.log(value);
-        setAllChannels(value);
+        setMyChannels(value.MyChannels);
+        setChannelToJoin(value.ChannelsToJoin);
       })
     }
   }, [token]);
@@ -220,24 +278,10 @@ export default function ChanList() {
       </div>
 
       <FormButton />
-
-      <div className="chatlist__items">
-        {allChannels.map((item, index) => {
-          // console.log(item.channelName);
-          // console.log(item.id);
-          return (
-            <ChanItems
-              name={item.channelName}
-              id_channel={item.id}
-              key={item.id}
-              animationDelay={index + 1}
-              active={item.active ? "active" : ""}
-              isOnline={item.isOnline ? "active" : ""}
-            />
-          );
-        })}
-      </div>
-
+      <div className='accordion-chats'>
+          <MenuChat name={"My Channels"} channels={myChannels}/>
+          <MenuChat name={"Channels to Join"} channels={channelsToJoin}/>
+        </div>
     </div>
   );
 }

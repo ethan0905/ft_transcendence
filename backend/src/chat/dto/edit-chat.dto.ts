@@ -31,22 +31,6 @@ export class EditChannelCreateDto{
 export class QuitChanDto{
     @IsNumber()
     chatId?: number;
-
-    //@IsUser()
-    @IsString()
-    username?: string;
-
-    // @IsTrue()
-    // @IsOptional()
-    // isPrivate?: boolean;
-
-    // @IsString()
-    // @IsOptional()
-    // Password?: string;
-
-    // @IsString()
-    // @IsOptional()
-    // PasswordConfirmation?: string;
 }
 
 export class JoinChanDto{

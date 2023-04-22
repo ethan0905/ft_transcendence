@@ -80,7 +80,7 @@ export class ChatGateway implements OnGatewayConnection {
   ) {
       const chat = await this.chatService.newChannel(data, this.clients[client.id].username);
       if (!chat.isPrivate)
-        this.server.emit("Channel Created", {channelName:data.chatName, id: chat.id});
+        this.server.emit("Channel Created", {channelName:data.chatName, id: chat.id, client_id: client.id});
       else
         this.server.to(client.id).emit("Channel Created", {channelName:data.chatName, id: chat.id});
     }
@@ -112,11 +112,12 @@ export class ChatGateway implements OnGatewayConnection {
     if (ret == 0){
       client.join(data.chatId.toString());
       client.to(data.chatId.toString()).emit("NewUserJoin", {username: user.username, id: user.id, status: user.status, avatarUrl: user.avatarUrl})
+      this.server.to(client.id).emit("Joined", {chatId: data.chatId});
     }
     else if (ret  == 1)
-      this.server.to(client.id).emit("error", "NotInvited");
+    this.server.to(client.id).emit("error", "NotInvited");
     else if (ret == 2)
-      this.server.to(client.id).emit("error", "Banned");
+    this.server.to(client.id).emit("error", "Banned");
     else if (ret == 3){
       this.server.to(client.id).emit("error", "Wrong password");
     }
@@ -129,10 +130,11 @@ export class ChatGateway implements OnGatewayConnection {
   async quit_chan(
     @MessageBody()  data: QuitChanDto ,
     @ConnectedSocket() client : Socket,
-  ) {
-    
-    await this.chatService.quit_Chan(data.username, data.chatId);
-    console.log("chan quitted");
+    ) {
+      if (this.clients[client.id] === undefined)
+      return;
+    const quit = await this.chatService.quit_Chan(this.clients[client.id].username, data.chatId);
+    console.log("user quit: " + this.clients[client.id].username);
   }
 
   @SubscribeMessage('invit')
@@ -140,8 +142,9 @@ export class ChatGateway implements OnGatewayConnection {
     @MessageBody()  data: QuitChanDto ,
     @ConnectedSocket() client : Socket,
   ) {
-    
-    await this.chatService.invit_Chan(data.username, data.chatId);
+    if (this.clients[client.id] === undefined)
+      return;
+    await this.chatService.invit_Chan(this.clients[client.id].username, data.chatId);
     console.log("user invited");
   }
 
@@ -150,8 +153,9 @@ export class ChatGateway implements OnGatewayConnection {
     @MessageBody()  data: QuitChanDto ,
     @ConnectedSocket() client : Socket,
   ) {
-    
-    await this.chatService.ban_Chan(data.username, data.chatId);
+    if (this.clients[client.id] === undefined)
+      return;
+    await this.chatService.ban_Chan(this.clients[client.id].username, data.chatId);
     console.log("chan banned");
   }
 
@@ -160,8 +164,9 @@ export class ChatGateway implements OnGatewayConnection {
     @MessageBody()  data: QuitChanDto ,
     @ConnectedSocket() client : Socket,
   ) {
-    
-    await this.chatService.kick_Chan(data.username, data.chatId);
+    if (this.clients[client.id] === undefined)
+      return;
+    await this.chatService.kick_Chan(this.clients[client.id].username, data.chatId);
     console.log("chan kicked");
   }
 
@@ -171,8 +176,9 @@ export class ChatGateway implements OnGatewayConnection {
     @MessageBody()  data: QuitChanDto ,
     @ConnectedSocket() client : Socket,
   ) {
-    
-    await this.chatService.mute_Chan(data.username, data.chatId);
+    if (this.clients[client.id] === undefined)
+      return;
+    await this.chatService.mute_Chan(this.clients[client.id].username, data.chatId);
     console.log("chan muteed");
   }
 
@@ -182,8 +188,9 @@ export class ChatGateway implements OnGatewayConnection {
     @MessageBody()  data: QuitChanDto ,
     @ConnectedSocket() client : Socket,
   ) {
-    
-    await this.chatService.unmute_Chan(data.username, data.chatId);
+    if (this.clients[client.id] === undefined)
+      return;
+    await this.chatService.unmute_Chan(this.clients[client.id].username, data.chatId);
     console.log("chan unmuteed");
   }
 
@@ -193,27 +200,29 @@ export class ChatGateway implements OnGatewayConnection {
     @MessageBody()  data: QuitChanDto ,
     @ConnectedSocket() client : Socket,
   ) {
-    
-    const res : boolean = await this.chatService.isBan_Chan(data.username, data.chatId);
+    if (this.clients[client.id] === undefined)
+      return;
+    const res : boolean = await this.chatService.isBan_Chan(this.clients[client.id].username, data.chatId);
     if (res == true)
       console.log("user is banned");
     else
     console.log("user is not banned");
   }
 
-  @SubscribeMessage('update')
-  async update_chan(
-    @MessageBody()  data: EditChannelCreateDto ,
-    @ConnectedSocket() client : Socket,
-  ) {
-    
-    const res : number = await this.chatService.update_chan(data);
-    if (res == 1)
-      console.log("Password is empty but chan need password");
-    else if (res == 2)
-      console.log("not an admin");
-    else
-      console.log("chan updated");
-  }
+  // @SubscribeMessage('update')
+  // async update_chan(
+  //   @MessageBody()  data: EditChannelCreateDto ,
+  //   @ConnectedSocket() client : Socket,
+  // ) {
+  //   if (this.clients[client.id] === undefined)
+  //     return;
+  //   const res : number = await this.chatService.update_chan(data);
+  //   if (res == 1)
+  //     console.log("Password is empty but chan need password");
+  //   else if (res == 2)
+  //     console.log("not an admin");
+  //   else
+  //     console.log("chan updated");
+  // }
 
 }
