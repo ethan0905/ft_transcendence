@@ -214,7 +214,7 @@ export class ChatService {
         {
           const isInChan = await this.userIsInChan(user.accessToken, data.chatId);
           if (isInChan)
-            return (0);
+            return (5);
           const chan = await this.prisma.channel.findUnique({
             where : {
               id : data.chatId,

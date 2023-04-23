@@ -55,17 +55,11 @@ const ChanItems: React.FC<Props> = ({ name, active, animationDelay, id_channel }
     }
     e.currentTarget.classList.add("active");
     AlertPassword().then((password) => {
-      // if (password === undefined){
-      //   socket.emit("join",{chatId:id_channel});
-      // }
-      // else
-      //   socket.emit("join",{chatId:id_channel, Password:password});
-      // navigate("/Chat/" + id_channel);
-      if (password === undefined)
-        navigate("/Chat/" + id_channel, {state:{password:null}});
+      if (password === undefined){
+        socket.emit("join",{chatId:id_channel});
+      }
       else
-        navigate("/Chat/" + id_channel, {state:{password:password}});
-      return;
+        socket.emit("join",{chatId:id_channel, Password:password});
     });
   };
   

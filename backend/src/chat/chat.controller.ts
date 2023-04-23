@@ -17,6 +17,7 @@ import {
 	UseGuards,
 	UsePipes,
 	ValidationPipe,
+	Res,
 } from "@nestjs/common";
 //import { ChatMessage, DirectMessage } from "@prisma/client";
 import { ChatService } from "src/chat/chat.service";
@@ -25,6 +26,7 @@ import { ChannelMessageSendDto } from './dto/msg.dto';
 import { PrismaClient } from "@prisma/client";
 import { channel } from "diagnostics_channel";
 import { QuitChanDto } from "./dto/edit-chat.dto"
+import { response } from "express";
 
 @Controller("chat")
 export class ChatController {
@@ -101,8 +103,8 @@ export class ChatController {
 		const idChan : number = parseInt(id); 
 		const users = await this.chat_service.get__UserIn(idChan);
 		const user = await this.chat_service.getUsername(req.headers["authorization"])
-		if (users.length === 0)
-			return [];
+		if (users.length === 0 || user === null)
+			return {status:"none"};
 		if (users[0].admins.find((element) => element.username === user.username)!== undefined){
 			return {status: "admin", admins: users[0].admins, members: users[0].members, muted: users[0].muted, banned: users[0].banned};
 		}
@@ -115,7 +117,7 @@ export class ChatController {
 	}
 
 	@Get('/channels/:id/msg')
-	async getChannelMessages(@Req() req:Request,@Param("id") id : string)
+	async getChannelMessages(@Req() req:Request,@Param("id") id : string, @Res() response)
 	{
 		const idChan : number = parseInt(id);
 		const isInChan = await this.chat_service.userIsInChan(req.headers["authorization"], idChan);
@@ -124,7 +126,7 @@ export class ChatController {
 			const messages = await this.chat_service.get__MsgIn(idChan);
 			return messages[0].messages;
 		}
-		return [];// Send Error
+		return response.status(403).send("You are not in this channel");
 	}
 
 	// Not use

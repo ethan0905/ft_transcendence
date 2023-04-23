@@ -108,10 +108,10 @@ export class ChatGateway implements OnGatewayConnection {
     }
     const user = await this.userService.getUser(this.clients[client.id].username);
     const ret = await this.chatService.join_Chan(data, user);
-    console.log(ret);
-    if (ret == 0){
+    if (ret === 0 || ret === 5){
       client.join(data.chatId.toString());
-      client.to(data.chatId.toString()).emit("NewUserJoin", {username: user.username, id: user.id, status: user.status, avatarUrl: user.avatarUrl})
+      if (ret !== 5)
+        client.to(data.chatId.toString()).emit("NewUserJoin", {username: user.username, id: user.id, status: user.status, avatarUrl: user.avatarUrl})
       this.server.to(client.id).emit("Joined", {chatId: data.chatId});
     }
     else if (ret  == 1)

@@ -106,17 +106,18 @@ export default function UserList() {
       }
     }
 
-  // useEffect(() => {
-  //   socket.on("NewUserJoin", (value:any) => {
-  //     setAllUsers((data:any) => {
-  //       for (var i in data){
-  //         if (data[i].username === value.username)
-  //           return data;
-  //       }
-  //       return [...data, value];
-  //     });
-  //   })
-  // }, [socket]);
+  useEffect(() => {
+    socket.on("NewUserJoin", (value:any) => {
+      setAllMembers((data:any) => {
+        for (var i in data){
+          if (data[i].username === value.username)
+            return data;
+        }
+        return [...data, value];
+      });
+      
+    })
+  }, [socket]);
   
   useEffect(() => {
     if (location.pathname !== "/Chat" && token !== ''){

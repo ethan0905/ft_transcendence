@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './ChanList.css';
 import ChanItems from './ChanItems';
 import axios from 'axios';
@@ -179,6 +180,7 @@ export default function ChanList() {
   const [myChannels, setMyChannels] = useState<Channel[]>([]);
   const [channelsToJoin, setChannelToJoin] = useState<Channel[]>([]);
   const [username, setUsername] = useState<string>()
+  const navigate = useNavigate();
   const [token, setToken] = useState('');
 
   useEffect(() => {
@@ -247,8 +249,10 @@ export default function ChanList() {
         }
         return data;
       });
-      if (channel === undefined)
+      if (channel === undefined){
+        navigate("/chat/"+value.chatId);
         return;
+      }
       setMyChannels(data => {
         for (var i in data){
           if (data[i].id === value.id)
@@ -256,6 +260,7 @@ export default function ChanList() {
         }
         return ([...data, {channelName:channel.channelName, id:channel.id, active:false, isOnline:false}]);
       });
+      navigate("/chat/"+value.chatId);
     }
     );
   }, [socket]);
