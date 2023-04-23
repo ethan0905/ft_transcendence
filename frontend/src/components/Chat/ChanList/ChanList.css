@@ -45,18 +45,35 @@
   font-weight: bold;
   padding: 0px 6px;
 }
+.accordion-chats{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  overflow-y: scroll;
+}
+.accordion-chats::-webkit-scrollbar {
+  width: 0px;
+  background: transparent; /* make scrollbar transparent */
+}
+
 .chatlist__items {
   overflow: auto;
-  max-height: 100vh;
-  min-height: 25vh;
+  padding: 20px;
   width: 95%;
+  display: flex;
+  flex-direction: column;
+  gap:10px;
+  /* max-height: 25vh; */
 }
 .chatlist__item {
   display: flex;
   justify-content: space-between;
   border-bottom: 1px solid #ebe7fb;
-  cursor: pointer;
   padding: 10px;
+  cursor: pointer;
   transition: all 0.3s cubic-bezier(0.88, 0.19, 0.37, 1.11);
   transform: scale(0);
   animation-name: showIn;
@@ -84,7 +101,7 @@
 .chatlist__item .userMeta p {
   margin: 0;
   padding: 0;
-  color: #000;
+  color: black;
   font-weight: 520;
   font-size: 15px;
 }

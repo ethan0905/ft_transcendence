@@ -1,6 +1,12 @@
-import React, { Component } from 'react';
+import React, { Component, useContext } from 'react';
 import DisabledByDefaultIcon from '@mui/icons-material/DisabledByDefault';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2/dist/sweetalert2.all.js';
+import withReactContent from 'sweetalert2-react-content';
+import axios from 'axios';
+import { SocketContext } from '../../../pages/ChatPage';
+
+const MySwal = withReactContent(Swal);
 
 interface Props {
   animationDelay: number;
@@ -11,8 +17,31 @@ interface Props {
   id_channel: number;
 }
 
+async function getChannelProtection(id: number,accessToken: string){
+  let config = {
+    method: 'get',
+    maxBodyLength: Infinity,
+    url: `${import.meta.env.VITE_BACKEND_URL}` + '/chat/channels/'+id+"/isprotected",
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `${accessToken}`
+    }
+  };
+  
+  const value = axios.request(config)
+  .then((response) => {
+    return response.data;
+  })
+  .catch((error) => {
+    console.log(error);
+    return [];
+  });
+
+  return (value);
+}
 
 const ChanItems: React.FC<Props> = ({ name, active, animationDelay, id_channel }) => {
+  const socket = useContext(SocketContext);
   const navigate = useNavigate();
   const selectChat = (e: React.MouseEvent<HTMLDivElement>) => {
     for (
@@ -25,7 +54,33 @@ const ChanItems: React.FC<Props> = ({ name, active, animationDelay, id_channel }
       );
     }
     e.currentTarget.classList.add("active");
-    navigate("/chat/" + id_channel);
+    AlertPassword().then((password) => {
+      // if (password === undefined){
+      //   socket.emit("join",{chatId:id_channel});
+      // }
+      // else
+      //   socket.emit("join",{chatId:id_channel, Password:password});
+      // navigate("/Chat/" + id_channel);
+      if (password === undefined)
+        navigate("/Chat/" + id_channel, {state:{password:null}});
+      else
+        navigate("/Chat/" + id_channel, {state:{password:password}});
+      return;
+    });
+  };
+  
+  const AlertPassword = async () => {
+    const isProtected = await getChannelProtection(id_channel,document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1"));
+    if (isProtected === false)
+      return;
+    console.log("is pretected:",isProtected);
+    const { value: password } = await MySwal.fire({
+      title: 'Enter your password',
+      input: 'password',
+      inputLabel: 'Password',
+      inputPlaceholder: 'Enter your password',
+    })
+    return password;
   };
 
   return (
@@ -38,7 +93,7 @@ const ChanItems: React.FC<Props> = ({ name, active, animationDelay, id_channel }
       </div>
       <div className="QuitButton">
         <DisabledByDefaultIcon id='DisabledByDefaultIcon' sx={{ fontSize: 15 }}
-          onClick={() => { }}
+          onClick={() => {socket.emit("quit",{chatId:id_channel})}}
         />
       </div>
     </div>

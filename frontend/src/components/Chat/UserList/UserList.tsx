@@ -3,7 +3,8 @@ import "./UserList.css";
 import UserItems from "./UserItems";
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { SocketContext } from '../ChatBody';
+import { SocketContext } from '../../../pages/ChatPage';
+
 
 interface ChanUser {
   image: string;
@@ -13,12 +14,15 @@ interface ChanUser {
   isOnline: boolean;
 }
 
-async function getAllUserInChat(id: number){
+async function getAllUserInChat(id: number,accessToken: string){
   let config = {
     method: 'get',
     maxBodyLength: Infinity,
     url: `${import.meta.env.VITE_BACKEND_URL}` + '/chat/channels/users/'+id,
-    headers: { }
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `${accessToken}`
+    }
   };
   
   const value = axios.request(config)
@@ -85,15 +89,13 @@ export default function UserList() {
   }, [socket]);
   
   useEffect(() => {
-    if (location.pathname !== "/Chat" && username !== undefined){
+    if (location.pathname !== "/Chat" && token !== ''){
       let id = Number(location.pathname.split("/")[2]);
-      socket.emit("join",{chatId:id, username:username}); // Ne pas oublier MDP
-      getAllUserInChat(id).then((value: any) => {
-        console.log(value);
+      getAllUserInChat(id,token).then((value: any) => {
         setAllUsers(value);
       })
     }
-  }, [location.pathname, socket, username]);
+    }, [location.pathname, socket, token]);
 
   return (
       <div className="main__userlist">
@@ -110,8 +112,8 @@ export default function UserList() {
                   key={item.id}
                   animationDelay={index + 1}
                   active={item.active ? "active" : ""}
-                  isOnline={item.isOnline ? "active" : ""}
-                  image={item.image}
+                  isOnline={item.status ? "active" : ""}
+                  image={item.avatarUrl}
                 />
               );
             })}
