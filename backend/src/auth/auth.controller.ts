@@ -74,6 +74,7 @@ export class AuthController {
       else if (updatedUser.twoFactorActivated === true)
       {
         // console.log("Hello 2\n");
+        req.headers.authorization = token.access_token;
         this.userService.updateUserStatusOnline(req); // to test
         res.redirect(
           `${process.env.FRONTEND_URL}/2fa/verification`,
