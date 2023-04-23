@@ -41,6 +41,9 @@ const GameHistory = (props: TableProps) => {
 		}
 	}
 
+	// const reversedData = [...data].reverse();
+
+	// const gamesPlayed = reversedData.length;
 	const gamesPlayed = data.length;
 	let gamesWon = 0;
 	let gamesLost = 0;
@@ -50,7 +53,7 @@ const GameHistory = (props: TableProps) => {
 		const score2 = item.score[1];
 		const player1 = item.player1Name;
 
-		console.log("indie gamehistory: " + score1 + " ", score2 + " ", player1 + " ");
+		// console.log("indie gamehistory: " + score1 + " ", score2 + " ", player1 + " ");
 
 		if (score1 > score2 && player1 == userName || score1 < score2 && player1 != userName) {
 			gamesWon++;
@@ -58,11 +61,25 @@ const GameHistory = (props: TableProps) => {
 			gamesLost++;
 		}
 	});
+
+	// reversedData.forEach((item) => {
+	// 	const score1 = item.score[0];
+	// 	const score2 = item.score[1];
+	// 	const player1 = item.player1Name;
+	
+	// 	console.log("indie gamehistory: " + score1 + " ", score2 + " ", player1 + " ");
+	
+	// 	if (score1 > score2 && player1 == userName || score1 < score2 && player1 != userName) {
+	// 	  gamesWon++;
+	// 	} else {
+	// 	  gamesLost++;
+	// 	}
+	//   });
   
 	const winrate = gamesPlayed > 0 ? ((gamesWon / gamesPlayed) * 100).toFixed(2) : "0.00";
   
 	return (
-		<div style={{overflowY: 'scroll', minWidth: '60%', height: '100%'}}>
+		<div style={{overflowY: 'scroll', minWidth: '60%', height: '550px'}}>
 			<table style={{ borderCollapse: 'collapse', width: '100%', height:'100%' }}>
 
 				<thead style={{ position: 'sticky', top: '0' }}>
