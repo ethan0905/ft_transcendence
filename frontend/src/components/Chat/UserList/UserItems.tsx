@@ -35,38 +35,6 @@ const PopupButton: React.FC<Pop> = ({ buttonText }) => {
     };
   }, []);
 
-  // async function kick(chatId: number){
-  //   const handleSubmit = (e: any) => {
-  //     e.preventDefault();
-  //     console.log("chatId:", chatId);
-  //     socket.emit("kick", {chatId:chatId})
-  //   }
-  // }
-  
-  // async function ban(chatId: number){  
-  //   const handleSubmit = (e: any) => {
-  //     e.preventDefault();
-  //     console.log("chatId:", chatId);
-  //     socket.emit("ban", {chatId:chatId})
-  //   }
-  // }
-  
-  // async function mute(chatId: number){ 
-  //   const handleSubmit = (e: any) => {
-  //     e.preventDefault();
-  //     console.log("chatId:", chatId);
-  //     socket.emit("mute", {chatId:chatId})
-  //   }
-  // }
-  
-  // async function unmute(chatId: number){ 
-  //   const handleSubmit = (e: any) => {
-  //     e.preventDefault();
-  //     console.log("chatId:", chatId);
-  //     socket.emit("unmute", {chatId:chatId})
-  //   }
-  // }
-
   const handleButtonClick = () => {
     setIsOpen(!isOpen);
   }
@@ -108,8 +76,6 @@ const UserItems = ({ active, animationDelay, image, name , privilege, category}:
     navigate('/Profile/' + name);
   }
 
-  console.log("category", category);
-  console.log("privilege", privilege);
   return (
     <Accordion
       style={{width:"95%",backgroundColor:'rgba(52, 52, 52, 0.5)',color:'black',border:"1px solid",borderRadius:'10px', boxShadow:'none', margin:'0px', padding:'0px'}}
