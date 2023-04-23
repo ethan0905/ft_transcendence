@@ -103,12 +103,15 @@ export class ChatController {
 		const user = await this.chat_service.getUsername(req.headers["authorization"])
 		if (users.length === 0)
 			return [];
-		for (let i = 0; i < users[0].members.length; i++){
-			if (user.username === users[0].members[i].username){
-				return users[0].members;
-			}
+		if (users[0].admins.find((element) => element.username === user.username)!== undefined){
+			return {status: "admin", admins: users[0].admins, members: users[0].members, muted: users[0].muted, banned: users[0].banned};
 		}
-		return [];
+		if (users[0].members.find((element) => element.username === user.username) !== undefined
+			|| users[0].muted.find((element) => element.username === user.username) !== undefined
+		){
+			return {status: "member", admins: users[0].admins, members: users[0].members, muted: users[0].muted, banned: users[0].banned};
+		}
+		return {status:"none"};
 	}
 
 	@Get('/channels/:id/msg')

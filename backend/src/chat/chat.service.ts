@@ -467,14 +467,24 @@ export class ChatService {
                 id : id,
               },
               select: {
+                admins: {
+                  select: {username: true,status: true,avatarUrl: true,id: true},
+                },
                 members: {
-                  select:{
-                    username:true,
-                    status:true,
-                    avatarUrl:true,
-                    id:true
-                  }
-                }
+                  where: {
+                    AND: {
+                      admins: {none: {id: id}},
+                      muted: {none: {id: id}},
+                    },
+                  },
+                  select:{username:true,status:true,avatarUrl:true,id:true},
+                },
+                muted: {
+                  select: {username: true,status: true,avatarUrl: true,id: true},
+                },
+                banned: {
+                  select: {username: true,status: true,avatarUrl: true,id: true},
+                },
               },
             });
             return source
