@@ -16,9 +16,9 @@ export default function ChatPage() {
       socket.connect();
     }
 
-    return () => {
-      socket.disconnect();
-    }
+    // return () => {
+    //   socket.disconnect();
+    // }
   }, [socket]);
 
   return (

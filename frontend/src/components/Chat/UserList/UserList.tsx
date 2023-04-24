@@ -117,6 +117,127 @@ export default function UserList() {
       });
       
     })
+
+    socket.on("ban", (value:any) => {
+      let bannedUser:any = undefined;
+      setAllAdmins((data:any) => {
+        for (var i in data){
+          if (data[i].username === value.username){
+            bannedUser = data[i];
+            return data.filter((item:any) => item.username !== value.username);
+          }
+        }
+        return data;
+      });
+      setAllMembers((data:any) => {
+        for (var i in data){
+          if (data[i].username === value.username){
+            bannedUser = data[i];
+            return data.filter((item:any) => item.username !== value.username);
+          }
+        }
+        return data;
+      });
+      setAllMuted((data:any) => {
+        for (var i in data){
+          if (data[i].username === value.username){
+            bannedUser = data[i];
+            return data.filter((item:any) => item.username !== value.username);
+          }
+        }
+        return data;
+      });
+      if (bannedUser === undefined)
+        return;
+      setAllBanned((data:any) => {
+        for (var i in data){
+          if (data[i].username === value.username)
+            return data;
+        }
+        return [...data, {username:bannedUser.username, avatarUrl:bannedUser.avatarUrl, id:bannedUser.id, status:bannedUser.status, active:bannedUser.active}];
+      });
+
+    });
+
+    socket.on("kick", (value:any) => {
+      setAllAdmins((data:any) => {
+        for (var i in data){
+          if (data[i].username === value.username){
+            return data.filter((item:any) => item.username !== value.username);
+          }
+        }
+        return data;
+      });
+      setAllMembers((data:any) => {
+        for (var i in data){
+          if (data[i].username === value.username){
+            return data.filter((item:any) => item.username !== value.username);
+          }
+        }
+        return data;
+      });
+      setAllMuted((data:any) => {
+        for (var i in data){
+          if (data[i].username === value.username){
+            return data.filter((item:any) => item.username !== value.username);
+          }
+        }
+        return data;
+      });
+    });
+
+    socket.on("mute", (value:any) => {
+      let mutedUser:any = undefined;
+      setAllAdmins((data:any) => {
+        for (var i in data){
+          if (data[i].username === value.username){
+            mutedUser = data[i];
+            return data.filter((item:any) => item.username !== value.username);
+          }
+        }
+        return data;
+      });
+      setAllMembers((data:any) => {
+        for (var i in data){
+          if (data[i].username === value.username){
+            mutedUser = data[i];
+            return data.filter((item:any) => item.username !== value.username);
+          }
+        }
+        return data;
+      });
+      if (mutedUser === undefined)
+        return;
+      setAllMuted((data:any) => {
+        for (var i in data){
+          if (data[i].username === value.username)
+            return data;
+        }
+        return [...data, {username:mutedUser.username, avatarUrl:mutedUser.avatarUrl, id:mutedUser.id, status:mutedUser.status, active:mutedUser.active}];
+      });
+    });
+
+    socket.on("unmute", (value:any) => {
+      let unmutedUser:any = undefined;
+      setAllMuted((data:any) => {
+        for (var i in data){
+          if (data[i].username === value.username){
+            unmutedUser = data[i];
+            return data.filter((item:any) => item.username !== value.username);
+          }
+        }
+        return data;
+      });
+      if (unmutedUser === undefined)
+        return;
+      setAllMembers((data:any) => {
+        for (var i in data){
+          if (data[i].username === value.username)
+            return data;
+        }
+        return [...data, {username:unmutedUser.username, avatarUrl:unmutedUser.avatarUrl, id:unmutedUser.id, status:unmutedUser.status, active:unmutedUser.active}];
+      });
+    });
   }, [socket]);
   
   useEffect(() => {

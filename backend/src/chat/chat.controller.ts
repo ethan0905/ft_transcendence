@@ -26,7 +26,7 @@ import { ChannelMessageSendDto } from './dto/msg.dto';
 import { PrismaClient } from "@prisma/client";
 import { channel } from "diagnostics_channel";
 import { QuitChanDto } from "./dto/edit-chat.dto"
-import { response } from "express";
+import { Response } from "express";
 
 @Controller("chat")
 export class ChatController {
@@ -117,16 +117,16 @@ export class ChatController {
 	}
 
 	@Get('/channels/:id/msg')
-	async getChannelMessages(@Req() req:Request,@Param("id") id : string, @Res() response)
+	async getChannelMessages(@Req() req:Request,@Param("id") id : string, @Res() res: Response)
 	{
 		const idChan : number = parseInt(id);
 		const isInChan = await this.chat_service.userIsInChan(req.headers["authorization"], idChan);
 		if (isInChan)
 		{
 			const messages = await this.chat_service.get__MsgIn(idChan);
-			return messages[0].messages;
+			return res.status(200).json(messages[0].messages);
 		}
-		return response.status(403).send("You are not in this channel");
+		return res.status(403).json({message:"You are not in this channel"});
 	}
 
 	// Not use

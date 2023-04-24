@@ -56,10 +56,10 @@ const ChanItems: React.FC<Props> = ({ name, active, animationDelay, id_channel }
     e.currentTarget.classList.add("active");
     AlertPassword().then((password) => {
       if (password === undefined){
-        socket.emit("join",{chatId:id_channel});
+        socket.emit("joinNewChannel",{chatId:id_channel});
       }
       else
-        socket.emit("join",{chatId:id_channel, Password:password});
+        socket.emit("joinNewChannel",{chatId:id_channel, Password:password});
     });
   };
   

@@ -13,7 +13,7 @@ import { ChannelMessageSendDto, DmMsgSend  } from './dto/msg.dto';
 import { ValidationPipe, UsePipes } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { PrismaClient } from '@prisma/client';
-import { QuitChanDto, JoinChanDto, EditChannelCreateDto } from "./dto/edit-chat.dto"
+import { QuitChanDto, JoinChanDto, ActionsChanDto} from "./dto/edit-chat.dto"
 
 
 export interface User {
@@ -96,7 +96,7 @@ export class ChatGateway implements OnGatewayConnection {
     this.server.to(data.chatId.toString()).emit("NewMessage",chat); // emit to the room
   }
 
-  @SubscribeMessage('join')
+  @SubscribeMessage('joinNewChannel')
   async join_chan(
     @MessageBody()  data: JoinChanDto ,
     @ConnectedSocket() client : Socket,
@@ -126,6 +126,20 @@ export class ChatGateway implements OnGatewayConnection {
     }
   }
 
+  @SubscribeMessage('JoinChannel')
+  async join(
+    @MessageBody()  data: number ,
+    @ConnectedSocket() client : Socket,
+  ) {
+    const user = await this.userService.getUser(this.clients[client.id].username);
+    const userIsInChan = await this.chatService.userIsInChan(user.accessToken, data);
+    if (userIsInChan)
+      client.join(data.toString());
+    else {
+      this.server.to(client.id).emit("error", "You are not in this channel");
+    }
+  }
+
   @SubscribeMessage('quit')
   async quit_chan(
     @MessageBody()  data: QuitChanDto ,
@@ -134,79 +148,108 @@ export class ChatGateway implements OnGatewayConnection {
       if (this.clients[client.id] === undefined)
       return;
     const quit = await this.chatService.quit_Chan(this.clients[client.id].username, data.chatId);
+    client.leave(data.chatId.toString());
     console.log("user quit: " + this.clients[client.id].username);
   }
 
   @SubscribeMessage('invit')
   async inv_chan(
-    @MessageBody()  data: QuitChanDto ,
+    @MessageBody()  data: ActionsChanDto ,
     @ConnectedSocket() client : Socket,
   ) {
     if (this.clients[client.id] === undefined)
       return;
-    await this.chatService.invit_Chan(this.clients[client.id].username, data.chatId);
+    const isAdmin = await this.chatService.isAdmin_Chan(this.clients[client.id].username, data.chatId);
+    if (!isAdmin)
+      return;
+    await this.chatService.invit_Chan(data.username, data.chatId);
     console.log("user invited");
   }
 
   @SubscribeMessage('ban')
   async ban_chan(
-    @MessageBody()  data: QuitChanDto ,
+    @MessageBody()  data: ActionsChanDto ,
     @ConnectedSocket() client : Socket,
   ) {
     if (this.clients[client.id] === undefined)
       return;
-    await this.chatService.ban_Chan(this.clients[client.id].username, data.chatId);
+    const isAdmin = await this.chatService.isAdmin_Chan(this.clients[client.id].username, data.chatId);
+    if (!isAdmin)
+      return;
+    await this.chatService.ban_Chan(data.username, data.chatId);
+    for (let key in this.clients){
+      if (this.clients[key].username === data.username){
+        this.server.fetchSockets().then(
+          (sockets) => {
+            sockets.find((socket) => socket.id === key).leave(data.chatId.toString());
+          }
+        );
+        this.server.to(key).emit("banned", {chatId: data.chatId});
+        break;
+      }
+    }
+    this.server.to(data.chatId.toString()).emit("ban", {username: data.username});
     console.log("chan banned");
   }
 
   @SubscribeMessage('kick')
   async kick_chan(
-    @MessageBody()  data: QuitChanDto ,
+    @MessageBody()  data: ActionsChanDto ,
     @ConnectedSocket() client : Socket,
   ) {
     if (this.clients[client.id] === undefined)
       return;
-    await this.chatService.kick_Chan(this.clients[client.id].username, data.chatId);
+    const isAdmin = await this.chatService.isAdmin_Chan(this.clients[client.id].username, data.chatId);
+    if (!isAdmin)
+      return;
+    await this.chatService.kick_Chan(data.username, data.chatId);
+    for (let key in this.clients){
+      if (this.clients[key].username === data.username){
+        if (this.clients[key].username === data.username){
+          this.server.fetchSockets().then(
+            (sockets) => {
+              sockets.find((socket) => socket.id === key).leave(data.chatId.toString());
+            }
+          );
+        }
+        this.server.to(key).emit("kicked", {chatId: data.chatId});
+        break;
+      }
+    }
+    this.server.to(data.chatId.toString()).emit("kick", {username: data.username});
     console.log("chan kicked");
   }
 
   
   @SubscribeMessage('mute')
   async mute_chan(
-    @MessageBody()  data: QuitChanDto ,
+    @MessageBody()  data: ActionsChanDto ,
     @ConnectedSocket() client : Socket,
   ) {
     if (this.clients[client.id] === undefined)
       return;
-    await this.chatService.mute_Chan(this.clients[client.id].username, data.chatId);
+    const isAdmin = await this.chatService.isAdmin_Chan(this.clients[client.id].username, data.chatId);
+    if (!isAdmin)
+      return;
+    await this.chatService.mute_Chan(data.username, data.chatId);
+    this.server.to(data.chatId.toString()).emit("mute", {username: data.username});
     console.log("chan muteed");
   }
 
     
   @SubscribeMessage('unmute')
   async unmute_chan(
-    @MessageBody()  data: QuitChanDto ,
+    @MessageBody()  data: ActionsChanDto ,
     @ConnectedSocket() client : Socket,
   ) {
     if (this.clients[client.id] === undefined)
       return;
-    await this.chatService.unmute_Chan(this.clients[client.id].username, data.chatId);
+    const isAdmin = await this.chatService.isAdmin_Chan(this.clients[client.id].username, data.chatId);
+    if (!isAdmin)
+      return;
+    await this.chatService.unmute_Chan(data.username, data.chatId);
+    this.server.to(data.chatId.toString()).emit("unmute", {username: data.username});
     console.log("chan unmuteed");
-  }
-
-
-  @SubscribeMessage('is ban')
-  async isban_chan(
-    @MessageBody()  data: QuitChanDto ,
-    @ConnectedSocket() client : Socket,
-  ) {
-    if (this.clients[client.id] === undefined)
-      return;
-    const res : boolean = await this.chatService.isBan_Chan(this.clients[client.id].username, data.chatId);
-    if (res == true)
-      console.log("user is banned");
-    else
-    console.log("user is not banned");
   }
 
   // @SubscribeMessage('update')

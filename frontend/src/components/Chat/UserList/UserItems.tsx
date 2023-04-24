@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, Component } from 'react';
 import UserAvatar from "./UserAvatar";
 import "./UserList.css";
+import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { Dialog } from '@mui/material';
 import { SocketContext } from '../../../pages/ChatPage';
@@ -64,6 +65,8 @@ interface Props {
 }
 const UserItems = ({ active, animationDelay, image, name , privilege, category}: Props) => {
   const navigate = useNavigate();
+  const socket = useContext(SocketContext);
+  const location = useLocation();
 
   const selectChat = (e: React.MouseEvent<HTMLDivElement>) => {
     for (let index = 0; index < e.currentTarget.parentNode!.children.length; index++) {
@@ -97,10 +100,10 @@ const UserItems = ({ active, animationDelay, image, name , privilege, category}:
       <AccordionDetails>
         <div className="buttons" >
           <button onClick={() => console.log("Go to profile")/*kick()*/}>Go to Profile</button>
-          {privilege && (category === "Admins" || category === "Members" || category === "Muted" ) ?<button onClick={() => console.log("kick")/*kick()*/}>Kick</button> : null}
-          {privilege && (category === "Admins" || category === "Members" || category === "Muted" ) ?<button onClick={() => console.log("ban")/*ban()*/}>Ban</button> : null}
-          {privilege && (category === "Admins" || category === "Members") ?<button onClick={() => console.log("mute")/*mute()*/}>Mute</button> : null}
-          {privilege && category === "Muted" ? <button onClick={() => console.log("unmute")}>Unmute</button> : null}
+          {privilege && (category === "Admins" || category === "Members" || category === "Muted" ) ?<button onClick={() => socket.emit("kick", {username:name, chatId:Number(location.pathname.split("/")[2])})}>Kick</button> : null}
+          {privilege && (category === "Admins" || category === "Members" || category === "Muted" ) ?<button onClick={() => socket.emit("ban", {username:name, chatId:Number(location.pathname.split("/")[2])})}>Ban</button> : null}
+          {privilege && (category === "Admins" || category === "Members") ?<button onClick={() => socket.emit("mute", {username:name, chatId:Number(location.pathname.split("/")[2])})}>Mute</button> : null}
+          {privilege && category === "Muted" ? <button onClick={() => socket.emit("unmute", {username:name, chatId:Number(location.pathname.split("/")[2])})}>Unmute</button> : null}
           {privilege && category === "Banned" ? <button onClick={() => console.log("unban")}>Unban</button> : null}
         </div>
       </AccordionDetails>

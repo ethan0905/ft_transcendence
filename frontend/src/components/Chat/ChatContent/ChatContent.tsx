@@ -93,6 +93,21 @@ const AlertNotAllowed = () => MySwal.fire({
   confirmButtonColor: '#ff0000',
 });
 
+const AlertYouAreBanned = () => MySwal.fire({
+  title: 'You are banned from this channel',
+  icon: 'error',
+  confirmButtonText: 'Ok',
+  confirmButtonColor: '#ff0000',
+});
+
+const AlertYouAreKicked = () => MySwal.fire({
+  title: 'You are kicked from this channel',
+  icon: 'error',
+  confirmButtonText: 'Ok',
+  confirmButtonColor: '#ff0000',
+});
+
+
 export default function ChatContent(props: ChatContentProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -105,13 +120,31 @@ export default function ChatContent(props: ChatContentProps) {
   const [token, setToken] = useState('');
 
   useEffect(() => {
+    if (token !== ''){
+      getUserId(token);
+    }
 		let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
 		if (cookieToken) {
 			setToken(cookieToken);
 		}
 	}, [token]);
 
-
+  useEffect(() => {
+    socket.on("banned", (value:any) => {
+      let id = Number(location.pathname.split("/")[2]);
+      if (id !== value.chatId)
+        return;
+      AlertYouAreBanned();
+      navigate('/Chat');
+    });
+    socket.on("kicked", (value:any) => {
+      let id = Number(location.pathname.split("/")[2]);
+      if (id !== value.chatId)
+        return;
+      AlertYouAreKicked();
+      navigate('/Chat');
+    });
+  }, [socket])
   function clearInput() {
     setMsg("");
   }
@@ -127,7 +160,6 @@ export default function ChatContent(props: ChatContentProps) {
         });
         const data = await response.json();
         if (data) {
-          // console.log("data id: ", data.id)
           setUserID(data.id);
         }
       } catch (error) {
@@ -160,8 +192,10 @@ export default function ChatContent(props: ChatContentProps) {
   useEffect(() => {
     if (location.pathname !== "/Chat" && token !== ''){
       let id = Number(location.pathname.split("/")[2]);
+      console.log("id: ", id);
       getAllMessages(id, token).then((values:any) => {
-        setChat(values);
+        setChat(values.data);
+        socket.emit("JoinChannel", id);
       }).catch((error:any) => {
         if (error.response.status === 403) {
           AlertNotAllowed();

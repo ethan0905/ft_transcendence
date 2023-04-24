@@ -33,6 +33,14 @@ export class QuitChanDto{
     chatId?: number;
 }
 
+export class ActionsChanDto{
+    @IsNumber()
+    chatId?: number;
+
+    @IsString()
+    username?: string;
+}
+
 export class JoinChanDto{
     @IsNumber()
     chatId?: number;
