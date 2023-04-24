@@ -48,6 +48,7 @@ const GameHistory = (props: TableProps) => {
 	let gamesWon = 0;
 	let gamesLost = 0;
   
+	
 	data.forEach((item) => {
 		const score1 = item.score[0];
 		const score2 = item.score[1];
@@ -118,7 +119,6 @@ const GameHistory = (props: TableProps) => {
 										<td style={lineTable}>{item.player1}</td>
 										<td style={lineTable}>VS</td>
 										<td style={lineTable}>{item.player2}</td>
-										<td style={lineTable}>{item.score.at(0)} - {item.score.at(1)}</td>
 									</>
 								)
 							}
@@ -129,12 +129,12 @@ const GameHistory = (props: TableProps) => {
 										<td style={lineTable}>{item.player2}</td>
 										<td style={lineTable}>VS</td>
 										<td style={lineTable}>{item.player1}</td>
-										<td style={lineTable}>{item.score.at(1)} - {item.score.at(0)}</td>
 									</>
 								)
 							}
 
-							<td style={lineTable}>{item.date}</td>
+							<td style={lineTable}>{item.score.at(0)} - {item.score.at(1)}</td>
+							<td style={lineTable}>{item.date.split('T').at(0)}-[{item.date.split('T').at(1)?.split('.').at(0)}]</td>
 						</tr>))}
 					{Array(9 - data.length).fill('').map((item, index) => (
 						<tr style={lineTable} key={data.length + index}>
