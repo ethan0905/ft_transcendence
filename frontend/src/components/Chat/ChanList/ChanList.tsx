@@ -217,6 +217,8 @@ export default function ChanList() {
 
   useEffect(() => {
     socket.on("Channel Created", (value:any) => {
+      console.log(value);
+      console.log(socket.id);
       if (value.client_id === socket.id){
         setMyChannels(data => {
           for (var i in data){
@@ -263,6 +265,37 @@ export default function ChanList() {
       navigate("/chat/"+value.chatId);
     }
     );
+
+    socket.on("kicked", (value:any) => {
+      let channel:any = undefined;
+      setMyChannels(data => {
+        for (var i in data){
+          if (data[i].id === value.chatId){
+            channel = data[i];
+            return data.filter((channel: Channel) => channel.id !== value.chatId);
+          }
+        }
+        return data;
+      });
+      if (channel === undefined){
+        return;
+      }
+      setChannelToJoin(data => {
+        for (var i in data){
+          if (data[i].id === value.id)
+            return data;
+        }
+        return ([...data, {channelName:channel.channelName, id:channel.id, active:false, isOnline:false}]);
+      });
+    });
+    socket.on("banned", (value:any) => {
+      setMyChannels(data => {
+        return data.filter((channel: Channel) => channel.id !== value.chatId);
+      });
+      setChannelToJoin(data => {
+        return data.filter((channel: Channel) => channel.id !== value.chatId);;
+      });
+    });
   }, [socket]);
   
   useEffect(() => {

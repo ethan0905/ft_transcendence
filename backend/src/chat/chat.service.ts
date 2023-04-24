@@ -402,8 +402,9 @@ export class ChatService {
                 },
                 {invited : { some : { accessToken : token}}},
               ],
-              NOT : {
-                members : { some : { accessToken : token}},
+              AND : {
+                members : { none : { accessToken : token}},
+                banned : { none : { accessToken : token}},
               }
               },
               select: {

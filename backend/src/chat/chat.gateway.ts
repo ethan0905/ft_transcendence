@@ -82,7 +82,7 @@ export class ChatGateway implements OnGatewayConnection {
       if (!chat.isPrivate)
         this.server.emit("Channel Created", {channelName:data.chatName, id: chat.id, client_id: client.id});
       else
-        this.server.to(client.id).emit("Channel Created", {channelName:data.chatName, id: chat.id});
+        this.server.to(client.id).emit("Channel Created", {channelName:data.chatName, id: chat.id, client_id: client.id});
     }
 
   @SubscribeMessage('sendMsgtoC')
