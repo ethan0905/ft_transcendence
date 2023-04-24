@@ -16,7 +16,7 @@ const PrivateRoute : React.FC<{children: React.ReactElement}> = ({children}) => 
     async function checkUserToken() {
         let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
 
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/auth/42/verify', {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/auth/42/verify', {
             method: 'GET',
             headers: {
             'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ const PrivateRoute : React.FC<{children: React.ReactElement}> = ({children}) => 
     
         let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
 
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/auth/42/verify', {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/auth/42/verify', {
             method: 'GET',
             headers: {
             'Content-Type': 'application/json',

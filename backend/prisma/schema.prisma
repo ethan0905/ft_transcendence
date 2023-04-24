@@ -130,8 +130,7 @@ model Game {
   updatedAt  DateTime  @updatedAt
   duration   Int 
 
-  // player1Id Int?
-  // player2Id Int?
+  player1Name String
 
   roomName   String @unique
 

@@ -113,6 +113,7 @@ export class WsGameService {
 				duration: 10,
 				score: [0, 0],
 				roomName: uuid,
+				player1Name: client1,
 			},
 		});
 

@@ -31,7 +31,7 @@ export default function Auth() {
 				<Button 
 				text="Log in with 42"
 				onClick={() => {
-					window.open(`${process.env.REACT_APP_API42_URL}`, "_self");
+					window.open(`${import.meta.env.VITE_API42_URL}`, "_self");
 				}}
 				/>
 				

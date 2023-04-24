@@ -74,7 +74,7 @@ export default function UserPage() {
 
 	async function userExistsByUsername(username: string, accessToken: string) {
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/username/valid', {
+			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/users/username/valid', {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
@@ -100,7 +100,7 @@ export default function UserPage() {
 
 	async function getUserNameById(id: string) {
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/username/get', {
+			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/users/username/get', {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
@@ -120,7 +120,7 @@ export default function UserPage() {
 
 	async function getUserIdByUserName(username: string) {
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/id/get', {
+			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/users/id/get', {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
@@ -141,7 +141,7 @@ export default function UserPage() {
 	async function getProfilePictureByUserName(username: string): Promise<any> {
 
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/files/' + username, {
+			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/files/' + username, {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
@@ -165,7 +165,7 @@ export default function UserPage() {
 
 		console.log('Add friend button clicked! : ', token);
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/friend/add', {
+			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/users/me/friend/add', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -189,7 +189,7 @@ export default function UserPage() {
 		console.log('Remove friend button clicked! : ', token);
 
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/friend/remove', {
+			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/users/me/friend/remove', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -212,7 +212,7 @@ export default function UserPage() {
 		let id = '';
 		
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/id/get', {
+			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/users/id/get', {
 				method: 'GET',
 				headers:{
 					'Content-Type': 'application/json',
@@ -229,7 +229,7 @@ export default function UserPage() {
 		}
 
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/friend/status/get', {
+			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/users/me/friend/status/get', {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
@@ -260,7 +260,7 @@ export default function UserPage() {
 
 		console.log('Block button clicked! : ', token);
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/user/block', {
+			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/users/me/user/block', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -284,7 +284,7 @@ export default function UserPage() {
 		console.log('Unblock button clicked! : ', token);
 
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/user/unblock', {
+			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/users/me/user/unblock', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -307,7 +307,7 @@ export default function UserPage() {
 		let id = '';
 		
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/id/get', {
+			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/users/id/get', {
 				method: 'GET',
 				headers:{
 					'Content-Type': 'application/json',
@@ -324,7 +324,7 @@ export default function UserPage() {
 		}
 
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/block/status/get', {
+			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/users/me/block/status/get', {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
@@ -352,7 +352,7 @@ export default function UserPage() {
 	async function getGameHistory(): Promise<any> {
 
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/game/history/get', {
+			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/users/me/game/history/get', {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
@@ -378,7 +378,7 @@ export default function UserPage() {
 	async function getUserAchievementStatus(): Promise<any> {
 
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/achievements/get', {
+			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/users/me/achievements/get', {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
@@ -412,7 +412,7 @@ export default function UserPage() {
 		let config = {
 			method: 'get',
 			maxBodyLength: Infinity,
-			url: `${process.env.REACT_APP_BACKEND_URL}` + '/users/user/status/get',
+			url: `${import.meta.env.VITE_BACKEND_URL}` + '/users/user/status/get',
 			headers: {
 				'Content-Type': 'application/json',
 				'Username': username || '',

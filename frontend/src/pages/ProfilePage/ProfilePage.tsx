@@ -12,7 +12,7 @@ import { styled } from '@mui/material/styles';
 import { red } from '@mui/material/colors';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import userEvent from '@testing-library/user-event';
+// import userEvent from '@testing-library/user-event';
 
 export default function ProfilePage() {
 	const [name, setName] = useState('');
@@ -45,7 +45,7 @@ export default function ProfilePage() {
 		// console.log("status: ", !checked);
 		if (!checked === false) {
 			setTwoFAActivated(false);
-			fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/auth/2fa/activated', {
+			fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/auth/2fa/activated', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -53,14 +53,14 @@ export default function ProfilePage() {
 				body: JSON.stringify({ token, twoFactorActivated: false })
 			});
 
-			fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/auth/2fa/success', {
+			fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/auth/2fa/success', {
 				method: 'POST',
 				headers: {'Content-Type': 'application/json'},
 				body: JSON.stringify({ token, status: false })
 			});
 		}
 
-		axios.post(`${process.env.REACT_APP_BACKEND_URL}` + '/auth/2fa/enable', { token, twoFactorAuth: !checked }).then(response => {
+		axios.post(`${import.meta.env.VITE_BACKEND_URL}` + '/auth/2fa/enable', { token, twoFactorAuth: !checked }).then(response => {
 
 			console.log(response);
 		}).catch(error => {
@@ -84,7 +84,7 @@ export default function ProfilePage() {
 
 	async function generateQRCode(): Promise<any> {
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/auth/2fa/generate', {
+			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/auth/2fa/generate', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -106,7 +106,7 @@ export default function ProfilePage() {
 
 	async function activate2FA(): Promise<any> {
 
-		const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/auth/2fa/verify', {
+		const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/auth/2fa/verify', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -118,7 +118,7 @@ export default function ProfilePage() {
 			setTwoFAActivated(true);
 
 			// console.log("DATA = ", data);
-			const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/auth/2fa/activated', {
+			const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/auth/2fa/activated', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -137,7 +137,7 @@ export default function ProfilePage() {
 
 	async function check2FAStatus(accessToken: string): Promise<any> {
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/auth/2fa/status', {
+			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/auth/2fa/status', {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
@@ -155,7 +155,7 @@ export default function ProfilePage() {
 
 	async function getUsername(accessToken: string): Promise<any> {
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/username/get', {
+			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/users/me/username/get', {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
@@ -176,7 +176,7 @@ export default function ProfilePage() {
 
 	async function setUsernameInDatabase(username: string): Promise<any> {
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/username/edit', {
+			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/users/me/username/edit', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -206,15 +206,25 @@ export default function ProfilePage() {
 			const formData = new FormData();
 			formData.append('file', file);
 
-			axios.post(`${process.env.REACT_APP_BACKEND_URL}` + '/files/' + name + '/upload', formData, {
+			axios.post(`${import.meta.env.VITE_BACKEND_URL}` + '/files/' + name + '/upload', formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
 				},
 			  }).then(response => {
 				console.log('File uploaded successfully', response.data);
+
+				console.log("updating avatar url...");
+				axios.post(`${import.meta.env.VITE_BACKEND_URL}` + '/users/me/avatarurl/edit', { token: token, username: name }).then(response => {
+					console.log(response);
+				}).catch(error => {
+					console.error(error);
+				});
+
 			  }).catch(error => {
 				console.error('Error uploading file', error);
 			  });
+
+			
 		}
 	};
 
@@ -232,7 +242,7 @@ export default function ProfilePage() {
 	async function getProfilePicture(): Promise<any> {
 
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/files/' + name, {
+			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/files/' + name, {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
@@ -265,7 +275,7 @@ export default function ProfilePage() {
 	async function getFriendList(accessToken: string): Promise<any> {
 		
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/friend/list/get', {
+			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/users/me/friend/list/get', {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
@@ -300,7 +310,7 @@ export default function ProfilePage() {
 	async function getGameHistory(): Promise<any> {
 
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/game/history/get', {
+			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/users/me/game/history/get', {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
@@ -309,6 +319,7 @@ export default function ProfilePage() {
 			});
 			const data = await response.json();
 			if (data) {
+				console.log(data);
 				setGameList(data);
 			}
 			return data;
@@ -342,7 +353,7 @@ export default function ProfilePage() {
 	async function getUserAchievementStatus(): Promise<any> {
 
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}` + '/users/me/achievements/get', {
+			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/users/me/achievements/get', {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',

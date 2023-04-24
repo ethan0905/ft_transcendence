@@ -5,6 +5,8 @@ import { Response } from 'express';
 import { UploadedFile } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Multer } from 'multer'; // npm i --save-dev @types/multer if error 
+// import sharp from 'sharp';
+import * as sharp from 'sharp';
 
 @Controller('files')
 export class FileController {
@@ -196,8 +198,13 @@ async serveFile(@Param('username') username: string, @Res() res: Response) {
     return;
   }
 
+  // Resize image to 200x200
+  const imageBuffer = await sharp(searchFileTest.content)
+  .resize(200, 200, { fit: 'cover' })
+  .toBuffer();
+
   res.setHeader('Content-Type', searchFileTest.mimetype);
-  res.send(searchFileTest.content);
+  res.send(imageBuffer);
   }
 }
 

@@ -16,4 +16,4 @@ WORKDIR /app
 
 EXPOSE 3333
 
-CMD ["/bin/sh", "-c", "npm install && npm start"]
+CMD ["/bin/sh", "-c", "npm install && npm run dev"]

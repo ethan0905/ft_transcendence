@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useRef, useContext} from "react";
 import ChatItem from "./ChatItem";
 import "./ChatContent.css";
-import { SocketContext } from "../ChatBody";
-import { useLocation } from "react-router-dom";
+import { SocketContext } from '../../../pages/ChatPage';
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from 'axios';
+import Swal from 'sweetalert2/dist/sweetalert2.all.js';
+import withReactContent from 'sweetalert2-react-content';
 
+const MySwal = withReactContent(Swal);
 interface FormValues {
   name: string;
   password: string;
@@ -58,22 +61,18 @@ const FormButton = () => {
   );
 }
 
-async function getAllMessages(id_channel:number){
+async function getAllMessages(id_channel:number, accessToken:string){
   let config = {
     method: 'get',
     maxBodyLength: Infinity,
-    url: `${process.env.REACT_APP_BACKEND_URL}` + '/chat/channels/' + id_channel+"/msg",
-    headers: {}
+    url: `${import.meta.env.VITE_BACKEND_URL}` + '/chat/channels/' + id_channel+"/msg",
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `${accessToken}`
+    }
   };
   
   const value = axios.request(config)
-  .then((response) => {
-    return response.data;
-  })
-  .catch((error) => {
-    console.log(error);
-    return [];
-  });
   return (value);
 }
 
@@ -87,29 +86,65 @@ type ChatItm = {
 
 type ChatContentProps = {};
 
+const AlertNotAllowed = () => MySwal.fire({
+  title: 'You are not allowed to access this channel',
+  icon: 'error',
+  confirmButtonText: 'Ok',
+  confirmButtonColor: '#ff0000',
+});
+
+const AlertYouAreBanned = () => MySwal.fire({
+  title: 'You are banned from this channel',
+  icon: 'error',
+  confirmButtonText: 'Ok',
+  confirmButtonColor: '#ff0000',
+});
+
+const AlertYouAreKicked = () => MySwal.fire({
+  title: 'You are kicked from this channel',
+  icon: 'error',
+  confirmButtonText: 'Ok',
+  confirmButtonColor: '#ff0000',
+});
+
+
 export default function ChatContent(props: ChatContentProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
   let location = useLocation();
   const socket = useContext(SocketContext);
+  const [channel_name,setChannel_name] = useState<string>("OK")
   const [chat, setChat] = useState<ChatItm[]>([]);
   const [msg, setMsg] = useState<string>('');
   const [userID, setUserID] = useState<number>()
-  const [email, setEmail] = useState<string>()
   const [token, setToken] = useState('');
 
   useEffect(() => {
-		if (token !== '') {
-			// console.log("Le token est valide !", token);
-			getUsermail(token);
+    if (token !== ''){
       getUserId(token);
-		}
+    }
 		let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
 		if (cookieToken) {
 			setToken(cookieToken);
 		}
 	}, [token]);
 
-
+  useEffect(() => {
+    socket.on("banned", (value:any) => {
+      let id = Number(location.pathname.split("/")[2]);
+      if (id !== value.chatId)
+        return;
+      AlertYouAreBanned();
+      navigate('/Chat');
+    });
+    socket.on("kicked", (value:any) => {
+      let id = Number(location.pathname.split("/")[2]);
+      if (id !== value.chatId)
+        return;
+      AlertYouAreKicked();
+      navigate('/Chat');
+    });
+  }, [socket])
   function clearInput() {
     setMsg("");
   }
@@ -125,7 +160,6 @@ export default function ChatContent(props: ChatContentProps) {
         });
         const data = await response.json();
         if (data) {
-          // console.log("data id: ", data.id)
           setUserID(data.id);
         }
       } catch (error) {
@@ -133,42 +167,17 @@ export default function ChatContent(props: ChatContentProps) {
       }
     }
 
-  async function getUsermail(accessToken: string): Promise<any> {
-    try {
-        const response = await fetch('http://localhost:3333/users/me/email/get', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `${accessToken}`
-          },
-        });
-        const data = await response.json();
-        if (data) {
-          // console.log("data email: ", data)
-          setEmail(data.email);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
   useEffect(() => {
-
-    console.log("NEW USE EFFECT");
     socket.on("NewMessage", (value:any) => {
+      let id = Number(location.pathname.split("/")[2]);
+      if (id !== value.channelId)
+        return;
       setChat(chats => {
-        let id = Number(location.pathname.split("/")[2]); //added this line
-        if (id !== value.channelId){ //added this line
-          return chats; //added this line
-        }
         for (var i in chats){
-          
           if (chats[i].id === value.id){
-            console.log("message already exists");
             return chats;
           }
         }
-        console.log("message added");
         return ([...chats, value]);
       })
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -181,23 +190,29 @@ export default function ChatContent(props: ChatContentProps) {
   };
 
   useEffect(() => {
-    if (location.pathname !== "/Chat"){
-      console.log("inside useEffect 2");
-
+    if (location.pathname !== "/Chat" && token !== ''){
       let id = Number(location.pathname.split("/")[2]);
-      getAllMessages(id).then((values:any) => {
-        setChat(values);
+      console.log("id: ", id);
+      getAllMessages(id, token).then((values:any) => {
+        setChat(values.data);
+        socket.emit("JoinChannel", id);
+      }).catch((error:any) => {
+        if (error.response.status === 403) {
+          AlertNotAllowed();
+          navigate('/Chat');
+        }
       });
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
-  }, [location.pathname]) //mistake was here
+  }, [location.pathname, token]) //mistake was here
+  
 
   return (  <div className="main__chatcontent">
         
   <div className="content__header">
     <div></div>
     <h1>
-      Channel Name
+      {channel_name}
     </h1>
     <FormButton/>
   </div>
@@ -225,10 +240,8 @@ export default function ChatContent(props: ChatContentProps) {
     />
     <button className="btnSendMsg" id="sendMsgBtn" onClick={() => {
       clearInput();
-      console.log("chatId: ", Number(location.pathname.split("/")[2]), " | mail: ", email, " | msg: ", msg);
       socket.emit("sendMsgtoC", {
         "chatId":Number(location.pathname.split("/")[2]),
-        "mail":email,
         "msg":msg
       })
     }}><i className="fa fa-paper-plane"></i></button>

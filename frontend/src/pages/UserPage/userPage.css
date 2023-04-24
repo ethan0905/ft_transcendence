@@ -56,7 +56,7 @@
 
 .UserPage_stats {
   background-size: cover;
-  background-image: url("/public/hinata.jpg");
+  background-image: url("/hinata.jpg");
   background-repeat: no-repeat;
   background-position: center;
   overflow-y: scroll;
