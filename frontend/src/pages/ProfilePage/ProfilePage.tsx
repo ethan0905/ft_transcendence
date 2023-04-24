@@ -212,9 +212,19 @@ export default function ProfilePage() {
 				},
 			  }).then(response => {
 				console.log('File uploaded successfully', response.data);
+
+				console.log("updating avatar url...");
+				axios.post(`${import.meta.env.VITE_BACKEND_URL}` + '/users/me/avatarurl/edit', { token: token, username: name }).then(response => {
+					console.log(response);
+				}).catch(error => {
+					console.error(error);
+				});
+
 			  }).catch(error => {
 				console.error('Error uploading file', error);
 			  });
+
+			
 		}
 	};
 

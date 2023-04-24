@@ -583,7 +583,19 @@ export class UserService {
 		return { message: "Status updated to playing!" };
 	}
 
-	
+	async editAvatarUrl(@Req() req: Request) {
+
+		const user = await this.prisma.user.update({
+		  where: {
+			accessToken: req.body.token,
+		  },
+		  data: {
+			avatarUrl: "http://localhost:3333/files/" + req.body.username,
+		  },
+		});
+
+		return { message: "Avatar URL updated!" };
+	}
 	// async addfriend(data : FriendDto)
 	// {
 	// 	console.log("data: ", data)

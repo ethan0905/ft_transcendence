@@ -13,6 +13,9 @@ import { HttpCode, HttpStatus, HttpException } from '@nestjs/common';
 import { authenticator } from 'otplib';
 import { toDataURL } from 'qrcode';
 import { Body } from '@nestjs/common';
+import { join } from 'path';
+import { readFileSync } from 'fs';
+
 
 @Injectable()
 export class AuthService{

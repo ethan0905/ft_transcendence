@@ -118,25 +118,29 @@ export class UserController {
 	@Post('me/status/playing/set')
 	updateUserStatusPlaying(@Req() req: Request) {
 		return this.userService.updateUserStatusPlaying(req);
-
-	// @Get('me/email/get')
-	// getmail(@Req() req: Request) {
-	// 	return this.userService.getmail(req);
-	// }
-	// @Get('me/id/get')
-	// getid(@Req() req: Request) {
-	// 	return this.userService.getid(req);
-	// }
-	// @Post('me/addfriend')
-	// addFriend(@Body() data : FriendDto)
-	// {
+		
+		// @Get('me/email/get')
+		// getmail(@Req() req: Request) {
+			// 	return this.userService.getmail(req);
+			// }
+			// @Get('me/id/get')
+			// getid(@Req() req: Request) {
+				// 	return this.userService.getid(req);
+				// }
+				// @Post('me/addfriend')
+				// addFriend(@Body() data : FriendDto)
+				// {
 	// 	console.log("data on Post:", data)
 	// 	this.userService.addfriend(data);
 	// }
 	// @Get('me/getfriend')
 	// getFriend(@Body() data :GetFriendDTO)
 	// {
-	// 	const user = this.userService.getfriend(data)
-	// 	return (user)
+		// 	const user = this.userService.getfriend(data)
+		// 	return (user)
+	}
+	@Post('me/avatarurl/edit')
+	editAvatarUrl(@Req() req: Request) {
+		return this.userService.editAvatarUrl(req);
 	}
 }
