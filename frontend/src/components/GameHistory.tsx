@@ -118,6 +118,7 @@ const GameHistory = (props: TableProps) => {
 										<td style={lineTable}>{item.player1}</td>
 										<td style={lineTable}>VS</td>
 										<td style={lineTable}>{item.player2}</td>
+										<td style={lineTable}>{item.score.at(0)} - {item.score.at(1)}</td>
 									</>
 								)
 							}
@@ -128,11 +129,11 @@ const GameHistory = (props: TableProps) => {
 										<td style={lineTable}>{item.player2}</td>
 										<td style={lineTable}>VS</td>
 										<td style={lineTable}>{item.player1}</td>
+										<td style={lineTable}>{item.score.at(1)} - {item.score.at(0)}</td>
 									</>
 								)
 							}
 
-							<td style={lineTable}>{item.score.at(0)} - {item.score.at(1)}</td>
 							<td style={lineTable}>{item.date}</td>
 						</tr>))}
 					{Array(9 - data.length).fill('').map((item, index) => (
@@ -174,7 +175,7 @@ const titleTable: CSS.Properties = {
 const lineTable: CSS.Properties = {
 	borderBottom: '1px solid #ddd',
 	textAlign: 'center',
-	backgroundColor: '#e94b4b32',
+	// backgroundColor: '#ffffff55',
 	height: '30px',
 	fontWeight: 'bold',
 	color: 'white',
