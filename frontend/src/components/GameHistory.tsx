@@ -136,7 +136,7 @@ const GameHistory = (props: TableProps) => {
 							<td style={lineTable}>{item.score.at(0)} - {item.score.at(1)}</td>
 							<td style={lineTable}>{item.date.split('T').at(0)}-[{item.date.split('T').at(1)?.split('.').at(0)}]</td>
 						</tr>))}
-					{Array(9 - data.length).fill('').map((item, index) => (
+					{/* {Array(9 - data.length).fill('').map((item, index) => (
 						<tr style={lineTable} key={data.length + index}>
 								<td>-</td>
 								<td>-</td>
@@ -146,7 +146,7 @@ const GameHistory = (props: TableProps) => {
 								<td>-</td>
 
 						</tr>
-					))}
+					))} */}
 				</tbody>
 			</table>
 		</div>

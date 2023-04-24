@@ -624,4 +624,39 @@ export class UserService {
 	// 	})
 	// 	return (user)
 	// }
+
+	async getTheme(@Req() req: Request) {
+		
+		// console.log("getting user theme...: ", req.headers.authorization);
+
+		const user = await this.prisma.user.findUnique({
+		  where: {
+			accessToken: req.headers.authorization,
+		  },
+		  select: {
+			theme: true,
+		  },
+		});
+
+		// console.log("user theme: ", user.theme);
+		
+		return { theme: user.theme };
+	}
+
+	async editTheme(@Req() req: Request) {
+
+		// console.log("updating user token...: ", req.body.token);
+		// console.log("updating user status...: ", req.body.status);
+
+		const user = await this.prisma.user.update({
+		  where: {
+			accessToken: req.body.token,
+		  },
+		  data: {
+			theme: req.body.status,
+		  },
+		});
+
+		return { message: "Theme updated!" };
+	}
 }

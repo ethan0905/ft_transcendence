@@ -48,6 +48,7 @@ model User {
   // player2 Game[] @relation("player2")
 
   games Game[] @relation("player")
+  theme Boolean @default(false)
 
   @@map("users")
   @@unique([id, email])

@@ -143,4 +143,14 @@ export class UserController {
 	editAvatarUrl(@Req() req: Request) {
 		return this.userService.editAvatarUrl(req);
 	}
+
+	@Get('me/theme/get')
+	getTheme(@Req() req: Request) {
+		return this.userService.getTheme(req);
+	}
+
+	@Post('me/theme/edit')
+	editTheme(@Req() req: Request) {
+		return this.userService.editTheme(req);
+	}
 }

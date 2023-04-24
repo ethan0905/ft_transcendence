@@ -270,7 +270,7 @@ export class WsGameService {
 			if (room.game.is_playing === true)
 				return;
 			room.game.is_playing = true;
-			room.game.ball.speed = 10;
+			room.game.ball.speed = 10; // was to 10 to play game
 			server.to(room.name).emit('StartGame', room.name);
 			server.emit('NewMatch', this.rooms);
 			const interval = setInterval(() => {

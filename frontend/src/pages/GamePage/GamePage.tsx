@@ -6,7 +6,8 @@ import { createContext } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate} from 'react-router-dom';
 import PlayPage from './PlayPage.tsx';
-
+import Switch from '@mui/material/Switch';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 export const SocketContext = createContext({} as Socket);
 interface TableProps {
@@ -146,6 +147,56 @@ export default function GamePage() {
 		})
 	}, [socket, token, navigate])
 
+	const [checked, setChecked] = useState(false);
+
+	useEffect(() => {
+		if (token !== '') {
+			checkThemeStatus(token).then((value) => {
+				if (value) {
+					setChecked(true);
+				}
+			});
+		}
+		let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+		if (cookieToken) {
+			setToken(cookieToken);
+		}
+	}, [token]);
+
+	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+
+		setChecked(event.target.checked);
+		// console.log("status: ", !checked);
+		fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/users/me/theme/edit', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ token, status: !checked })
+		})
+	};
+
+	async function checkThemeStatus(accessToken: string): Promise<any> {
+		try {
+			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/users/me/theme/get', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `${accessToken}`
+				},
+			});
+			const data = await response.json();
+
+			console.log("theme ==== ", data.theme);
+
+			return data.theme;
+		} catch (error) {
+
+			console.error(error);
+			// handle error
+		}
+	}
+
 	return (
 	<>
 		<SocketContext.Provider value={socket}>
@@ -155,10 +206,19 @@ export default function GamePage() {
 					<GameTable data={data} />
 
 					<div className="btn-container">
-						<label className="switch btn-color-mode-switch">
+					<FormControlLabel control={
+							<Switch
+								checked={checked}
+								onChange={handleChange} 
+								inputProps={{"aria-label": "controlled"}}
+						/>} label={
+							checked ?
+							"Map: Konoha"
+							: "Map: End Valley"} />
+						{/* <label className="switch btn-color-mode-switch">
 							<input type="checkbox" name="map_mode" id="map_mode" value="1"/>
 							<label data-on="Special" data-off="Default" className="btn-color-mode-switch-inner"></label>
-						</label>
+						</label> */}
 					</div>
 
 					<div className='ButtonPlay'>

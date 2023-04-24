@@ -18,36 +18,50 @@ async function fetchRole(id_game:string, token:string){
 	return data;
 }
 
-function drawBall(canvas:HTMLCanvasElement){
+// THEME 1: Konoha
+// const COLOR_P1 = 'rgba(0, 255, 178, 1)'; // green
+// const COLOR_P2 = 'rgba(255, 114, 0, 1)';// orange
+// const COLOR_BALL = 'white';
+// const MAP_BG = '../../public/konoha.jpg';
+
+// THEME 2: Endvalley
+// const COLOR_P1 = 'rgba(0, 0, 255, 1)'; // blue
+// const COLOR_P2 = 'rgba(255, 0, 0, 1)'; // red
+// const COLOR_BALL = 'yellow';
+// const MAP_BG = '../../public/endvalley.png';
+
+// const MAP_BG = '../../public/404notfound.jpg';
+
+function drawBall(canvas:HTMLCanvasElement, ballColor:string){
 	const ctx = canvas.getContext('2d');
 	if (!ctx)
 		return;//console.log("ctx is null");
 	ctx.beginPath();
 	// console.log("x: " + data.ballObj.x + " y: " + data.ballObj.y + " radius: " + data.ballObj.radius)
 	ctx.arc(canvas.width * data.ballObj.x, canvas.height * data.ballObj.y, canvas.width * data.ballObj.radius, 0, 2 * Math.PI);
-	ctx.fillStyle = "yellow";
+	ctx.fillStyle = ballColor;
 	ctx.fill();
 	ctx.closePath();
 }
 
-function drawPlayer(canvas:HTMLCanvasElement){
+function drawPlayer(canvas:HTMLCanvasElement, player1Color:string, player2Color:string){
 	const ctx = canvas.getContext('2d');
 	if (!ctx)
 		return;//console.log("ctx is null");
 	if (data.playground.orientation === 0){
 		data.player1.x = 0;
 		data.player2.x = 1 - data.player2.width;
-		ctx.fillStyle = 'rgba(0, 0, 255, 1)'
+		ctx.fillStyle = player1Color
 		ctx.fillRect(canvas.width-(canvas.width * data.player2.width), data.player1.y * canvas.height, canvas.width * data.player1.width, canvas.height * data.player1.height)
-		ctx.fillStyle = 'rgba(255, 0, 0, 1)'
+		ctx.fillStyle = player2Color
 		ctx.fillRect(0, data.player2.y * canvas.height, canvas.width * data.player2.width, canvas.height * data.player2.height)
 	}
 	else if (data.playground.orientation === 1){
 		data.player1.y = 0;
 		data.player2.y = data.player2.height;
-		ctx.fillStyle = 'rgba(0, 0, 255, 1)'
+		ctx.fillStyle = player1Color
 		ctx.fillRect((1 - data.player1.x - 0.2) * canvas.width, canvas.height - (canvas.height * data.player2.height), canvas.width * data.player1.width, canvas.height * data.player1.height)
-		ctx.fillStyle = 'rgba(255, 0, 0, 1)'
+		ctx.fillStyle = player2Color
 		ctx.fillRect((1 - data.player2.x - 0.2) * canvas.width, 0, canvas.width * data.player2.width, canvas.height * data.player2.height)
 	}
 }
@@ -63,6 +77,13 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 		height: 0
 	});
 	
+	// const [theme, setTheme] = useState<boolean>(false);
+	const [token, setToken] = useState<string>("");
+	const [colorP1, setColorP1] = useState<string>("rgba(0, 0, 255, 1)");
+	const [colorP2, setColorP2] = useState<string>("rgba(255, 0, 0, 1)");
+	const [mapUrl, setMapUrl] = useState<string>("../../public/endvalley.png");
+	const [colorBall, setColorBall] = useState<string>("yellow");
+
 	function getCanvasSize(){
 		const width = window.innerWidth * 0.7;
 		const height = window.innerHeight * 0.8;
@@ -157,15 +178,18 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 		const canvas = canvasRef.current;
 		if (!canvas)
 			return;//console.log("canvas is null");
+
 		const render = () => {
 			// socket.emit("RequestBallPosition", {room_name:id_game})
 			const ctx = canvas.getContext('2d');
 			if (!ctx)
 			return;//console.log("ctx is null");
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
-			drawBall(canvas);
+			// console.log("ball color: ", colorBall);
+			drawBall(canvas, colorBall);
 			// wallColission(canvas);
-			drawPlayer(canvas);
+			// console.log("player1 color: ", colorP1, "player2 color: ", colorP2);
+			drawPlayer(canvas, colorP1, colorP2);
 			requestAnimationFrame(render);
 		};
 		requestAnimationFrame(render);
@@ -176,20 +200,76 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 		}
 	}, [id_game, socket, size.height, size.width])
 
+
+	useEffect(() => {
+		let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+		if (!cookieToken)
+			setToken("test")
+		else
+			setToken(cookieToken);
+	},[])
+
+	useEffect(() => {
+		if (token !== "" && mapUrl !== "../../public/konoha.jpg")
+		{
+			fetchTheme(token).then((data:boolean) => {
+				if (data)
+				{
+					console.log("fetching theme... inside effect");
+					setColorP1("rgba(0, 255, 178, 1)");
+					setColorP2("rgba(255, 114, 0, 1)");
+					setMapUrl("../../public/konoha.jpg");
+					setColorBall("white");
+				}
+			})
+		}
+	}, [token])
+
+	async function fetchTheme(token:string){
+		let response = await fetch("http://localhost:3333/users/me/theme/get", {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				"Authorization": token,
+			},
+		});
+		let data = await response.json();
+		// console.log("theme = 45 ->", data.theme);
+		if (data.theme){
+			setColorP1("rgba(0, 255, 178, 1)");
+			setColorP2("rgba(255, 114, 0, 1)");
+			setMapUrl("../../public/konoha.jpg");
+			setColorBall("white");
+			return true;
+		}
+		else
+			return false;
+
+	}
+
 	return (
+		<div style={
+			{
+				backgroundImage: `url(${mapUrl})`,
+				backgroundSize: 'cover',
+				backgroundPosition: 'center',
+				backgroundRepeat: 'no-repeat',
+			}}
+			className="w-full h-full">
+
 		<div className="h-[90vh] w-full flex flex-col justify-center items-center">
 			{/* <canvas id="canvas" ref={canvasRef} width={size.width} height={size.height} className="border-slate-700 border-8" onMouseMove={(evt)=> updateDisplay(evt)}  onMouseLeave={(evt)=> updateDisplay(evt)}></canvas> */}
 			<canvas id="canvas" ref={canvasRef} width={size.width} height={size.height} className="border-slate-700 border-8" onMouseMove={(evt)=> {
 				const canvas = canvasRef.current;
 				if (!canvas)
 					return;// throw new Error("Canvas not found");
-				if (size.orientation === 0){
-					if (role === 1){
+					if (size.orientation === 0){
+						if (role === 1){
 						data.player1.y = evt.nativeEvent.offsetY/(canvas.height);
 						if (data.player1.y < 0)
 							data.player1.y = 0;
 						else if (data.player1.y > 0.8)
-							data.player1.y = 0.8;
+						data.player1.y = 0.8;
 						socket.emit('MakeMove', {id_game:id_game,player:1, position: data.player1.y})
 					}
 					else if (role === 2){
@@ -205,7 +285,7 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 					if (role === 1){
 						data.player1.x = 1-(evt.nativeEvent.offsetX/(canvas.width));
 						if (data.player1.x < 0)
-							data.player1.x = 0;
+						data.player1.x = 0;
 						else if (data.player1.x > 0.8)
 							data.player1.x = 0.8;
 						socket.emit('MakeMove', {id_game:id_game,player:1, position: data.player1.x})
@@ -213,7 +293,7 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 					else if (role === 2){
 						data.player2.x = 1-(evt.nativeEvent.offsetX/(canvas.width));
 						if (data.player2.x < 0)
-							data.player2.x = 0;
+						data.player2.x = 0;
 						else if (data.player2.x > 0.8)
 							data.player2.x = 0.8;
 						socket.emit('MakeMove', {id_game:id_game,player:2, position: data.player2.x})
@@ -222,7 +302,7 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 			}}  onMouseLeave={(evt)=> {
 				const canvas = canvasRef.current;
 				if (!canvas)
-					return;// throw new Error("Canvas not found");
+				return;// throw new Error("Canvas not found");
 				if (size.orientation === 0){
 					if (role === 1){
 						data.player1.y = evt.nativeEvent.offsetY/(canvas.height);
@@ -236,7 +316,7 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 						data.player2.y = evt.nativeEvent.offsetY/(canvas.height);
 						if (data.player2.y < 0)
 							data.player2.y = 0;
-						else if (data.player2.y > 0.8)
+							else if (data.player2.y > 0.8)
 							data.player2.y = 0.8;
 						socket.emit('MakeMove', {id_game:id_game,player:2, position: data.player2.y})
 					}
@@ -246,7 +326,7 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 						data.player1.x = 1-(evt.nativeEvent.offsetX/(canvas.width));
 						if (data.player1.x < 0)
 							data.player1.x = 0;
-						else if (data.player1.x > 0.8)
+							else if (data.player1.x > 0.8)
 							data.player1.x = 0.8;
 						socket.emit('MakeMove', {id_game:id_game,player:1, position: data.player1.x})
 					}
@@ -256,11 +336,12 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 							data.player2.x = 0;
 						else if (data.player2.x > 0.8)
 							data.player2.x = 0.8;
-						socket.emit('MakeMove', {id_game:id_game,player:2, position: data.player2.x})
+							socket.emit('MakeMove', {id_game:id_game,player:2, position: data.player2.x})
+						}
 					}
-				}
 			}}></canvas>
 		</div>
+	</div>
 	);
 }
 
@@ -335,6 +416,13 @@ function PlayPage() {
 		})
 	},[params.id_game, id_game, role, socket, token]);
 
+	useEffect(() => {
+		if (status_game === StatusGame.End){
+			setTimeout(() => {
+				navigate("/myProfile");
+			}, 15000);
+		}
+	},[status_game, navigate]);
 
 	return (
 		<div className="w-full h-screen flex flex-col items-center justify-center relative">
@@ -344,19 +432,19 @@ function PlayPage() {
 				<div className="absolute w-[100%] h-[100%] bg-opacity-20 bg-black z-20 flex flex-col items-center justify-around">
 					{status_game === StatusGame.Waiting ? 
 						<>
-							<h1 className="w-fit text-5xl">Waiting Player</h1>
+							<h1 className="w-fit text-5xl text-white">Waiting Player</h1>
 						</>
 					: 
 						<>
-							<h1 className="w-fit text-5xl">{isWinner ? "YOU WIN!!!!" : "YOU LOSE"}</h1>
-							<h1 className="w-fit text-5xl">Score: {score[0]}:{score[1]}</h1>
+							<h1 className="w-fit text-5xl text-white">{isWinner ? "YOU WIN!!!!" : "YOU LOSE"}</h1>
+							<h1 className="w-fit text-5xl text-white">Score: {score[0]}:{score[1]}</h1>
 							<button className="bg-red-200 p-3 rounded-xl w-fit text-2xl">GO BACK TO MENU</button>
 						</>
 					}
 				</div>
 			}
-			<div className="w-full h-[10vh] inline-flex justify-center items-center gap-2">
-				<h1 className="w-fit h-min sm:text-4xl text-sm">{score[0]}:{score[1]}</h1>
+			<div className="w-full h-[10vh] inline-flex justify-center items-center gap-2 bg-gray-950">
+				<h1 className="w-fit h-min sm:text-4xl text-sm text-white">{score[0]}:{score[1]}</h1>
 				<div className="">
 					<button className="sm:text-2xl text-sm bg-red-200 rounded-lg p-2" onClick={() => {
 						socket.emit('LeaveRoom', {room_name:id_game});
@@ -364,7 +452,7 @@ function PlayPage() {
 					}}>QUIT</button>
 				</div>
 			</div>
-			{id_game !== "" && role !== 0 && socket.connected ? <Playground role={role} id_game={id_game} socket={socket}/> : <div>Loading...</div> }
+			{id_game !== "" && role !== 0 && socket.connected ? <Playground role={role} id_game={id_game} socket={socket}/> : <div className='text-white'>Loading...</div> }
 		</div>
 	)
 }
