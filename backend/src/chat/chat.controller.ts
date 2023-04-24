@@ -129,6 +129,14 @@ export class ChatController {
 		return res.status(403).json({message:"You are not in this channel"});
 	}
 
+	@Get('/channels/:id/peopletoinvite')
+	async getChannelPeopleToInvite(@Req() req:Request,@Param("id") id:number)
+	{
+		let chatId:number = Number(id);
+		const peopleToInvite = await this.chat_service.getPeopleToInvite(req.headers["authorization"],chatId);
+		return peopleToInvite.filter((value:any) => value !== undefined);
+	}
+
 	// Not use
 	@Get('/channels/users/ban/:id')
 	async getChannelUsersBan(@Param("id") id : string)

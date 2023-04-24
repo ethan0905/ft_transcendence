@@ -149,6 +149,8 @@ export class ChatGateway implements OnGatewayConnection {
       return;
     const quit = await this.chatService.quit_Chan(this.clients[client.id].username, data.chatId);
     client.leave(data.chatId.toString());
+    this.server.to(client.id).emit("quited", {chatId:data.chatId});
+    this.server.to(data.chatId.toString()).emit("quit",{username:this.clients[client.id].username})
     console.log("user quit: " + this.clients[client.id].username);
   }
 
@@ -163,6 +165,14 @@ export class ChatGateway implements OnGatewayConnection {
     if (!isAdmin)
       return;
     await this.chatService.invit_Chan(data.username, data.chatId);
+    for (let key in this.clients){
+      if (this.clients[key].username === data.username)
+      {
+        let channel = await this.chatService.get__chanNamebyId(data.chatId); 
+        this.server.to(key).emit("invited", {chatId:data.chatId, channelName:channel.channelName})
+        return;
+      }
+    }
     console.log("user invited");
   }
 

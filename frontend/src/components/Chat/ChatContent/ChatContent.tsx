@@ -107,6 +107,13 @@ const AlertYouAreKicked = () => MySwal.fire({
   confirmButtonColor: '#ff0000',
 });
 
+const AlertSuccessfulQuit = () => MySwal.fire({
+  title: 'You have quit this channel',
+  icon: 'success',
+  confirmButtonText: 'Ok',
+  confirmButtonColor: '#ff0000',
+});
+
 
 export default function ChatContent(props: ChatContentProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -144,6 +151,20 @@ export default function ChatContent(props: ChatContentProps) {
       AlertYouAreKicked();
       navigate('/Chat');
     });
+    socket.on("kicked", (value:any) => {
+      let id = Number(location.pathname.split("/")[2]);
+      if (id !== value.chatId)
+        return;
+      AlertYouAreKicked();
+      navigate('/Chat');
+    });
+    socket.on("quited", (value:any) => {
+      let id = Number(location.pathname.split("/")[2]);
+      if (id !== value.chatId)
+        return;
+      AlertSuccessfulQuit();
+      navigate('/Chat');
+    })
   }, [socket])
   function clearInput() {
     setMsg("");

@@ -136,3 +136,19 @@
   display: flex;
   flex-direction: column;
 }
+
+.button__quitChannel{
+  padding: 10px;
+  font-size: 100%;
+  border-radius: 10px;
+  background-color: red;
+  color:white;
+}
+
+.button__inviteChannel{
+  padding: 10px;
+  font-size: 100%;
+  border-radius: 10px;
+  background-color: blue;
+  color:white;
+}
