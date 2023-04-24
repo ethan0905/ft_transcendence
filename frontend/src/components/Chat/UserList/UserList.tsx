@@ -4,6 +4,9 @@ import UserItems from "./UserItems";
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { SocketContext } from '../../../pages/ChatPage';
+import Swal from 'sweetalert2/dist/sweetalert2.all.js';
+import withReactContent from 'sweetalert2-react-content';
+const MySwal = withReactContent(Swal);
 
 
 interface ChanUser {
@@ -12,6 +15,25 @@ interface ChanUser {
   username: string;
   active: boolean;
   isOnline: boolean;
+}
+
+async function getPeopleToInvite(accessToken: string, channelId:number): Promise<any> {
+  let config = {
+    method: 'get',
+    maxBodyLength: Infinity,
+    url: `${import.meta.env.VITE_BACKEND_URL}` + '/chat/channels/' + channelId+"/peopletoinvite",
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `${accessToken}`
+    }
+  };
+  
+  const value = await axios.request(config).then((value:any) => {
+    return value.data;
+  }).catch(() => {
+    return [];
+  })
+  return (value);
 }
 
 async function getAllUserInChat(id: number,accessToken: string){
@@ -30,7 +52,6 @@ async function getAllUserInChat(id: number,accessToken: string){
     return response.data;
   })
   .catch((error) => {
-    console.log(error);
     return [];
   });
 
@@ -61,6 +82,19 @@ function ListSection({name, listUsers, privilege}: {name: string, listUsers: any
       </div>
     </div>
   );
+}
+
+const InviteFriendChannel = async (channelId:number, token:string) => {
+  const listUsers = await getPeopleToInvite(token, channelId);
+
+  const selection = await MySwal.fire({
+    title: 'Invite Friends',
+    input: 'select',
+    inputOptions: listUsers,
+    inputPlaceholder: 'Select friends to invite',
+    showCancelButton: true,
+  })
+  return {confirm: selection.isConfirmed, value:listUsers[Number(selection.value)]};
 }
 
 export default function UserList() {
@@ -105,6 +139,7 @@ export default function UserList() {
         // handle error
       }
     }
+
 
   useEffect(() => {
     socket.on("NewUserJoin", (value:any) => {
@@ -238,6 +273,12 @@ export default function UserList() {
         return [...data, {username:unmutedUser.username, avatarUrl:unmutedUser.avatarUrl, id:unmutedUser.id, status:unmutedUser.status, active:unmutedUser.active}];
       });
     });
+
+    socket.on("quit", (value:any) => {
+      setAllAdmins((data:any) => {return data.filter((item:any) => item.username !== value.username)});
+      setAllMembers((data:any) => {return data.filter((item:any) => item.username !== value.username)});
+      setAllMuted((data:any) => {return data.filter((item:any) => item.username !== value.username)});
+    });
   }, [socket]);
   
   useEffect(() => {
@@ -264,6 +305,18 @@ export default function UserList() {
         <ListSection name="Members" listUsers={allMembers} privilege={channelStatus}/>
         <ListSection name="Muted" listUsers={allMuted} privilege={channelStatus}/>
         <ListSection name="Banned" listUsers={allBanned} privilege={channelStatus}/>
+        <div className="flex flex-col gap-[5px] w-1/2">
+          {channelStatus && <button className='button__inviteChannel' onClick={() => {
+            InviteFriendChannel(Number(location.pathname.split("/")[2]),token).then((value:any) => {
+              if (value.confirm){
+                socket.emit("invit", {username:value.value, chatId:Number(location.pathname.split("/")[2])})
+              }
+            })
+          }}>Invite</button>}
+          <button className='button__quitChannel' onClick={() => {
+            socket.emit("quit", {chatId:Number(location.pathname.split("/")[2])});
+          }}>Quit Channel</button>
+        </div>
       </div>
     );
   

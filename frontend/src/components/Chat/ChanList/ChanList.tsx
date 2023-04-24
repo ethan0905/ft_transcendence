@@ -296,6 +296,37 @@ export default function ChanList() {
         return data.filter((channel: Channel) => channel.id !== value.chatId);;
       });
     });
+    socket.on("quited", (value:any) => {
+      let quitedChan:any = undefined;
+      setMyChannels(data => {
+        for (var i in data){
+          if (data[i].id === value.chatId){
+            quitedChan = data[i]
+            return data.filter((channel: Channel) => channel.id !== value.chatId);
+          }
+        }
+        return data;
+      });
+      if (quitedChan === undefined)
+        return;
+      setChannelToJoin(data => {
+        for (var i in data){
+          if (data[i].id === value.id)
+            return data;
+        }
+        return ([...data, {channelName:quitedChan.channelName, id:quitedChan.id, active:false, isOnline:false}]);
+      });
+    });
+
+    socket.on("invited", (value:any) => {
+      setChannelToJoin(data => {
+        for (var i in data){
+          if (data[i].id === value.chatId)
+            return data;
+        }
+        return [...data, {channelName:value.channelName, id:value.chatId, active:false, isOnline:false}];
+      });
+    })
   }, [socket]);
   
   useEffect(() => {
@@ -319,7 +350,7 @@ export default function ChanList() {
       <div className='accordion-chats'>
           <MenuChat name={"My Channels"} channels={myChannels}/>
           <MenuChat name={"Channels to Join"} channels={channelsToJoin}/>
-        </div>
+      </div>
     </div>
   );
 }

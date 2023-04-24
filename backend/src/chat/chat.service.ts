@@ -647,4 +647,56 @@ export class ChatService {
               },
             });
           }
+
+          async getPeopleToInvite(token:string, channelId:number){
+            const friends = await this.prisma.user.findUnique({
+              where: {
+              accessToken: token,
+              },
+              select: {
+                friends: true,
+              },
+            });
+
+            const userToInvite = friends.friends.map(async (id_user:number) => {
+              const user = await this.prisma.user.findUnique({
+                where:{
+                  id:id_user,
+                },
+                select:{
+                  username:true,
+                  admins:{
+                    select:{
+                      id:true,
+                    }
+                  },
+                  members:{
+                    select:{
+                      id:true,
+                    }
+                  },
+                  muted:{
+                    select:{
+                      id:true,
+                    }
+                  },
+                  banned:{
+                    select:{
+                      id:true,
+                    }
+                  },
+                }
+              });
+              if (user.admins.find((elem:any) => {return elem.id === channelId}) === undefined &&
+                  user.members.find((elem:any) => {return elem.id === channelId}) === undefined &&
+                  user.muted.find((elem:any) => {return elem.id === channelId}) === undefined &&
+                  user.banned.find((elem:any) => {return elem.id === channelId}) === undefined
+              ){
+                console.log(user);
+                return user.username;
+              }
+              return;
+            })
+            return Promise.all(userToInvite);
+          }
   }
