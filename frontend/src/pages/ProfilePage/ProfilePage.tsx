@@ -13,6 +13,7 @@ import { red } from '@mui/material/colors';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 // import userEvent from '@testing-library/user-event';
+import CSS from 'csstype';
 
 export default function ProfilePage() {
 	const [name, setName] = useState('');
@@ -393,14 +394,14 @@ export default function ProfilePage() {
 
 						{checked && (
 							<>
-							<button id='generateCode' onClick={generateQRCode}>Generate QR code</button>
+							<button id='generateCode' style={Buttonstyles} onClick={generateQRCode}>Generate QR code</button>
 								{!twoFAActivated && (
 									<>
 									{qrcodeDataUrl && (
 										<>
 											<div className='Auth_block'>
 												<AuthCode allowedCharacters='numeric' onChange={handleOnChange}	inputClassName='Authcode_input'/>
-												<button onClick={activate2FA}>Submit</button>
+												<button onClick={activate2FA} style={Buttonstyles}>Submit</button>
 											</div>
 										</>
 									)}
@@ -423,3 +424,11 @@ export default function ProfilePage() {
 		</>
 	);
 };
+
+const Buttonstyles: CSS.Properties = {
+	backgroundColor: '#e5e7eb',
+	color: 'black',
+	border: 'solid 1px black',
+	borderRadius: '5px',
+	padding: '0 5px',
+  }

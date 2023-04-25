@@ -233,6 +233,15 @@ export class WsGameService {
 					room.game.player2_score = 11;
 					room.game.is_playing = false;
 					room.game.ball.speed = 0;
+					console.log("EXITED ROOM");
+					this.prisma.game.update({
+						where: {
+							roomName: room_name,
+						},
+						data: {
+							score: [room.game.player1_score, room.game.player2_score],
+						}
+					})
 				}
 				server.to(room.name).emit('PlayerLeft', {player:1, score:[room.game.player1_score, room.game.player2_score]});
 				server.socketsLeave(room.name);

@@ -10,6 +10,7 @@ import ProfilePicture from '../../components/ProfileSetting/ProfilePicture';
 import { CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import CSS from 'csstype';
 
 export default function UserPage() {
 	const navigate = useNavigate();
@@ -471,18 +472,45 @@ export default function UserPage() {
 								) : (
 									<>
 										{ !friendAdded ? (
-											<button style={{backgroundColor: 'green'}} onClick={addFriend}>Add</button>
+											<button style={{
+												backgroundColor: 'green',
+												border: 'solid 1px black',
+												borderRadius: '3px',
+												padding: '0 10px',
+											}} onClick={addFriend}>Add</button>
 											) : (
-												<button style={{backgroundColor: 'red'}} onClick={removeFriend}>Delete</button>
+												<button style={{
+													backgroundColor: 'red',
+													border: 'solid 1px black',
+													borderRadius: '3px',
+													padding: '0 10px',
+												}} onClick={removeFriend}>Delete</button>
 												)
 											}
 										{ !blocked ? (
-											<button style={{backgroundColor: 'orange'}} onClick={blockUser}>Block</button>
+											<button style={{
+												backgroundColor: 'orange',
+												border: 'solid 1px black',
+												borderRadius: '3px',
+												padding: '0 10px',
+											}} onClick={blockUser}>Block</button>
 											) : (
-												<button onClick={unblockUser}>Unblock</button>
+												<button style={{
+													backgroundColor: '#e5e7eb',
+													border: 'solid 1px black',
+													color: 'black',
+													borderRadius: '3px',
+													padding: '0 10px',
+												}} onClick={unblockUser}>Unblock</button>
 												)
 											}
-										<button>Fight</button>
+										<button style={{
+												backgroundColor: '#e5e7eb',
+												border: 'solid 1px black',
+												color: 'black',
+												borderRadius: '3px',
+												padding: '0 10px',
+											}}>Fight</button>
 									</>
 								)
 							}
@@ -498,3 +526,11 @@ export default function UserPage() {
 		</>
 	);
 }
+
+const Buttonstyles: CSS.Properties = {
+	backgroundColor: '#e5e7eb',
+	color: 'black',
+	border: 'solid 1px black',
+	borderRadius: '5px',
+	padding: '0 5px',
+  }
