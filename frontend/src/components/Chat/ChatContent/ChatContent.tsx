@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import Swal from 'sweetalert2/dist/sweetalert2.all.js';
 import withReactContent from 'sweetalert2-react-content';
+import CSS from 'csstype';
 
 const MySwal = withReactContent(Swal);
 interface FormValues {
@@ -52,7 +53,7 @@ const FormButton = () => {
               <label htmlFor="email">Edit password:</label>
               <input type="password" name="password" value={formValues.password} onChange={handleChange} />
             </div>
-              <button type="submit">Submit</button>
+              <button type="submit" >Submit</button>
             </form>
           </div>
         </div>
