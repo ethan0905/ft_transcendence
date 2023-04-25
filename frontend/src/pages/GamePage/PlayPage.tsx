@@ -455,7 +455,7 @@ function PlayPage() {
 						navigate("/Game");
 					}}>QUIT</button> */}
 
-					<button className="sm:text-2xl text-sm bg-red-200 rounded-lg p-2" onClick={() => {
+					{/* <button className="sm:text-2xl text-sm bg-red-200 rounded-lg p-2" onClick={() => {
 						Swal.fire({
 							title: 'Are you sure?',
 							text: "You won't be able to revert this!",
@@ -470,7 +470,7 @@ function PlayPage() {
 								navigate("/Game");
 							}
 						  })
-					}}>QUIT</button>
+					}}>QUIT</button> */}
 
 					<button className="sm:text-2xl text-sm bg-gray-100 rounded-lg p-2" onClick={() => {
 						Swal.fire(
