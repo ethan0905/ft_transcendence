@@ -32,13 +32,13 @@ const FriendList = (props: TableProps) => {
 					<td>{item.status}</td>
 				</tr>
 			))}
-			{Array(12 - data.length).fill('').map((item, index) => (
+			{/* {Array(12 - data.length).fill('').map((item, index) => (
 				<tr style={lineTable}key={data.length + index}>
 					<td>-</td>
 					<td>-</td>
 					<td>-</td>
 				</tr>
-			))}
+			))} */}
 			</tbody>
 			
 		</table>
