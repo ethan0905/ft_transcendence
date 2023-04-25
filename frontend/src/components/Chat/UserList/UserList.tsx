@@ -287,7 +287,7 @@ export default function UserList() {
       getAllUserInChat(id,token).then((value: any) => {
         if (value.status === "none")
           return;
-        else if (value.status === "admin")
+        else if (value.status === "admin" && !value.isDM)
           setChannelStatus(true);
         else
           setChannelStatus(false);

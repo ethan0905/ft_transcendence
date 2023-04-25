@@ -72,10 +72,16 @@ export class ChatController {
 	@Get('/channels/')
 	async getUserChannels(@Req() req:Request)
 	{
+		const dms = await this.chat_service.get__DmUser(req.headers["authorization"]);
 		const channels = await this.chat_service.get__channelsUserIn(req.headers["authorization"]);
 		const channels_to_join = await this.chat_service.get__channelsUserCanJoin(req.headers["authorization"]);
 		// Check if throw error
-		return {MyChannels:channels, ChannelsToJoin:channels_to_join};
+		console.log(dms);
+		let mydms = [];
+		dms.forEach((elem:any) => {
+			mydms.push({id:elem.id, channelName:elem.members[0].username})
+		})
+		return {MyDms:mydms, MyChannels:channels, ChannelsToJoin:channels_to_join};
 	}
 
 	@Get('/channels/:id')
@@ -106,12 +112,12 @@ export class ChatController {
 		if (users.length === 0 || user === null)
 			return {status:"none"};
 		if (users[0].admins.find((element) => element.username === user.username)!== undefined){
-			return {status: "admin", admins: users[0].admins, members: users[0].members, muted: users[0].muted, banned: users[0].banned};
+			return {status: "admin", isDM:users[0].isDM, admins: users[0].admins, members: users[0].members, muted: users[0].muted, banned: users[0].banned};
 		}
 		if (users[0].members.find((element) => element.username === user.username) !== undefined
 			|| users[0].muted.find((element) => element.username === user.username) !== undefined
 		){
-			return {status: "member", admins: users[0].admins, members: users[0].members, muted: users[0].muted, banned: users[0].banned};
+			return {status: "member", isDM:users[0].isDM,admins: users[0].admins, members: users[0].members, muted: users[0].muted, banned: users[0].banned};
 		}
 		return {status:"none"};
 	}
@@ -146,6 +152,11 @@ export class ChatController {
 		return users[0].banned;
 	}
 
+	@Get('/Dm/users')
+	async	getUsersToDM(@Req() req:Request){
+		const listUsers = await this.chat_service.getUserToDm(req.headers["authorization"])
+		return (listUsers);
+	}
 	// @Post('/channel/quit')
 	// async quit_Channel(@Body() dto: QuitChanDto)
 	// {

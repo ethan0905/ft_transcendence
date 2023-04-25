@@ -10,7 +10,10 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Swal from 'sweetalert2/dist/sweetalert2.all.js';
+import withReactContent from 'sweetalert2-react-content';
 
+const MySwal = withReactContent(Swal);
 
 async function getAllChannels(accessToken:string) {
   let config = {
@@ -173,11 +176,42 @@ interface Channel {
   active: boolean;
   isOnline: boolean;
 }
+async function getNewDmUsers(accessToken: string): Promise<any> {
+  let config = {
+    method: 'get',
+    maxBodyLength: Infinity,
+    url: `${import.meta.env.VITE_BACKEND_URL}` + "/chat/Dm/users",
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `${accessToken}`
+    }
+  };
+
+  const value = await axios.request(config).then((value:any) => {
+    return value.data;
+  }).catch(() => {
+    return [];
+  })
+  return (value);
+}
+
+const CreateDm = async (token:string) => {
+  const listUsers = await getNewDmUsers(token);
+  const selection = await MySwal.fire({
+    title: 'New DM',
+    input: 'select',
+    inputOptions: listUsers,
+    inputPlaceholder: 'Select contact',
+    showCancelButton: true,
+  })
+  return {confirm: selection.isConfirmed, value:listUsers[Number(selection.value)]};
+}
 
 export default function ChanList() {
 	const [name, setName] = useState('');
   const socket = useContext(SocketContext)
   const [myChannels, setMyChannels] = useState<Channel[]>([]);
+  const [myDms, setMyDms] = useState<Channel[]>([]);
   const [channelsToJoin, setChannelToJoin] = useState<Channel[]>([]);
   const [username, setUsername] = useState<string>()
   const navigate = useNavigate();
@@ -216,9 +250,17 @@ export default function ChanList() {
     }
 
   useEffect(() => {
+    socket.on("DM Created", (value:any) => {
+      setMyDms(data => {
+        for (var i in data){
+          if (data[i].id === value.id)
+            return data;
+        }
+        return ([...data, value]);
+      });
+      console.log("New Channel");
+    });
     socket.on("Channel Created", (value:any) => {
-      console.log(value);
-      console.log(socket.id);
       if (value.client_id === socket.id){
         setMyChannels(data => {
           for (var i in data){
@@ -333,6 +375,8 @@ export default function ChanList() {
       // getUsername();
     if (token !== ''){
       getAllChannels(token).then((value: any) => {
+        console.log(value);
+        setMyDms(value.MyDms)
         setMyChannels(value.MyChannels);
         setChannelToJoin(value.ChannelsToJoin);
       })
@@ -345,9 +389,15 @@ export default function ChanList() {
       <div className="chatlist__heading">
         <h2 style={{fontFamily: 'Kocak', color: 'white', textShadow: '1px 1px 1px black'}}>Channels</h2>
       </div>
-
+      <button className='btn' onClick={() => {
+        CreateDm(token).then((values:any) => {
+          if (values.confirm)
+            socket.emit("CreateDm", {username:values.value});
+        })
+      }}>New DM</button>
       <FormButton />
       <div className='accordion-chats'>
+          <MenuChat name={"My Dms"} channels={myDms}/>
           <MenuChat name={"My Channels"} channels={myChannels}/>
           <MenuChat name={"Channels to Join"} channels={channelsToJoin}/>
       </div>
