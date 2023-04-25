@@ -556,14 +556,20 @@ export class ChatService {
           }
         }
 
-        async get__MsgIn(id : number) {
+        async get__MsgIn(id : number, blockedUser:number[]) {
           try {
             const source = await this.prisma.channel.findMany({
               where: {
                 id : id,
               },
               select: {
-                messages: true,
+                messages: {
+                  where:{
+                    userId:{
+                      notIn:blockedUser,
+                    }
+                  }
+                },
               },
             });
             return source
@@ -832,5 +838,17 @@ export class ChatService {
             }
           })
           return value.isDM;
+        }
+
+        async getUserBlocked(token:string){
+          const usersBlocked = await this.prisma.user.findUnique({
+            where:{
+              accessToken:token,
+            },
+            select:{
+              blocked:true,
+            }
+          })
+          return usersBlocked.blocked;
         }
   }
