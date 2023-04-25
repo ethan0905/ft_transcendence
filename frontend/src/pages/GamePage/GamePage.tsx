@@ -134,7 +134,7 @@ export default function GamePage() {
 			Swal.fire({
 				title: 'Game found',
 				text: 'Do you want to join the game?',
-				icon: 'question',
+				icon: 'success',
 				showCancelButton: true,
 				confirmButtonText: 'Yes',
 				cancelButtonText: 'No'
