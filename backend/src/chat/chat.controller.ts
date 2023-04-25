@@ -126,9 +126,10 @@ export class ChatController {
 	{
 		const idChan : number = parseInt(id);
 		const isInChan = await this.chat_service.userIsInChan(req.headers["authorization"], idChan);
+		const blockedUser = await this.chat_service.getUserBlocked(req.headers["authorization"]);
 		if (isInChan)
 		{
-			const messages = await this.chat_service.get__MsgIn(idChan);
+			const messages = await this.chat_service.get__MsgIn(idChan, blockedUser);
 			return res.status(200).json(messages[0].messages);
 		}
 		return res.status(403).json({message:"You are not in this channel"});
@@ -155,6 +156,11 @@ export class ChatController {
 	async	getUsersToDM(@Req() req:Request){
 		const listUsers = await this.chat_service.getUserToDm(req.headers["authorization"])
 		return (listUsers);
+	}
+	
+	@Get('/blockedUsers')
+	async getUsersBlocked(@Req() req:Request){
+		return this.chat_service.getUserBlocked(req.headers["authorization"]);
 	}
 	// @Post('/channel/quit')
 	// async quit_Channel(@Body() dto: QuitChanDto)
