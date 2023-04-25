@@ -76,7 +76,6 @@ export class ChatController {
 		const channels = await this.chat_service.get__channelsUserIn(req.headers["authorization"]);
 		const channels_to_join = await this.chat_service.get__channelsUserCanJoin(req.headers["authorization"]);
 		// Check if throw error
-		console.log(dms);
 		let mydms = [];
 		dms.forEach((elem:any) => {
 			mydms.push({id:elem.id, channelName:elem.members[0].username})
