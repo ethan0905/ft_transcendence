@@ -478,6 +478,19 @@ export class UserService {
 		  }
 		});
 
+		const games = await this.prisma.game.findMany({
+			where: {
+				players: {
+					some: {
+						id: user.id
+					}
+				}
+			},
+			include : {
+				players: true,
+			}
+		});
+
 		// check if user has played at least 1 game
 		const hasPlayed = user.games.length > 0;
 
@@ -507,32 +520,22 @@ export class UserService {
 		// check if user has at least 1 friend
 		const hasFriend = user.friends.length > 0;
 		let hasWon = false;
-		// if (hasPlayed) {
-		// 	// const games = this.prisma.game.findMany({
-		// 	// 	where: {
-		// 	// 		players: {
-		// 	// 			some: {
-		// 	// 				id: user.id
-		// 	// 			}
-		// 	// 		}
-		// 	// 	},
-		// 	// 	select: {
-		// 	// 		players: true,
-		// 	// 		score: true,
-		// 	// 	}
-		// 	// });
-		// 	console.log("555 games: ", user.games[0]);
-		// 	// hasWon = games.some((game) => {
-		// 	// 	let idx = game.players[0].id === user.id ? 0 : 1;
-		// 	// 	return game.score[idx] > game.score[1 - idx];
-		// 	// });
-		// }
+		if (hasPlayed) {
+			
+			console.log("555 games: ", user.games[0]);
+			hasWon = games.some((game) => {
+				let idx = game.players[0].id === user.id ? 0 : 1;
+				return game.score[idx] > game.score[1 - idx];
+			});
+		}
 
+		console.log("has won ", hasWon);
 		return {
 		  hasPlayed: hasPlayed,
 		  hasWon: hasWon, // need to change this
 		  hasFriend: hasFriend,
 		};
+		
 	}
 
 	async getUserStatus(@Req() req: Request) {

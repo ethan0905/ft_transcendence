@@ -236,11 +236,11 @@ export class WsGameService {
 					room.game.ball.speed = 0;
 				}
 				server.to(room.name).emit('PlayerLeft', {player:1, score:[room.game.player1_score, room.game.player2_score]});
-				server.socketsLeave(room.name);
 				this.schedulerRegistry.deleteInterval(room.name);
 				// ajouter dans la bdd | efaccer la room de la liste
 				delete this.rooms[room_name];
 				server.emit("RoomDeleted", room_name);
+				server.socketsLeave(room.name);
 			}
 			else if (room.player2 === user) {
 				// this.clients[client_id].leave(room.name);
@@ -250,12 +250,12 @@ export class WsGameService {
 					room.game.player2_score = 0;
 				}
 				server.to(room.name).emit('PlayerLeft', {player:2, score:[room.game.player1_score, room.game.player2_score]});
-				server.to(room.name).emit('PlayerLeft', {player:1, score:[room.game.player1_score, room.game.player2_score]});
-				server.socketsLeave(room.name);
+				// verifier que le'interval existe
 				this.schedulerRegistry.deleteInterval(room.name);
 				// ajouter dans la bdd | efaccer la room de la liste
 				delete this.rooms[room_name];
 				server.emit("RoomDeleted", room_name);
+				server.socketsLeave(room.name);
 			}
 			else {
 				room.spectators.splice(room.spectators.indexOf(user), 1);

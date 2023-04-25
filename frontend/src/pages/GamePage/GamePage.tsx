@@ -131,19 +131,24 @@ export default function GamePage() {
 		socket.on("FindGame", (value:any) => {
 			console.log("FindGame: " + value)
 			Swal.close();
-			Swal.fire({
-				title: 'Game found',
-				text: 'Do you want to join the game?',
-				icon: 'success',
-				showCancelButton: true,
-				confirmButtonText: 'Yes',
-				cancelButtonText: 'No'
-			}).then((result) => {
-				if (result.isConfirmed ) {
+			// Swal.fire({
+			// 	title: 'Game found',
+			// 	text: 'Do you want to join the game?',
+			// 	icon: 'success',
+			// 	showCancelButton: true,
+			// 	confirmButtonText: 'Yes',
+			// 	cancelButtonText: 'No'
+			// }).then((result) => {
+			// 	if (result.dismiss === Swal.DismissReason.cancel) {
+			// 		navigate(value);
+			// 		socket.emit("LeaveRoom", {room_name:value});
+			// 	}
+			// 	if (result.isConfirmed ) {
 					navigate(value);
-				}
-			})
+			// 	}
+			// })
 		});
+
 
 		socket.on("RoomDeleted", (value:string) => {
 			setData((rooms:any)=>{

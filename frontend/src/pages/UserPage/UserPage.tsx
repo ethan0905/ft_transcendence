@@ -508,7 +508,7 @@ export default function UserPage() {
 						/>)
 					}
 					<div className='UserPage_info'>
-						<h1>{username}
+						<h1 className='font-semibold text-4xl'>{username}
 							<div className={`userStatus ${userStatusDot}`}></div>
 						</h1>
 						<div className='buttonList'>
