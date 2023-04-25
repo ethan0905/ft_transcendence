@@ -278,6 +278,22 @@ export class ChatGateway implements OnGatewayConnection {
     this.server.to(client.id).emit("DM Created",{channelName:data.username, id: dmchannel.id})
     return ;
   }
+
+  @SubscribeMessage('set-admin')
+  async set_admin(
+    @MessageBody()  data: ActionsChanDto ,
+    @ConnectedSocket() client : Socket,)
+    {
+        if (this.clients[client.id] === undefined)
+          return;
+        const isAdmin = await this.chatService.isAdmin_Chan(this.clients[client.id].username, data.chatId);
+        if (!isAdmin)
+          return;
+        await this.chatService.set_admin_Chan(data.username, data.chatId);
+        this.server.to(data.chatId.toString()).emit("set-admin", {username: data.username});
+        console.log("new admin");
+  }
+
   // @SubscribeMessage('update')
   // async update_chan(
   //   @MessageBody()  data: EditChannelCreateDto ,

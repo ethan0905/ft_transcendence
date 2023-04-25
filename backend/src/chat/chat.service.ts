@@ -191,6 +191,24 @@ export class ChatService {
           )
         }
 
+        async set_admin_Chan(username: string, id : number)
+        {
+          await this.prisma.channel.update(
+            {
+              where: {
+                id: id,
+              },
+              data : {
+                admins : {
+                  connect : {
+                    username : username,
+                  },
+                },
+              },
+              }
+          )
+        }
+
         
         
         async unmute_Chan(username: string, id : number)
