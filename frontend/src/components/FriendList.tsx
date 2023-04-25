@@ -32,6 +32,9 @@ const FriendList = (props: TableProps) => {
 					<td>{item.status}</td>
 				</tr>
 			))}
+			
+			
+			
 			{/* {Array(12 - data.length).fill('').map((item, index) => (
 				<tr style={lineTable}key={data.length + index}>
 					<td>-</td>
@@ -65,7 +68,7 @@ const titleCol: CSS.Properties = {
 const lineTable: CSS.Properties = {
 	borderBottom: '1px solid #ddd',
 	backgroundColor: '#fff9f932',
-	height: '30px',
+	height: '50px',
 	textAlign: 'center',
 	justifyContent: 'center',
 	fontWeight: 'bold',

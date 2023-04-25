@@ -260,6 +260,27 @@ export default function ProfilePage() {
 		}
 	}
 
+	async function getDefaultProfilePicture(): Promise<any> {
+
+		try {
+			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/me/avatar/get', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					
+				},
+			});
+			const blob = await response.blob();
+			const file = new File([blob], 'filename.jpg', { type: 'image/jpeg' });
+			setProfilePicture(file);
+			// return data;
+		} catch (error) {
+
+			console.error(error);
+			// handle error
+		}
+	}
+
 	const [friendList, setFriendList] = useState([]);
 
 	useEffect(() => {

@@ -179,7 +179,7 @@ const lineTable: CSS.Properties = {
 	borderBottom: '1px solid #ddd',
 	textAlign: 'center',
 	// backgroundColor: '#ffffff55',
-	height: '30px',
+	height: '75px',
 	fontWeight: 'bold',
 	color: 'white',
 	textShadow: '1px 1px 1px black',
