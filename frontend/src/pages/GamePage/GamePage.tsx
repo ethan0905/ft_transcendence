@@ -130,6 +130,7 @@ export default function GamePage() {
 		
 		socket.on("FindGame", (value:any) => {
 			console.log("FindGame: " + value)
+			Swal.close();
 			Swal.fire({
 				title: 'Game found',
 				text: 'Do you want to join the game?',
