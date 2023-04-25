@@ -8,6 +8,7 @@ import { useLocation, useNavigate} from 'react-router-dom';
 import PlayPage from './PlayPage.tsx';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import Swal from 'sweetalert2/dist/sweetalert2.all.js';
 
 export const SocketContext = createContext({} as Socket);
 interface TableProps {
@@ -129,8 +130,19 @@ export default function GamePage() {
 		
 		socket.on("FindGame", (value:any) => {
 			console.log("FindGame: " + value)
-			navigate(value);
-		})
+			Swal.fire({
+				title: 'Game found',
+				text: 'Do you want to join the game?',
+				icon: 'question',
+				showCancelButton: true,
+				confirmButtonText: 'Yes',
+				cancelButtonText: 'No'
+			}).then((result) => {
+				if (result.isConfirmed) {
+					navigate(value);
+				}
+			})
+		});
 
 		socket.on("RoomDeleted", (value:string) => {
 			setData((rooms:any)=>{
@@ -225,9 +237,59 @@ export default function GamePage() {
 						<img src="/rasengan.png" alt='ImgButton' id='ImgButton'
 							onClick={() => {
 								socket.emit("matchmaking")
+								Swal.fire({
+									title: 'Searching for an opponent...',
+									allowOutsideClick: false,
+									allowEscapeKey: false,
+									allowEnterKey: false,
+									showConfirmButton: false,
+									showCancelButton: true,
+									timer: 10000,
+									timerProgressBar: true,
+									onBeforeOpen: () => {
+										Swal.showLoading()
+									},
+									onClose: () => {
+										clearInterval(timerInterval)
+									}
+								}).then((result) => {
+									if (result.dismiss === Swal.DismissReason.timer) {
+										console.log('I was closed by the timer')
+									}
+									else if (result.dismiss === Swal.DismissReason.cancel) {
+										console.log('Cancelled');
+										// socket.emit("cancelMatchmaking"); // alex: emit the right event here
+									}
+								})
 							}}
 						/>
-						<span id='textPlay' onClick={() => {socket.emit("matchmaking")}}>PLAY</span>
+						<span id='textPlay' onClick={() => {
+							socket.emit("matchmaking")
+							Swal.fire({
+								title: 'Searching for an opponent...',
+								allowOutsideClick: false,
+								allowEscapeKey: false,
+								allowEnterKey: false,
+								showConfirmButton: false,
+								showCancelButton: true,
+								timer: 10000,
+								timerProgressBar: true,
+								onBeforeOpen: () => {
+									Swal.showLoading()
+								},
+								onClose: () => {
+									clearInterval(timerInterval)
+								}
+							}).then((result) => {
+								if (result.dismiss === Swal.DismissReason.timer) {
+									console.log('I was closed by the timer')
+								}
+								else if (result.dismiss === Swal.DismissReason.cancel) {
+									console.log('Cancelled');
+									// socket.emit("cancelMatchmaking"); // alex: emit the right event here
+								}
+							})
+							}}>PLAY</span>
 					</div>
 				</div>:
 				<PlayPage />

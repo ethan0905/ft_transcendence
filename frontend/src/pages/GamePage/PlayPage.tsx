@@ -5,6 +5,7 @@ import data from './game_data.ts';
 import { useParams } from 'react-router-dom';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2/dist/sweetalert2.all.js';
 
 async function fetchRole(id_game:string, token:string){
 	const res = await fetch("http://localhost:3333/ws-game/rooms/"+ id_game +"/role", {
@@ -416,13 +417,13 @@ function PlayPage() {
 		})
 	},[params.id_game, id_game, role, socket, token]);
 
-	useEffect(() => {
-		if (status_game === StatusGame.End){
-			setTimeout(() => {
-				navigate("/myProfile");
-			}, 15000);
-		}
-	},[status_game, navigate]);
+	// useEffect(() => {
+	// 	if (status_game === StatusGame.End){
+	// 		setTimeout(() => {
+	// 			navigate("/myProfile");
+	// 		}, 0);
+	// 	}
+	// },[status_game, navigate]);
 
 	return (
 		<div className="w-full h-screen flex flex-col items-center justify-center relative">
@@ -438,7 +439,10 @@ function PlayPage() {
 						<>
 							<h1 className="w-fit text-5xl text-white">{isWinner ? "YOU WIN!!!!" : "YOU LOSE"}</h1>
 							<h1 className="w-fit text-5xl text-white">Score: {score[0]}:{score[1]}</h1>
-							<button className="bg-red-200 p-3 rounded-xl w-fit text-2xl">GO BACK TO MENU</button>
+							<button className="bg-red-200 p-3 rounded-xl w-fit text-2xl" onClick={() => {
+									socket.emit('LeaveRoom', {room_name:id_game});
+									navigate("/Game");
+							}}>GO BACK TO MENU</button>
 						</>
 					}
 				</div>
@@ -446,10 +450,36 @@ function PlayPage() {
 			<div className="w-full h-[10vh] inline-flex justify-center items-center gap-2 bg-gray-950">
 				<h1 className="w-fit h-min sm:text-4xl text-sm text-white">{score[0]}:{score[1]}</h1>
 				<div className="">
-					<button className="sm:text-2xl text-sm bg-red-200 rounded-lg p-2" onClick={() => {
+					{/* <button className="sm:text-2xl text-sm bg-red-200 rounded-lg p-2" onClick={() => {
 						socket.emit('LeaveRoom', {room_name:id_game});
 						navigate("/Game");
+					}}>QUIT</button> */}
+
+					<button className="sm:text-2xl text-sm bg-red-200 rounded-lg p-2" onClick={() => {
+						Swal.fire({
+							title: 'Are you sure?',
+							text: "You won't be able to revert this!",
+							icon: 'warning',
+							showCancelButton: true,
+							confirmButtonColor: '#3085d6',
+							cancelButtonColor: '#d33',
+							confirmButtonText: 'Yes, quit!'
+						  }).then((result) => {
+							if (result.isConfirmed) {
+								socket.emit('LeaveRoom', {room_name:id_game});
+								navigate("/Game");
+							}
+						  })
 					}}>QUIT</button>
+
+					<button className="sm:text-2xl text-sm bg-gray-100 rounded-lg p-2" onClick={() => {
+						Swal.fire(
+							'How to play?',
+							'Use your mouse to move the paddle and hit the ball. The first player to score 10 points wins the game.',
+							'question'
+						  )
+					}}>HELP</button>
+
 				</div>
 			</div>
 			{id_game !== "" && role !== 0 && socket.connected ? <Playground role={role} id_game={id_game} socket={socket}/> : <div className='text-white'>Loading...</div> }
