@@ -506,10 +506,31 @@ export class UserService {
 
 		// check if user has at least 1 friend
 		const hasFriend = user.friends.length > 0;
+		let hasWon = false;
+		// if (hasPlayed) {
+		// 	// const games = this.prisma.game.findMany({
+		// 	// 	where: {
+		// 	// 		players: {
+		// 	// 			some: {
+		// 	// 				id: user.id
+		// 	// 			}
+		// 	// 		}
+		// 	// 	},
+		// 	// 	select: {
+		// 	// 		players: true,
+		// 	// 		score: true,
+		// 	// 	}
+		// 	// });
+		// 	console.log("555 games: ", user.games[0]);
+		// 	// hasWon = games.some((game) => {
+		// 	// 	let idx = game.players[0].id === user.id ? 0 : 1;
+		// 	// 	return game.score[idx] > game.score[1 - idx];
+		// 	// });
+		// }
 
 		return {
 		  hasPlayed: hasPlayed,
-		  hasWon: false, // need to change this
+		  hasWon: hasWon, // need to change this
 		  hasFriend: hasFriend,
 		};
 	}
@@ -581,6 +602,27 @@ export class UserService {
 		});
 
 		return { message: "Status updated to playing!" };
+	}
+
+	async getAvatarUrl(@Req() req: Request) {
+
+		console.log("getting avatar url...: ", req.headers.username);
+
+		const username = Array.isArray(req.headers.username)
+		  ? req.headers.username[0]
+		  : req.headers.username;
+
+		const user = await this.prisma.user.findUnique({
+		  where: {
+			username: username,
+		  },
+		  select: {
+			avatarUrl: true,
+		  },
+
+		});
+
+		return { avatarUrl: user.avatarUrl };
 	}
 
 	async editAvatarUrl(@Req() req: Request) {

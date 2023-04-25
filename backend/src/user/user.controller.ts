@@ -139,6 +139,12 @@ export class UserController {
 		// 	const user = this.userService.getfriend(data)
 		// 	return (user)
 	}
+
+	@Get('me/avatarurl/get')
+	getAvatarUrl(@Req() req: Request) {
+		return this.userService.getAvatarUrl(req);
+	}
+
 	@Post('me/avatarurl/edit')
 	editAvatarUrl(@Req() req: Request) {
 		return this.userService.editAvatarUrl(req);

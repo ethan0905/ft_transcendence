@@ -5,15 +5,17 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 interface ProfilePictureProps {
 	profilePicture: File | null;
+	avatarUrl: string;
 	handleUpload: ChangeEventHandler<HTMLInputElement>;
 }
 
-const ProfilePicture: React.FC<ProfilePictureProps> = ({profilePicture, handleUpload }) => {
+const ProfilePicture: React.FC<ProfilePictureProps> = ({profilePicture, handleUpload, avatarUrl }) => {
 	const [imageIsLoaded, setImageIsLoaded] = React.useState(false);
 
 	useEffect(() => {
 		if (profilePicture) {
 			setTimeout(() => {
+				console.log('Image avatar: ', avatarUrl);
 				setImageIsLoaded(true);
 			  }, 400); // 1 second delay
 		}
@@ -37,7 +39,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({profilePicture, handleUp
 						border: '#f8f8f8 4px solid',
 						margin: '10px 20px 10px 10px'
 					}}
-					src={profilePicture ? URL.createObjectURL(profilePicture) : "/public/sasuke.jpg"}
+					src={profilePicture ? URL.createObjectURL(profilePicture) : avatarUrl}
 				/>
 			) : (
 				<CircularProgress

@@ -249,27 +249,11 @@ export default function ProfilePage() {
 					'Content-Type': 'application/json',
 				},
 			});
-			const blob = await response.blob();
-			const file = new File([blob], 'filename.jpg', { type: 'image/jpeg' });
-			setProfilePicture(file);
-			// return data;
-		} catch (error) {
-
-			console.error(error);
-			// handle error
-		}
-	}
-
-	async function getDefaultProfilePicture(): Promise<any> {
-
-		try {
-			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/me/avatar/get', {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-					
-				},
-			});
+			if (response.status === 404) {
+				console.log("No profile picture found. Loading default profile picture...");
+				getDefaultProfilePicture();
+				return;
+			}
 			const blob = await response.blob();
 			const file = new File([blob], 'filename.jpg', { type: 'image/jpeg' });
 			setProfilePicture(file);
@@ -395,12 +379,53 @@ export default function ProfilePage() {
 
 	}
 
+	const [defaultProfilePicture, setDefaultProfilePicture] = useState('');
+
+	useEffect(() => {
+		if (token !== '')
+		{
+			const fetchDefaultProfilePicture = async () => {
+				getDefaultProfilePicture();
+			};
+			fetchDefaultProfilePicture();
+		}
+	}, [token]);
+
+	async function getDefaultProfilePicture(): Promise<any> {
+		
+		try {
+			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/users/me/avatarurl/get', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'Username': `${name}`,
+				},
+			});
+			const data = await response.json();
+			if (data)
+			{
+				// console.log("default : ", data.avatarUrl);
+				// setDefaultProfilePicture(data.avatarUrl);
+				const res = await fetch(data.avatarUrl);
+				const blob = await res.blob();
+				const filename = data.avatarUrl.substring(data.avatarUrl.lastIndexOf('/')+1);
+
+				// access file here
+				setProfilePicture(new File([blob], filename));
+			}
+		} catch (error) {
+			console.log(error);
+		}
+
+	}
+
+
 	return (
 		<>
 			<Sidebar />
 			<div className='ProfilePage'>
 				<div className='ProfilePage_header'>
-					<ProfilePicture profilePicture={profilePicture} handleUpload={handleUpload} />
+					<ProfilePicture profilePicture={profilePicture} avatarUrl={defaultProfilePicture} handleUpload={handleUpload} />
 					{/* <ProfilePicture profilePicture={avatar} handleUpload={handleUpload} /> */}
 					<div className='ProfilePage_info'>
 						<EditableText text={name} onSubmit={setUsernameInDatabase} />

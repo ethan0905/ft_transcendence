@@ -148,6 +148,11 @@ export default function UserPage() {
 					'Content-Type': 'application/json',
 				},
 			});
+			if (response.status === 404) {
+				console.log("No profile picture found. Loading default profile picture...");
+				getDefaultProfilePicture();
+				return;
+			}
 			const blob = await response.blob();
 			const file = new File([blob], 'filename.jpg', { type: 'image/jpeg' });
 			setProfilePicture(file);
@@ -438,6 +443,46 @@ export default function UserPage() {
 	}
 
 	let userStatusDot = getStatusLabel() as 'online' | 'offline' | 'ingame';
+
+	const [defaultProfilePicture, setDefaultProfilePicture] = useState('');
+
+	useEffect(() => {
+		if (token !== '')
+		{
+			const fetchDefaultProfilePicture = async () => {
+				getDefaultProfilePicture();
+			};
+			fetchDefaultProfilePicture();
+		}
+	}, [token]);
+
+	async function getDefaultProfilePicture(): Promise<any> {
+		
+		try {
+			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/users/me/avatarurl/get', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'Username': `${username}`,
+				},
+			});
+			const data = await response.json();
+			if (data)
+			{
+				// console.log("default : ", data.avatarUrl);
+				// setDefaultProfilePicture(data.avatarUrl);
+				const res = await fetch(data.avatarUrl);
+				const blob = await res.blob();
+				const filename = data.avatarUrl.substring(data.avatarUrl.lastIndexOf('/')+1);
+
+				// access file here
+				setProfilePicture(new File([blob], filename));
+			}
+		} catch (error) {
+			console.log(error);
+		}
+
+	}
 
 	return (
 		<>
