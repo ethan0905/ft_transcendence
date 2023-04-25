@@ -138,7 +138,7 @@ export default function GamePage() {
 				confirmButtonText: 'Yes',
 				cancelButtonText: 'No'
 			}).then((result) => {
-				if (result.isConfirmed) {
+				if (result.isConfirmed ) {
 					navigate(value);
 				}
 			})

@@ -108,9 +108,12 @@ const GameHistory = (props: TableProps) => {
 				<tbody style={{ paddingTop: '100px' }}>
 					{data.map((item, index) => (
 						<tr key={index} style={{ backgroundColor: 
-							(item.score[0] > item.score[1] && item.player1Name === userName) || 
-							(item.score[1] > item.score[0] && item.player1Name !== userName) 
-							? '#42f5b033' /* green */ : '#f5484233' /* red */
+							(item.score[0] >= item.score[1] && item.player1Name === userName) || 
+							(item.score[1] >= item.score[0] && item.player1Name !== userName) 
+							? 
+								(item.score[0] == item.score[1]) ? '#ffffff11' : '#42f5b033' /* green */ 
+							
+							: '#f5484233' /* red */
 						  }}>
 							<td style={lineTable}>{index + 1}</td>
 							{ item.player1Name == userName &&

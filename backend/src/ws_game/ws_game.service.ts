@@ -223,6 +223,7 @@ export class WsGameService {
 		let user = this.getUsernameFromId(client.id);
 		if (user === undefined)
 			return;
+
 		if (room !== undefined) {
 			console.log("LeaveRoom: " + room_name + " " + user + " P1 :" + room.player1 + " P2:" + room.player2)
 			if (room.player1 === user) {
@@ -233,15 +234,6 @@ export class WsGameService {
 					room.game.player2_score = 11;
 					room.game.is_playing = false;
 					room.game.ball.speed = 0;
-					console.log("EXITED ROOM");
-					this.prisma.game.update({
-						where: {
-							roomName: room_name,
-						},
-						data: {
-							score: [room.game.player1_score, room.game.player2_score],
-						}
-					})
 				}
 				server.to(room.name).emit('PlayerLeft', {player:1, score:[room.game.player1_score, room.game.player2_score]});
 				server.socketsLeave(room.name);
@@ -249,7 +241,6 @@ export class WsGameService {
 				// ajouter dans la bdd | efaccer la room de la liste
 				delete this.rooms[room_name];
 				server.emit("RoomDeleted", room_name);
-
 			}
 			else if (room.player2 === user) {
 				// this.clients[client_id].leave(room.name);
@@ -271,6 +262,7 @@ export class WsGameService {
 				server.to(room.name).emit('SpectatorLeft', room.spectators);
 			}
 		}
+		// })
 	}
 
 	startGame(room_name:string, server:Server): void {
