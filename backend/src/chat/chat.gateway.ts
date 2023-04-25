@@ -147,6 +147,11 @@ export class ChatGateway implements OnGatewayConnection {
     ) {
       if (this.clients[client.id] === undefined)
       return;
+      const chatInfo = await this.chatService.isDM(data.chatId);
+      if (chatInfo){
+        this.server.to(client.id).emit("DM:quit");
+        return;
+      }
     const quit = await this.chatService.quit_Chan(this.clients[client.id].username, data.chatId);
     client.leave(data.chatId.toString());
     this.server.to(client.id).emit("quited", {chatId:data.chatId});
@@ -262,6 +267,18 @@ export class ChatGateway implements OnGatewayConnection {
     console.log("chan unmuteed");
   }
 
+  @SubscribeMessage('CreateDm')
+  async createDm(@ConnectedSocket() client:Socket, @MessageBody() data:any){
+    const dmchannel = await this.chatService.createDmChannel(this.clients[client.id].username, data.username)
+    for (let key in this.clients){
+      if (this.clients[key].username === data.username){
+        this.server.to(key).emit("DM Created",{channelName:this.clients[client.id].username, id: dmchannel.id})
+        return;
+      }
+    }
+    this.server.to(client.id).emit("DM Created",{channelName:data.username, id: dmchannel.id})
+    return ;
+  }
   // @SubscribeMessage('update')
   // async update_chan(
   //   @MessageBody()  data: EditChannelCreateDto ,

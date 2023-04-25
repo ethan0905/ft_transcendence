@@ -115,6 +115,12 @@ const AlertSuccessfulQuit = () => MySwal.fire({
   confirmButtonColor: '#ff0000',
 });
 
+const AlertYouCannotLeaveDM = () => MySwal.fire({
+  title: 'You Cannot Leave DM',
+  icon: 'error',
+  confirmButtonText: 'Ok',
+  confirmButtonColor: '#ff0000',
+});
 
 export default function ChatContent(props: ChatContentProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -138,6 +144,9 @@ export default function ChatContent(props: ChatContentProps) {
 	}, [token]);
 
   useEffect(() => {
+    socket.on("DM:quit",() => {
+      AlertYouCannotLeaveDM();
+    })
     socket.on("banned", (value:any) => {
       let id = Number(location.pathname.split("/")[2]);
       if (id !== value.chatId)

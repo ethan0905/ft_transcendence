@@ -7,6 +7,8 @@ import { UserService } from 'src/user/user.service'
 import { Message, User } from '@prisma/client';
 import { AuthService } from 'src/auth/auth.service';
 import { JoinChanDto, EditChannelCreateDto } from 'src/chat/dto/edit-chat.dto';
+import { channel } from 'diagnostics_channel';
+import { use } from 'passport';
 
 @Injectable()
 export class ChatService {
@@ -423,10 +425,36 @@ export class ChatService {
             const source = await this.prisma.channel.findMany({
               where: {
                 members : { some : {accessToken : token}},
+                isDM:false,
               },
               select: {
                 id : true,
                 channelName: true,
+              },
+            });
+            return source;
+          } catch (error) {
+            console.log('get__channels error:', error);
+          }
+        }
+
+        async get__DmUser(token:string) {
+          try {
+            const source = await this.prisma.channel.findMany({
+              where: {
+                members : { some : {accessToken : token}},
+                isDM:true,
+              },
+              select: {
+                id : true,
+                members:{
+                  where:{
+                    NOT:{accessToken:token},
+                  },
+                  select:{
+                    username:true,
+                  }
+                }
               },
             });
             return source;
@@ -468,6 +496,7 @@ export class ChatService {
                 id : id,
               },
               select: {
+                isDM:true,
                 admins: {
                   select: {username: true,status: true,avatarUrl: true,id: true},
                 },
@@ -699,4 +728,109 @@ export class ChatService {
             })
             return Promise.all(userToInvite);
           }
+
+          // async getUserToDm(token:string){
+          //   const useralreadydm = await this.prisma.user.findMany({
+          //     where:{
+          //       accessToken:token,
+          //     },
+          //     select:{
+          //       members:{
+          //         where:{
+          //           isDM:true
+          //         },
+          //         select:{
+          //           members:{
+          //             where:{
+          //               NOT:{accessToken:token}
+          //             },
+          //             select:{
+          //               username:true,
+          //             }
+          //           },
+          //         }
+          //       }
+          //     }
+          //   })
+          // }
+          async getUserToDm(token:string){
+            const useralreadydm = await this.prisma.channel.findMany({
+              where:{
+                members:{
+                  some:{accessToken:token}
+                },
+                isDM:true,
+              },
+              select:{
+                members:{
+                  where:{
+                    NOT:{accessToken:token}
+                  },
+                  select:{
+                    username:true,
+                  }
+                }
+              }
+            })
+
+            console.log(useralreadydm);
+            let usernames = [];
+            if (useralreadydm.length > 0){
+              useralreadydm[0].members.forEach((value:any) => {
+                usernames.push(value.username);
+              })
+            }
+            const users = await this.prisma.user.findMany({
+              where:{
+                AND:{
+                  username:{
+                    notIn:usernames,
+                  },
+                  NOT:{accessToken:token}
+                }
+              },
+              select:{
+                username:true,
+              }
+            })
+            console.log(users);
+            let values = []
+            users.forEach((value:any) => {
+              values.push(value.username);
+            })
+            return (values);
+          }
+
+        async createDmChannel(username1:string, username2:string){
+          const channel = await this.prisma.channel.create({
+            data:{
+              channelName:"test",
+              password:'',
+              isPrivate:true,
+              isDM:true,
+              owner: {
+                connect: [{username : username1},{username:username2}]
+              },
+              admins: {
+                connect: [{username : username1},{username:username2}]
+              },
+              members: {
+                connect: [{username : username1},{username:username2}]
+              }
+            }
+          });
+          return channel;
+        }
+
+        async isDM(channelId:number){
+          const value = await this.prisma.channel.findUnique({
+            where:{
+              id:channelId,
+            },
+            select:{
+              isDM:true,
+            }
+          })
+          return value.isDM;
+        }
   }

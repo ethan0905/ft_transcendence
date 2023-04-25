@@ -21,30 +21,16 @@
   height: 45px;
   border-radius: 6px;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-  display: flex;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap:10px;
 }
 .btn:hover {
   background-color: #bf1e2d;
   transform: scale(1.02);
 }
-.btn i {
-  flex: 0.3;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 18px;
-  border-right: 1px solid #9d9696;
-}
-.btn span {
-  flex: 0.9;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: medium;
-  font-family: "Roboto", sans-serif;
-  font-weight: bold;
-  padding: 0px 6px;
-}
+
 .accordion-chats{
   width: 100%;
   display: flex;
