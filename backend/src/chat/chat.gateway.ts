@@ -273,7 +273,6 @@ export class ChatGateway implements OnGatewayConnection {
     for (let key in this.clients){
       if (this.clients[key].username === data.username){
         this.server.to(key).emit("DM Created",{channelName:this.clients[client.id].username, id: dmchannel.id})
-        return;
       }
     }
     this.server.to(client.id).emit("DM Created",{channelName:data.username, id: dmchannel.id})
