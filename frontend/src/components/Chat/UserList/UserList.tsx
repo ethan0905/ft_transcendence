@@ -274,6 +274,28 @@ export default function UserList() {
       });
     });
 
+    socket.on("set-admin", (value:any) => {
+      let newAdmin:any = undefined;
+      setAllMembers((data:any) => {
+        for (var i in data){
+          if (data[i].username === value.username){
+            newAdmin = data[i];
+            return data.filter((item:any) => item.username !== value.username);
+          }
+        }
+        return data;
+      });
+      if (newAdmin === undefined)
+        return;
+      setAllAdmins((data:any) => {
+        for (var i in data){
+          if (data[i].username === value.username)
+            return data;
+        }
+        return [...data, {username:newAdmin.username, avatarUrl:newAdmin.avatarUrl, id:newAdmin.id, status:newAdmin.status, active:newAdmin.active}];
+      });
+    });
+
     socket.on("quit", (value:any) => {
       setAllAdmins((data:any) => {return data.filter((item:any) => item.username !== value.username)});
       setAllMembers((data:any) => {return data.filter((item:any) => item.username !== value.username)});
