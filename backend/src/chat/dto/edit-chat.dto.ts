@@ -4,13 +4,13 @@ export class EditChannelCreateDto{
     @IsNumber()
     channelid?: number;
 
-    @IsString()
-    @IsOptional()
-    newname?: string;
+    // @IsString()
+    // @IsOptional()
+    // newname?: string;
 
-    @IsOptional()
-    @IsBoolean()
-    isPrivate?: boolean;
+    // @IsOptional()
+    // @IsBoolean()
+    // isPrivate?: boolean;
 
     @IsOptional()
     @IsBoolean()

@@ -10,18 +10,32 @@ import CSS from 'csstype';
 
 const MySwal = withReactContent(Swal);
 interface FormValues {
-  name: string;
+  // name: string;
   password: string;
 }
 
 const initialFormValues: FormValues = {
-  name: '',
+  // name: '',
   password: '',
 };
 
 const FormButton = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [formValues, setFormValues] = useState<FormValues>(initialFormValues);
+  const socket = useContext(SocketContext);
+  const [token, setToken] = useState<string>('');
+  const [username, setUsername] = useState<string>('');
+
+  useEffect(() => {
+    if (token !== ''){
+      getUsername(token);
+    }
+		let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+		if (cookieToken) {
+			setToken(cookieToken);
+		}
+	}, [token]);
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setFormValues({
@@ -32,10 +46,33 @@ const FormButton = () => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // console.log('Form submitted:', formValues);
-    setFormValues(initialFormValues);
+    console.log('Form submitted:', formValues);
+    let id = Number(location.pathname.split("/")[2]);
+    socket.emit('update', { channelid:id, Password:formValues.password, username: username})
+    // setFormValues(initialFormValues);
     setIsOpen(false);
   }
+
+  async function getUsername(accessToken: string): Promise<any> {
+    try {
+        const response = await fetch('http://localhost:3333/users/me/username/get', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `${accessToken}`
+          },
+        });
+        const data = await response.json();
+        if (data) {
+          setUsername(data.username);
+        }
+        // return data;
+      } catch (error) {
+  
+        console.error(error);
+        // handle error
+      }
+    }
 
   return (
     <div  >
@@ -45,10 +82,10 @@ const FormButton = () => {
           <div className="modal-content">
             <span className="close" onClick={() => setIsOpen(false)}>&times;</span>
             <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="name">Edit name:</label>
-              <input type="text" name="name" value={formValues.name} onChange={handleChange}/>
-            </div>
+            {/* <div className="form-group"> */}
+              {/* <label htmlFor="name">Edit name:</label> */}
+              {/* <input type="text" name="name" value={formValues.name} onChange={handleChange}/> */}
+            {/* </div> */}
             <div className="form-group">
               <label htmlFor="email">Edit password:</label>
               <input type="password" name="password" value={formValues.password} onChange={handleChange} />

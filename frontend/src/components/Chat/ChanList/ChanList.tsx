@@ -131,6 +131,7 @@ const FormButton = () => {
     if (name === 'name') {
       setName(value);
     } else if (name === 'password') {
+      console.log("passworod her : ", value);
       setPassword(value);
     } else if (name === 'isPrivate') {
       setIsPrivate(checked);
