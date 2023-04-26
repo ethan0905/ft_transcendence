@@ -83,7 +83,7 @@ export class ChatController {
 		return {MyDms:mydms, MyChannels:channels, ChannelsToJoin:channels_to_join};
 	}
 
-	@Get('/channels/:id')
+	@Get('/channels/:id/name')
 	async getChannelName(@Param("id") id: string)
 	{
 		const channel_name = await this.chat_service.get__chanNamebyId(parseInt(id));

@@ -30,7 +30,9 @@ const GameTable = (props: TableProps) => {
 	<div className='tableau'>
 	  <table>
 			<thead>
-				<th colSpan={6} className='maintitleTab'>Live Matches</th>
+				<tr>
+					<th colSpan={6} className='maintitleTab'>Live Matches</th>
+				</tr>
 				<tr className='titlesTab'>
 					<th>#</th>
 					<th className='cellPlayer'>P1</th>

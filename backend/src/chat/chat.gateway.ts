@@ -14,7 +14,7 @@ import { ValidationPipe, UsePipes } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { PrismaClient } from '@prisma/client';
 import { QuitChanDto, JoinChanDto, ActionsChanDto} from "./dto/edit-chat.dto"
-
+import { EditChannelCreateDto } from './dto/edit-chat.dto';
 
 export interface User {
   id: number;
@@ -140,6 +140,8 @@ export class ChatGateway implements OnGatewayConnection {
     @MessageBody()  data: number ,
     @ConnectedSocket() client : Socket,
   ) {
+    if(this.clients[client.id] === undefined)
+      return;
     const user = await this.userService.getUser(this.clients[client.id].username);
     const userIsInChan = await this.chatService.userIsInChan(user.accessToken, data);
     if (userIsInChan)
@@ -303,20 +305,19 @@ export class ChatGateway implements OnGatewayConnection {
         console.log("new admin");
   }
 
-  // @SubscribeMessage('update')
-  // async update_chan(
-  //   @MessageBody()  data: EditChannelCreateDto ,
-  //   @ConnectedSocket() client : Socket,
-  // ) {
-  //   if (this.clients[client.id] === undefined)
-  //     return;
-  //   const res : number = await this.chatService.update_chan(data);
-  //   if (res == 1)
-  //     console.log("Password is empty but chan need password");
-  //   else if (res == 2)
-  //     console.log("not an admin");
-  //   else
-  //     console.log("chan updated");
-  // }
+  @SubscribeMessage('update')
+  async update_chan(
+    @MessageBody()  data: EditChannelCreateDto ,
+    @ConnectedSocket() client : Socket,
+  ) {
+    
+    const res : number = await this.chatService.update_chan(data);
+    if (res == 1)
+      client.broadcast.emit('Password is empty but chan need password', data);
+    else if (res == 2)
+      client.broadcast.emit('not an admin', data);
+    else
+      client.broadcast.emit('chan updated', data);
+  }
 
 }

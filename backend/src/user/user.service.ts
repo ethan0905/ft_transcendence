@@ -609,23 +609,34 @@ export class UserService {
 
 	async getAvatarUrl(@Req() req: Request) {
 
-		console.log("getting avatar url...: ", req.headers.username);
+		
+		try {
+			console.log("getting avatar url...: ", req.headers.username);
+	
+			const username = Array.isArray(req.headers.username)
+			  ? req.headers.username[0]
+			  : req.headers.username;
 
-		const username = Array.isArray(req.headers.username)
-		  ? req.headers.username[0]
-		  : req.headers.username;
+			if (!username) {
+				return;
+			}
 
-		const user = await this.prisma.user.findUnique({
-		  where: {
-			username: username,
-		  },
-		  select: {
-			avatarUrl: true,
-		  },
+			const user = await this.prisma.user.findUnique({
+			where: {
+				username: username,
+			},
+			select: {
+				avatarUrl: true,
+			},
 
-		});
+			});
 
-		return { avatarUrl: user.avatarUrl };
+			return { avatarUrl: user.avatarUrl };
+		
+		} catch (error) {
+			console.log("error: ", error);
+		}
+
 	}
 
 	async editAvatarUrl(@Req() req: Request) {
