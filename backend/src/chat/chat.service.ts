@@ -644,13 +644,13 @@ export class ChatService {
             if (info.Password != undefined && info.Password != null && info.Password != "")
             {
               const salt = await bcrypt.genSalt();
-
               hash = await bcrypt.hash(info.Password, salt);
               // console.log("hash updated !:" + hash);
               info.isPassword = true;
             }
             else
             {
+              console.log("IS PASSWORD NULL ?");
               info.isPassword = false;
             }
             // console.log("isPass : ", isPass);
@@ -668,7 +668,7 @@ export class ChatService {
                   },
                   data: {
                     password : hash,
-                    isPassword : info.isPassword || null,
+                    isPassword : info.isPassword,
                     // isPrivate : info.isPrivate,
                     //isPrivate : info.Private,
                   }
