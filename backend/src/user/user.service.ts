@@ -646,7 +646,7 @@ export class UserService {
 			accessToken: req.body.token,
 		  },
 		  data: {
-			avatarUrl: "http://localhost:3333/files/" + req.body.username,
+			avatarUrl: `${process.env.BACKEND_URL}` + "/files/" + req.body.username,
 		  },
 		});
 

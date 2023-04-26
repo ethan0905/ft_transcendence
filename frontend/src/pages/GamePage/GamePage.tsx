@@ -75,7 +75,7 @@ async function getRooms() {
 	let config = {
 		method: 'get',
 		maxBodyLength: Infinity,
-		url: "http://localhost:3333/ws-game/rooms",
+		url: `${import.meta.env.VITE_BACKEND_URL}` + "/ws-game/rooms",
 		headers: {}
 	  };
 
@@ -91,7 +91,7 @@ async function getRooms() {
 }
 
 export default function GamePage() {
-	const [socket, setSocket] = useState(io("http://localhost:4343/ws-game", {transports:["websocket"], autoConnect:false, reconnection:true,reconnectionAttempts: 3, reconnectionDelay: 1000}));
+	const [socket, setSocket] = useState(io(`${import.meta.env.VITE_BACKEND_URL}` + "/ws-game", {transports:["websocket"], autoConnect:false, reconnection:true,reconnectionAttempts: 3, reconnectionDelay: 1000}));
 	// const data = [];
 	let location = useLocation();
 	const navigate = useNavigate();

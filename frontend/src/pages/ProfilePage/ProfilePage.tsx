@@ -126,7 +126,7 @@ export default function ProfilePage() {
 				},
 				body: JSON.stringify({ token, twoFactorActivated: true })
 			});
-			// await axios.post('http://localhost:3333/auth/2fa/activated', { token, twoFactorActivated: twoFAActivated }).then(response => {
+			// await axios.post(`${import.meta.env.VITE_BACKEND_URL}` + '/auth/2fa/activated', { token, twoFactorActivated: twoFAActivated }).then(response => {
 
 			// console.log(response);
 			// }).catch(error => {
@@ -145,7 +145,7 @@ export default function ProfilePage() {
 					'Authorization': `${accessToken}`
 				},
 			});
-			// const response = await axios.get('http://localhost:3333/auth/2fa/status'
+			// const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}` + '/auth/2fa/status'
 			return response;
 		} catch (error) {
 

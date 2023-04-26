@@ -25,7 +25,7 @@ export interface User {
 @UsePipes(new ValidationPipe())
  @WebSocketGateway({
      cors: {
-     origin: 'http://localhost:3080',
+     origin: `${process.env.SOCKET_URL}`,
    },
    namespace: 'chat',
   })
