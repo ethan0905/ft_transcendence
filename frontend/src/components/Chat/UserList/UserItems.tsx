@@ -132,14 +132,14 @@ const UserItems = ({ active, animationDelay, image, name , privilege, category}:
       </AccordionSummary>
       <AccordionDetails>
         <div className="buttons" >
-          <button onClick={() => navigate('/Profile/' + name)}>Go to Profile</button>
+          <button onClick={() => navigate('/Profile/' + name)}>See Profile</button>
 
           { username !== name && (
             <>
+              {privilege && (category === "Admins" || category === "Members") ?<button onClick={() => socket.emit("set-admin", {username:name, chatId:Number(location.pathname.split("/")[2])})}>Set Admin</button> : null}
               {privilege && (category === "Admins" || category === "Members" || category === "Muted" ) ?<button onClick={() => socket.emit("kick", {username:name, chatId:Number(location.pathname.split("/")[2])})}>Kick</button> : null}
               {privilege && (category === "Admins" || category === "Members" || category === "Muted" ) ?<button onClick={() => socket.emit("ban", {username:name, chatId:Number(location.pathname.split("/")[2])})}>Ban</button> : null}
               {privilege && (category === "Admins" || category === "Members") ?<button onClick={() => socket.emit("mute", {username:name, chatId:Number(location.pathname.split("/")[2])})}>Mute</button> : null}
-              {privilege && (category === "Admins" || category === "Members") ?<button onClick={() => socket.emit("set-admin", {username:name, chatId:Number(location.pathname.split("/")[2])})}>Set Admin</button> : null}
               {privilege && category === "Muted" ? <button onClick={() => socket.emit("unmute", {username:name, chatId:Number(location.pathname.split("/")[2])})}>Unmute</button> : null}
               {privilege && category === "Banned" ? <button onClick={() => console.log("unban")}>Unban</button> : null}
             </>

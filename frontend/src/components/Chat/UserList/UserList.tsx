@@ -61,9 +61,7 @@ async function getAllUserInChat(id: number,accessToken: string){
 function ListSection({name, listUsers, privilege}: {name: string, listUsers: any, privilege: boolean}){
   return (
     <div className='list__section'>
-      <div className="userlist__heading">
-        <h2 style={{fontFamily: 'Kocak', color: 'white', textShadow: '1px 1px 1px black'}}>{name}</h2>
-      </div>
+      <h2>{name}</h2>
       <div className="userlist__items">
         {listUsers.map((item:any, index:number) => {
           return (
@@ -323,22 +321,33 @@ export default function UserList() {
 
   return (
       <div className="main__userlist">
+
         <ListSection name="Admins" listUsers={allAdmins} privilege={channelStatus}/>
-        <ListSection name="Members" listUsers={allMembers} privilege={channelStatus}/>
-        <ListSection name="Muted" listUsers={allMuted} privilege={channelStatus}/>
-        <ListSection name="Banned" listUsers={allBanned} privilege={channelStatus}/>
-        <div className="flex flex-col gap-[5px] w-1/2">
+
+        <div id='CommandBox' className="flex flex-col gap-[5px] w-1/2">
           {channelStatus && <button className='button__inviteChannel' onClick={() => {
             InviteFriendChannel(Number(location.pathname.split("/")[2]),token).then((value:any) => {
               if (value.confirm){
                 socket.emit("invit", {username:value.value, chatId:Number(location.pathname.split("/")[2])})
               }
             })
-          }}>Invite</button>}
+          }}>
+            <i className='fa fa-plus'> </i>
+            <span>Invite</span>
+          </button>}
+
           <button className='button__quitChannel' onClick={() => {
             socket.emit("quit", {chatId:Number(location.pathname.split("/")[2])});
-          }}>Quit Channel</button>
+          }}>
+            <i className='fa fa-times'></i>
+            <span>Quit Channel</span>
+            </button>
         </div>
+       
+        <ListSection name="Members" listUsers={allMembers} privilege={channelStatus}/>
+        <ListSection name="Muted" listUsers={allMuted} privilege={channelStatus}/>
+        <ListSection name="Banned" listUsers={allBanned} privilege={channelStatus}/>
+
       </div>
     );
   
