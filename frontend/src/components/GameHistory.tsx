@@ -81,7 +81,7 @@ const GameHistory = (props: TableProps) => {
   
 	return (
 	<div style={{overflowY: 'auto', minWidth: '60%', height: '100%', borderRadius: '10px',}}>
-			<table style={{ borderCollapse: 'collapse', width: '100%', height:'100%' }}>
+			<table style={{ borderCollapse: 'collapse' }}>
 
 				<thead style={{ position: 'sticky', top: '0' }}>
 					<tr>
@@ -106,13 +106,12 @@ const GameHistory = (props: TableProps) => {
 				</thead>
 
 				<tbody style={{ paddingTop: '100px' }}>
-					{data.map((item, index) => (
+					{data.length > 0 ? (
+						data.map((item, index) => (
 						<tr key={index} style={{ backgroundColor: 
 							(item.score[0] >= item.score[1] && item.player1Name === userName) || 
-							(item.score[1] >= item.score[0] && item.player1Name !== userName) 
-							? 
-								(item.score[0] == item.score[1]) ? '#ffffff11' : '#42f5b055' /* green */ 
-							
+							(item.score[1] >= item.score[0] && item.player1Name !== userName) ? 
+							(item.score[0] == item.score[1]) ? '#ffffff11' : '#42f5b055' /* green */ 
 							: '#f5484255' /* red */
 						  }}>
 							<td style={lineTable}>{index + 1}</td>
@@ -138,18 +137,11 @@ const GameHistory = (props: TableProps) => {
 
 							<td style={lineTable}>{item.score.at(0)} - {item.score.at(1)}</td>
 							<td style={lineTable}>{item.date.split('T').at(0)}-[{item.date.split('T').at(1)?.split('.').at(0)}]</td>
-						</tr>))}
-					{/* {Array(9 - data.length).fill('').map((item, index) => (
-						<tr style={lineTable} key={data.length + index}>
-								<td>-</td>
-								<td>-</td>
-								<td>VS</td>
-								<td>-</td>
-								<td>-</td>
-								<td>-</td>
-
-						</tr>
-					))} */}
+						</tr>))
+						) : (
+						<tr style={lineTable}><td colSpan={6}>No match found</td></tr>
+						)
+					}
 				</tbody>
 			</table>
 		</div>
@@ -178,7 +170,7 @@ const titleTable: CSS.Properties = {
 const lineTable: CSS.Properties = {
 	borderBottom: '1px solid #ddd',
 	textAlign: 'center',
-	// backgroundColor: '#ffffff55',
+	backgroundColor: '#fff9f932',
 	height: '75px',
 	fontWeight: 'bold',
 	color: 'white',
