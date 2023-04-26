@@ -404,6 +404,12 @@ export class ChatService {
             },
             select: {
               id: true,
+              owner:{
+                select: {
+                  avatarUrl: true,
+                  username:true,
+                }
+              },
               createdAt: true,
               message: true,
               userId: true,
@@ -628,7 +634,20 @@ export class ChatService {
                     userId:{
                       notIn:blockedUser,
                     }
-                  }
+                  },
+                  select: {
+                    id: true,
+                    createdAt: true,
+                    message: true,
+                    userId: true,
+                    channelId: true,
+                    owner:{
+                      select:{
+                        username:true,
+                        avatarUrl:true,
+                      },
+                    },
+                  },
                 },
               },
             });

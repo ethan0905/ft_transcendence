@@ -134,7 +134,8 @@ type ChatItm = {
   createdAt: Date,
   message: string,
   userId: number,
-  channelId: number
+  channelId: number,
+  owner:any
 };
 
 type ChatContentProps = {};
@@ -368,7 +369,9 @@ export default function ChatContent(props: ChatContentProps) {
           key={index}
           user={itm.userId === userID ? "me" : "other"}
           msg={itm.message}
-          image={"https://cdn.pixabay.com/photo/2013/04/11/19/46/building-102840__480.jpg"}
+          image={itm.owner.avatarUrl}
+          username={itm.owner.username}
+          time={itm.createdAt}
         />
       );
     })}

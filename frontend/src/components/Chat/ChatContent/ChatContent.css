@@ -55,6 +55,7 @@
   justify-content: flex-end;
   align-items: flex-end;
   margin-bottom: 15px;
+  margin-right: 10px;
   transition: all 0.3s ease;
   transform: scale(0);
   transform-origin: right;
@@ -103,12 +104,28 @@
   color: #8693d3;
   user-select: none;
 }
+
+.chat__item__content div:first-child{
+  font-size: smaller;
+  font-weight: bolder;
+  color: #D2B48C;
+}
+
+.chat__item__content div:last-child{
+  font-size: smaller;
+  font-weight: light;
+  color: #D2B48C;
+  text-align: right;
+}
+
 .chat__msg {
   user-select: none;
+  overflow-wrap: break-word;
 }
 .chat__item.other {
   flex-direction: row-reverse;
   transform-origin: left;
+  margin-left: 10px;
 }
 .chat__item.other .chat__item__content {
   background-color: #060606fd;
