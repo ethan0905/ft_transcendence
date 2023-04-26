@@ -91,9 +91,18 @@ export class ChatGateway implements OnGatewayConnection {
     @ConnectedSocket() client : Socket,
   ) {
     const chat = await this.chatService.newMsg(data, this.clients[client.id].id);
+    const except_user = await this.chatService.getExceptUser(data.chatId, this.clients[client.id].id);
+    let except = await this.server.in(data.chatId.toString()).fetchSockets().then((sockets) => {
+      let except_user_socket = [];
+      sockets.forEach((socket) => {
+        if (except_user.some((user) => user.username === this.clients[socket.id].username))
+          except_user_socket.push(socket.id);
+      });
+      return except_user_socket;
+    });
     if (chat == null)
       return "error";
-    this.server.to(data.chatId.toString()).emit("NewMessage",chat); // emit to the room
+    this.server.to(data.chatId.toString()).except(except).emit("NewMessage",chat); // emit to the room
   }
 
   @SubscribeMessage('joinNewChannel')
@@ -131,6 +140,8 @@ export class ChatGateway implements OnGatewayConnection {
     @MessageBody()  data: number ,
     @ConnectedSocket() client : Socket,
   ) {
+    if(this.clients[client.id] === undefined)
+      return;
     const user = await this.userService.getUser(this.clients[client.id].username);
     const userIsInChan = await this.chatService.userIsInChan(user.accessToken, data);
     if (userIsInChan)

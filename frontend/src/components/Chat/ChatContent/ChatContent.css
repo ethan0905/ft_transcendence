@@ -18,7 +18,8 @@
 }
 .content__header h1 {
   font-family: 'Kocak', sans-serif;
-  text-shadow: white 1px 1px 1px;
+  text-shadow: white 2px 1px 1px;
+  font-size: 2rem;
 }
 .content__body {
   padding-top: 10px;
@@ -43,6 +44,7 @@
   color: #5e5c5c;
   cursor: pointer;
   padding-right: 10px;
+  font-size: 1.2rem;
 }
 .btn-nobg:hover {
   color: #fffcfc;

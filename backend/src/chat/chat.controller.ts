@@ -83,7 +83,7 @@ export class ChatController {
 		return {MyDms:mydms, MyChannels:channels, ChannelsToJoin:channels_to_join};
 	}
 
-	@Get('/channels/:id')
+	@Get('/channels/:id/name')
 	async getChannelName(@Param("id") id: string)
 	{
 		const channel_name = await this.chat_service.get__chanNamebyId(parseInt(id));
@@ -157,11 +157,7 @@ export class ChatController {
 		const listUsers = await this.chat_service.getUserToDm(req.headers["authorization"])
 		return (listUsers);
 	}
-	
-	@Get('/blockedUsers')
-	async getUsersBlocked(@Req() req:Request){
-		return this.chat_service.getUserBlocked(req.headers["authorization"]);
-	}
+
 	// @Post('/channel/quit')
 	// async quit_Channel(@Body() dto: QuitChanDto)
 	// {

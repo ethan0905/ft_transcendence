@@ -77,6 +77,21 @@ async function getAllMessages(id_channel:number, accessToken:string){
   return (value);
 }
 
+async function getChannelName(id_channel:number, accessToken:string){
+  let config = {
+    method: 'get',
+    maxBodyLength: Infinity,
+    url: `${import.meta.env.VITE_BACKEND_URL}` + '/chat/channels/' + id_channel+"/name",
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `${accessToken}`
+    }
+  };
+  
+  const value = axios.request(config)
+  return (value);
+}
+
 type ChatItm = {
   id: number,
   createdAt: Date,
@@ -127,7 +142,7 @@ export default function ChatContent(props: ChatContentProps) {
   const navigate = useNavigate();
   let location = useLocation();
   const socket = useContext(SocketContext);
-  const [channel_name,setChannel_name] = useState<string>("OK")
+  const [channel_name,setChannel_name] = useState<string>("Channel Name")
   const [chat, setChat] = useState<ChatItm[]>([]);
   const [msg, setMsg] = useState<string>('');
   const [userID, setUserID] = useState<number>()
@@ -233,6 +248,9 @@ export default function ChatContent(props: ChatContentProps) {
           navigate('/Chat');
         }
       });
+      getChannelName(id, token).then((values:any) => {
+        setChannel_name(values.data.channelName);
+      })
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   }, [location.pathname, token]) //mistake was here
@@ -242,9 +260,7 @@ export default function ChatContent(props: ChatContentProps) {
         
   <div className="content__header">
     <div></div>
-    <h1>
-      {channel_name}
-    </h1>
+    <h1>{channel_name}</h1>
     <FormButton/>
   </div>
 

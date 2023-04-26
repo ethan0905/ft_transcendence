@@ -141,7 +141,7 @@ const FormButton = () => {
     <>
       <button className="btn" onClick={() => setIsOpen(true)}>
         <i className='fa fa-plus'> </i>
-        <span>New Channel</span>
+        <span>Create Channel</span>
       </button>
 
       {isOpen && (
@@ -375,7 +375,6 @@ export default function ChanList() {
       // getUsername();
     if (token !== ''){
       getAllChannels(token).then((value: any) => {
-        console.log(value);
         setMyDms(value.MyDms)
         setMyChannels(value.MyChannels);
         setChannelToJoin(value.ChannelsToJoin);
@@ -387,14 +386,17 @@ export default function ChanList() {
     <div className="main__chatlist">
 
       <div className="chatlist__heading">
-        <h2 style={{fontFamily: 'Kocak', color: 'white', textShadow: '1px 1px 1px black'}}>Channels</h2>
+        <h2>Channels</h2>
       </div>
       <button className='btn' onClick={() => {
         CreateDm(token).then((values:any) => {
           if (values.confirm)
             socket.emit("CreateDm", {username:values.value});
         })
-      }}>New DM</button>
+      }}>
+        <i className='fa fa-plus'> </i>
+        <span>Private Message</span>
+      </button>
       <FormButton />
       <div className='accordion-chats'>
           <MenuChat name={"My Dms"} channels={myDms}/>
