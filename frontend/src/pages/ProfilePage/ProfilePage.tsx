@@ -238,17 +238,25 @@ export default function ProfilePage() {
 			};
 			fetchData();
 		}
-	}, [name]);
+		let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+		if (cookieToken) {
+			setToken(cookieToken);
+		}
+	}, [token, name]);
 
 	async function getProfilePicture(): Promise<any> {
 
-		try {
+		// try {
 			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/files/' + name, {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
+					'Username': `${name}`,
 				},
 			});
+			// console.log("res equal: ", response);
+			// const data = await response.json();
+			// console.log("data equal: ", data);
 			if (response.status === 404) {
 				console.log("No profile picture found. Loading default profile picture...");
 				getDefaultProfilePicture();
@@ -258,11 +266,11 @@ export default function ProfilePage() {
 			const file = new File([blob], 'filename.jpg', { type: 'image/jpeg' });
 			setProfilePicture(file);
 			// return data;
-		} catch (error) {
+		// } catch (error) {
 
-			console.error(error);
-			// handle error
-		}
+		// 	console.error(error);
+		// 	// handle error
+		// }
 	}
 
 	const [friendList, setFriendList] = useState([]);
@@ -402,6 +410,7 @@ export default function ProfilePage() {
 				},
 			});
 			const data = await response.json();
+			console.log("data equal: ", data);
 			if (data)
 			{
 				// console.log("default : ", data.avatarUrl);

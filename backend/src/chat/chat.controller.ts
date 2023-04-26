@@ -97,9 +97,23 @@ export class ChatController {
 		const userIsInChan = await this.chat_service.userIsInChan(req.headers["authorization"],parseInt(id));
 		if (userIsInChan)
 			return false;
-		if (pwd.password === '')
+		if (pwd.password === '' || pwd.password === null || pwd.password === undefined)
 			return false;
 		return true;
+	}
+
+	@Get('/channels/:id/isAdmin')
+	async getIsAdmin(@Req() req:Request, @Param("id") id: string)
+	{	
+		const user = await this.chat_service.getUsername(req.headers["authorization"])
+		const idChan : number = parseInt(id);
+		const users = await this.chat_service.get__UserIn(idChan);
+
+		if (users.length === 0 || user === null)
+			return false;
+		if (users[0].admins.find((element) => element.username === user.username)!== undefined)
+			return true;
+		return false;
 	}
 
 	@Get('/channels/users/:id')

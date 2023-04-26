@@ -9,6 +9,8 @@ import { AuthService } from 'src/auth/auth.service';
 import { JoinChanDto, EditChannelCreateDto } from 'src/chat/dto/edit-chat.dto';
 import { channel } from 'diagnostics_channel';
 import { use } from 'passport';
+import * as bcrypt from 'bcrypt';
+
 
 @Injectable()
 export class ChatService {
@@ -19,16 +21,28 @@ export class ChatService {
         ) {}
 
         async newChannel(info: ChannelCreateDto, username: string) {
-            const password = info.Password ?? null;
+
+          let hash = null;
+          info.isPassword = false;
+            if (info.Password != null && info.Password != undefined && info.Password != "")
+            {
+              const salt = await bcrypt.genSalt();
+
+              hash = await bcrypt.hash(info.Password, salt);
+              console.log("hash:" + hash);
+              info.isPassword = true;
+            }
+
             if (info.isPrivate === undefined)
               info.isPrivate = false;
-            if (info.isPassword === undefined)
-              info.isPassword = false;
+            // if (info.Password != null && info.Password != undefined && info.Password != "")
+            //   info.isPassword = true;
+            console.log(info);
             const user = await this.userService.getUser(username);
             const channel = await this.prisma.channel.create({
               data: {
                 channelName: info.chatName,
-                password: password,
+                password: hash,
                 isPrivate: info.isPrivate,
                 isPassword: info.isPassword,
                 owner: {
@@ -282,8 +296,13 @@ export class ChatService {
             else if (isban)
             return (2);
           }
-          else if (chan.password !== ''){
-            if (data.Password === undefined || data.Password != chan.password)
+          else if (chan.password !== '' && chan.password !== null && chan.password !== undefined){
+            console.log("chan pass : ", chan.password, "data pass : ", data.Password);
+            const isMatch = await bcrypt.compare(data.Password, chan.password);
+
+            console.log("is mathc ? " + isMatch);
+
+            if (!isMatch)
               return (3);
           }
           await this.prisma.channel.update(
@@ -641,40 +660,56 @@ export class ChatService {
         async update_chan(info: EditChannelCreateDto) {
 
             const idchat = info.channelid;
-            if (info.isPrivate == undefined)
-              info.isPrivate = false;
-            const isPass = info.isPassword.valueOf();
+            // if (info.isPrivate == undefined)
+            //   info.isPrivate = false;
+            // const isPass = info.isPassword.valueOf();
+            let hash = "";
+            if (info.Password != undefined && info.Password != null && info.Password != "")
+            {
+              const salt = await bcrypt.genSalt();
+              hash = await bcrypt.hash(info.Password, salt);
+              // console.log("hash updated !:" + hash);
+              info.isPassword = true;
+            }
+            else
+            {
+              // console.log("IS PASSWORD NULL ?");
+              info.isPassword = false;
+            }
+            // console.log("isPass : ", isPass);
             if (await this.isAdmin_Chan(info.username, info.channelid) == true)
             {
-              if (isPass)
+              if (info.isPassword)
                 if (!info.Password)
                   return (1);
+              if (hash == "")
+                hash = null;
               await this.prisma.channel.update(
                 {
                   where: {
                     id: idchat,
                   },
                   data: {
-                    password : info.Password,
-                    isPassword : info.isPassword || null,
-                    isPrivate : info.isPrivate,
+                    password : hash,
+                    isPassword : info.isPassword,
+                    // isPrivate : info.isPrivate,
                     //isPrivate : info.Private,
                   }
                 }
               )
-              if (info.newname)
-              {  
-                await this.prisma.channel.update(
-                  {
-                    where: {
-                      id: idchat,
-                    },
-                    data: {
-                      channelName : info.newname,
-                    },
-                  }
-                )
-              }
+              // if (info.newname)
+              // {  
+              //   await this.prisma.channel.update(
+              //     {
+              //       where: {
+              //         id: idchat,
+              //       },
+              //       data: {
+              //         channelName : info.newname,
+              //       },
+              //     }
+              //   )
+              // }
               return (0);
             }
             else

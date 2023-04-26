@@ -111,7 +111,7 @@
   margin: 0;
   padding: 0;
   color: black;
-  font-weight: 520;
+  /* font-weight: 520; */
   font-size: 15px;
 }
 .chatlist__item .userMeta span {

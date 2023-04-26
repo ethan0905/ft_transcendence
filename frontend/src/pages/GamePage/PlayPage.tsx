@@ -82,7 +82,8 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 	const [token, setToken] = useState<string>("");
 	const [colorP1, setColorP1] = useState<string>("rgba(0, 0, 255, 1)");
 	const [colorP2, setColorP2] = useState<string>("rgba(255, 0, 0, 1)");
-	const [mapUrl, setMapUrl] = useState<string>("../../public/endvalley.png");
+	// const [mapUrl, setMapUrl] = useState<string>("");
+	const [mapUrl, setMapUrl] = useState<string>("../../public/whitebg.png");
 	const [colorBall, setColorBall] = useState<string>("yellow");
 
 	function getCanvasSize(){

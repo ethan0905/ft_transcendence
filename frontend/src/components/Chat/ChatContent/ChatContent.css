@@ -23,7 +23,7 @@
 }
 .content__body {
   padding-top: 10px;
-  overflow-y: scroll;
+  overflow-y: auto;
   width: 100%;
   flex-grow: 1;
 }
@@ -86,7 +86,7 @@
   padding: 1px;
 }
 .chat__item__content {
-  background-color: #a11826;
+  background-color: #af0f0f;
   color: #ffffff;
   padding: 15px;
   border-radius: 10px 10px 0 10px;

@@ -10,18 +10,20 @@ import CSS from 'csstype';
 
 const MySwal = withReactContent(Swal);
 interface FormValues {
-  name: string;
+  // name: string;
   password: string;
 }
 
 const initialFormValues: FormValues = {
-  name: '',
+  // name: '',
   password: '',
 };
 
 const FormButton = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [formValues, setFormValues] = useState<FormValues>(initialFormValues);
+  const socket = useContext(SocketContext);
+  
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setFormValues({
@@ -29,13 +31,48 @@ const FormButton = () => {
       [name]: value,
     });
   };
-
+  
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // console.log('Form submitted:', formValues);
-    setFormValues(initialFormValues);
+    console.log('Form submitted:', formValues);
+    let id = Number(location.pathname.split("/")[2]);
+    socket.emit('update', { channelid:id, Password:formValues.password, username: username})
+    // setFormValues(initialFormValues);
     setIsOpen(false);
   }
+  const [token, setToken] = useState<string>('');
+  const [username, setUsername] = useState<string>('');
+
+  useEffect(() => {
+    if (token !== ''){
+      getUsername(token);
+    }
+    let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+    if (cookieToken) {
+      setToken(cookieToken);
+    }
+  }, [token]);
+  
+  async function getUsername(accessToken: string): Promise<any> {
+    try {
+        const response = await fetch('http://localhost:3333/users/me/username/get', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `${accessToken}`
+          },
+        });
+        const data = await response.json();
+        if (data) {
+          setUsername(data.username);
+        }
+        // return data;
+      } catch (error) {
+  
+        console.error(error);
+        // handle error
+      }
+    }
 
   return (
     <div  >
@@ -45,10 +82,10 @@ const FormButton = () => {
           <div className="modal-content">
             <span className="close" onClick={() => setIsOpen(false)}>&times;</span>
             <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="name">Edit name:</label>
-              <input type="text" name="name" value={formValues.name} onChange={handleChange}/>
-            </div>
+            {/* <div className="form-group"> */}
+              {/* <label htmlFor="name">Edit name:</label> */}
+              {/* <input type="text" name="name" value={formValues.name} onChange={handleChange}/> */}
+            {/* </div> */}
             <div className="form-group">
               <label htmlFor="email">Edit password:</label>
               <input type="password" name="password" value={formValues.password} onChange={handleChange} />
@@ -147,7 +184,8 @@ export default function ChatContent(props: ChatContentProps) {
   const [msg, setMsg] = useState<string>('');
   const [userID, setUserID] = useState<number>()
   const [token, setToken] = useState('');
-
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  
   useEffect(() => {
     if (token !== ''){
       getUserId(token);
@@ -252,16 +290,74 @@ export default function ChatContent(props: ChatContentProps) {
         setChannel_name(values.data.channelName);
       })
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      getIsAdmin(id, token);
     }
   }, [location.pathname, token]) //mistake was here
   
+  async function getIsAdmin(id: number, accessToken: string): Promise<any> {
+    try {
+        const response = await fetch(`http://localhost:3333/chat/channels/${id}/isAdmin`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `${accessToken}`
+          },
+        });
+        const data = await response.json();
+        console.log("is admin ? ", data);
+        if (data) {
+          setIsAdmin(data);
+        }
+        // setIsAdmin(data);
+        return data;
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+  const [username, setUsername] = useState<string>('');
+
+  useEffect(() => {
+    if (token !== ''){
+      getUsername(token);
+    }
+    let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+    if (cookieToken) {
+      setToken(cookieToken);
+    }
+  }, [token]);
+  
+  async function getUsername(accessToken: string): Promise<any> {
+    try {
+        const response = await fetch('http://localhost:3333/users/me/username/get', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `${accessToken}`
+          },
+        });
+        const data = await response.json();
+        if (data) {
+          setUsername(data.username);
+        }
+        // return data;
+      } catch (error) {
+  
+        console.error(error);
+        // handle error
+      }
+    }
 
   return (  <div className="main__chatcontent">
         
   <div className="content__header">
     <div></div>
     <h1>{channel_name}</h1>
-    <FormButton/>
+    { isAdmin === true ? (
+      <FormButton/>
+    ) : (
+      <div></div>
+    )}
   </div>
 
   <div className="content__body">
