@@ -869,4 +869,24 @@ export class ChatService {
           })
           return usersBlocked.blocked;
         }
+
+        async getExceptUser(channelId:number, id_user:number){
+          const users = await this.prisma.user.findMany({
+            where:{
+              blocked:{
+                has:id_user,
+              },
+              OR:[
+                {owner:{ some: {id:channelId} }},
+                {admins:{ some: {id:channelId} }},
+                {members:{ some: {id:channelId} }},
+                {muted:{ some: {id:channelId} }},
+              ],
+            },
+            select:{
+              username:true,
+            }
+          });
+          return users;
+        }
   }

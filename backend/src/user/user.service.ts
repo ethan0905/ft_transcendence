@@ -497,15 +497,15 @@ export class UserService {
 		// check if from the games played, user has won at least 1 game
 		// const games = user.games;
 
-		// // let hasWon = false;
+		let hasWon = false;
 
-		// // games.forEach((game) => {
-		// //   if (game.player1 === username && game.score[0] > game.score[1]) {
-		// // 	hasWon = true;
-		// //   } else if (game.player2 === username && game.score[1] > game.score[0]) {
-		// // 	hasWon = true;
-		// //   }
-		// // });
+		games.forEach((game) => {
+		  if (game.player1Name === username && game.score[0] > game.score[1]) {
+			hasWon = true;
+		  } else if (game.player1Name !== username && game.score[1] > game.score[0]) {
+			hasWon = true;
+		  }
+		});
 
 		// const hasWon = user.games.some((game) => {
 		// 	let player1Index = game.players.findIndex((player) => player.id === user.id);
@@ -519,15 +519,15 @@ export class UserService {
 
 		// check if user has at least 1 friend
 		const hasFriend = user.friends.length > 0;
-		let hasWon = false;
-		if (hasPlayed) {
+		// let hasWon = false;
+		// if (hasPlayed) {
 			
-			console.log("555 games: ", user.games[0]);
-			hasWon = games.some((game) => {
-				let idx = game.players[0].id === user.id ? 0 : 1;
-				return game.score[idx] > game.score[1 - idx];
-			});
-		}
+		// 	console.log("555 games: ", user.games[0]);
+		// 	hasWon = games.some((game) => {
+		// 		let idx = game.players[0].id === user.id ? 0 : 1;
+		// 		return game.score[idx] > game.score[1 - idx];
+		// 	});
+		// }
 
 		console.log("has won ", hasWon);
 		return {

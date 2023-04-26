@@ -157,11 +157,7 @@ export class ChatController {
 		const listUsers = await this.chat_service.getUserToDm(req.headers["authorization"])
 		return (listUsers);
 	}
-	
-	@Get('/blockedUsers')
-	async getUsersBlocked(@Req() req:Request){
-		return this.chat_service.getUserBlocked(req.headers["authorization"]);
-	}
+
 	// @Post('/channel/quit')
 	// async quit_Channel(@Body() dto: QuitChanDto)
 	// {
