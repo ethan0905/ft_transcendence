@@ -140,6 +140,8 @@ export class ChatGateway implements OnGatewayConnection {
     @MessageBody()  data: number ,
     @ConnectedSocket() client : Socket,
   ) {
+    if(this.clients[client.id] === undefined)
+      return;
     const user = await this.userService.getUser(this.clients[client.id].username);
     const userIsInChan = await this.chatService.userIsInChan(user.accessToken, data);
     if (userIsInChan)
