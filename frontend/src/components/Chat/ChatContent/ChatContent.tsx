@@ -296,7 +296,7 @@ export default function ChatContent(props: ChatContentProps) {
   
   async function getIsAdmin(id: number, accessToken: string): Promise<any> {
     try {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/chat/channels/${id}/isAdmin', {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + `/chat/channels/${id}/isAdmin`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
