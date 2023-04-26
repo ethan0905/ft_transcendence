@@ -1,5 +1,5 @@
 .main__chatcontent {
-  flex-grow: 1;
+  flex-shrink: 2;
   max-height: 100%;
   border-right: 1px solid #f8f8f9;
   display: flex;
@@ -92,7 +92,7 @@
   padding: 15px;
   border-radius: 10px 10px 0 10px;
   max-width: 50%;
-  min-width: 215px;
+  min-width: 130px;
 }
 .chat__item__content .chat__meta {
   justify-content: space-between;

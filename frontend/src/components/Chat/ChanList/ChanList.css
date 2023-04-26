@@ -6,6 +6,7 @@
   justify-content: flex-start;
   align-items: center;
   min-width: 200px;
+  width: 30%;
 }
 .chatlist__heading {
   width: 100%;
