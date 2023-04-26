@@ -650,7 +650,7 @@ export class ChatService {
             }
             else
             {
-              console.log("IS PASSWORD NULL ?");
+              // console.log("IS PASSWORD NULL ?");
               info.isPassword = false;
             }
             // console.log("isPass : ", isPass);

@@ -15,6 +15,7 @@ import { UserService } from 'src/user/user.service';
 import { PrismaClient } from '@prisma/client';
 import { QuitChanDto, JoinChanDto, ActionsChanDto} from "./dto/edit-chat.dto"
 import { EditChannelCreateDto } from './dto/edit-chat.dto';
+import { IsAdminDto } from './dto/admin.dto';
 
 export interface User {
   id: number;
@@ -168,6 +169,21 @@ export class ChatGateway implements OnGatewayConnection {
     this.server.to(client.id).emit("quited", {chatId:data.chatId});
     this.server.to(data.chatId.toString()).emit("quit",{username:this.clients[client.id].username})
     console.log("user quit: " + this.clients[client.id].username);
+  }
+
+  @SubscribeMessage('is-admin')
+  async isAdmin_Chan(
+    @MessageBody()  data: IsAdminDto ,
+    @ConnectedSocket() client : Socket,
+  ) {
+    if (this.clients[client.id] === undefined)
+      return;
+    const isAdmin = await this.chatService.isAdmin_Chan(this.clients[client.id].username, data.channel_id);
+    console.log("is admin: " + isAdmin);
+    if (isAdmin)
+      this.server.to(client.id).emit("isAdmin", {isAdmin:isAdmin});
+    else
+      this.server.to(client.id).emit("isAdmin", {isAdmin:isAdmin});
   }
 
   @SubscribeMessage('invit')

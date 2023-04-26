@@ -102,6 +102,20 @@ export class ChatController {
 		return true;
 	}
 
+	@Get('/channels/:id/isAdmin')
+	async getIsAdmin(@Req() req:Request, @Param("id") id: string)
+	{	
+		const user = await this.chat_service.getUsername(req.headers["authorization"])
+		const idChan : number = parseInt(id);
+		const users = await this.chat_service.get__UserIn(idChan);
+
+		if (users.length === 0 || user === null)
+			return false;
+		if (users[0].admins.find((element) => element.username === user.username)!== undefined)
+			return true;
+		return false;
+	}
+
 	@Get('/channels/users/:id')
 	async getChannelUsers(@Req() req: Request,@Param("id") id : string)
 	{
