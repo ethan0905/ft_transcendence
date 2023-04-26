@@ -375,7 +375,6 @@ export default function ChanList() {
       // getUsername();
     if (token !== ''){
       getAllChannels(token).then((value: any) => {
-        console.log(value);
         setMyDms(value.MyDms)
         setMyChannels(value.MyChannels);
         setChannelToJoin(value.ChannelsToJoin);

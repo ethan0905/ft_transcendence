@@ -77,6 +77,21 @@ async function getAllMessages(id_channel:number, accessToken:string){
   return (value);
 }
 
+async function getChannelName(id_channel:number, accessToken:string){
+  let config = {
+    method: 'get',
+    maxBodyLength: Infinity,
+    url: `${import.meta.env.VITE_BACKEND_URL}` + '/chat/channels/' + id_channel+"/name",
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `${accessToken}`
+    }
+  };
+  
+  const value = axios.request(config)
+  return (value);
+}
+
 type ChatItm = {
   id: number,
   createdAt: Date,
@@ -233,6 +248,9 @@ export default function ChatContent(props: ChatContentProps) {
           navigate('/Chat');
         }
       });
+      getChannelName(id, token).then((values:any) => {
+        setChannel_name(values.data.channelName);
+      })
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   }, [location.pathname, token]) //mistake was here

@@ -828,7 +828,7 @@ export class ChatService {
         async createDmChannel(username1:string, username2:string){
           const channel = await this.prisma.channel.create({
             data:{
-              channelName:"test",
+              channelName:username1+","+username2,
               password:'',
               isPrivate:true,
               isDM:true,
