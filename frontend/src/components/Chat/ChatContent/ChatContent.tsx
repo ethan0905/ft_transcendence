@@ -55,7 +55,7 @@ const FormButton = () => {
   
   async function getUsername(accessToken: string): Promise<any> {
     try {
-        const response = await fetch('http://localhost:3333/users/me/username/get', {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/users/me/username/get', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -235,7 +235,7 @@ export default function ChatContent(props: ChatContentProps) {
   
   async function getUserId(accessToken: string): Promise<any> {
     try {
-        const response = await fetch('http://localhost:3333/users/me/id/get', {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/users/me/id/get', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -296,7 +296,7 @@ export default function ChatContent(props: ChatContentProps) {
   
   async function getIsAdmin(id: number, accessToken: string): Promise<any> {
     try {
-        const response = await fetch(`http://localhost:3333/chat/channels/${id}/isAdmin`, {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/chat/channels/${id}/isAdmin', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -329,7 +329,7 @@ export default function ChatContent(props: ChatContentProps) {
   
   async function getUsername(accessToken: string): Promise<any> {
     try {
-        const response = await fetch('http://localhost:3333/users/me/username/get', {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users/me/username/get`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

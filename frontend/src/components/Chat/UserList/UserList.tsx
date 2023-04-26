@@ -119,7 +119,7 @@ export default function UserList() {
 
   async function getUsername(accessToken: string): Promise<any> {
     try {
-        const response = await fetch('http://localhost:3333/users/me/username/get', {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/users/me/username/get', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2/dist/sweetalert2.all.js';
 
 async function fetchRole(id_game:string, token:string){
-	const res = await fetch("http://localhost:3333/ws-game/rooms/"+ id_game +"/role", {
+	const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + "/ws-game/rooms/"+ id_game +"/role", {
 		method:'GET',
 		headers: {
 			'Content-Type': 'application/json',
@@ -187,7 +187,8 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 			if (!ctx)
 			return;//console.log("ctx is null");
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
-			// console.log("ball color: ", colorBall);
+			// console.log("ball color: ", colorBall);						<span id='textPlay' onClick={() => {
+
 			drawBall(canvas, colorBall);
 			// wallColission(canvas);
 			// console.log("player1 color: ", colorP1, "player2 color: ", colorP2);
@@ -228,7 +229,7 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 	}, [token])
 
 	async function fetchTheme(token:string){
-		let response = await fetch("http://localhost:3333/users/me/theme/get", {
+		let response = await fetch( `${import.meta.env.VITE_BACKEND_URL}` + "/users/me/theme/get", {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
