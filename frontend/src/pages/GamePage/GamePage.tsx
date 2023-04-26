@@ -234,7 +234,7 @@ export default function GamePage() {
 						/>} label={
 							checked ?
 							"Map: Konoha"
-							: "Map: End Valley"} />
+							: "Map: Default"} />
 						{/* <label className="switch btn-color-mode-switch">
 							<input type="checkbox" name="map_mode" id="map_mode" value="1"/>
 							<label data-on="Special" data-off="Default" className="btn-color-mode-switch-inner"></label>
