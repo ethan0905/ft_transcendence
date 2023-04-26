@@ -23,18 +23,21 @@ export class ChatService {
         async newChannel(info: ChannelCreateDto, username: string) {
 
           let hash = null;
+          info.isPassword = false;
             if (info.Password != null && info.Password != undefined && info.Password != "")
             {
               const salt = await bcrypt.genSalt();
 
               hash = await bcrypt.hash(info.Password, salt);
               console.log("hash:" + hash);
+              info.isPassword = true;
             }
 
             if (info.isPrivate === undefined)
               info.isPrivate = false;
-            if (info.Password != null && info.Password != undefined && info.Password != "")
-              info.isPassword = true;
+            // if (info.Password != null && info.Password != undefined && info.Password != "")
+            //   info.isPassword = true;
+            console.log(info);
             const user = await this.userService.getUser(username);
             const channel = await this.prisma.channel.create({
               data: {
@@ -270,11 +273,11 @@ export class ChatService {
             else if (isban)
             return (2);
           }
-          else if (chan.password !== ''){
-            // console.log("chan pass : ", chan.password, "data pass : ", data.Password);
+          else if (chan.password !== '' && chan.password !== null && chan.password !== undefined){
+            console.log("chan pass : ", chan.password, "data pass : ", data.Password);
             const isMatch = await bcrypt.compare(data.Password, chan.password);
 
-            // console.log("is mathc ? " + isMatch);
+            console.log("is mathc ? " + isMatch);
 
             if (!isMatch)
               return (3);
@@ -656,6 +659,8 @@ export class ChatService {
               if (info.isPassword)
                 if (!info.Password)
                   return (1);
+              if (hash == "")
+                hash = null;
               await this.prisma.channel.update(
                 {
                   where: {

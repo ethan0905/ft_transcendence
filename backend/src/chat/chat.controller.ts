@@ -97,7 +97,7 @@ export class ChatController {
 		const userIsInChan = await this.chat_service.userIsInChan(req.headers["authorization"],parseInt(id));
 		if (userIsInChan)
 			return false;
-		if (pwd.password === '')
+		if (pwd.password === '' || pwd.password === null || pwd.password === undefined)
 			return false;
 		return true;
 	}
