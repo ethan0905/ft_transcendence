@@ -218,6 +218,28 @@ export class ChatGateway implements OnGatewayConnection {
     console.log("chan banned");
   }
 
+  @SubscribeMessage('unban')
+  async unban_chan(
+    @MessageBody()  data: ActionsChanDto ,
+    @ConnectedSocket() client : Socket,
+  ) {
+    if (this.clients[client.id] === undefined)
+      return;
+    console.log(data);
+    const isAdmin = await this.chatService.isAdmin_Chan(this.clients[client.id].username, data.chatId);
+    if (!isAdmin)
+      return;
+    await this.chatService.unban_Chan(data.username, data.chatId);
+    for (let key in this.clients){
+      if (this.clients[key].username === data.username){
+        this.server.to(key).emit("unbanned", {chatId: data.chatId});
+        break;
+      }
+    }
+    this.server.to(data.chatId.toString()).emit("unban", {username: data.username});
+    console.log("chan unbanned");
+  }
+
   @SubscribeMessage('kick')
   async kick_chan(
     @MessageBody()  data: ActionsChanDto ,

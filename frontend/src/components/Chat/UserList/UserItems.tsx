@@ -141,7 +141,7 @@ const UserItems = ({ active, animationDelay, image, name , privilege, category}:
               {privilege && (category === "Admins" || category === "Members") ?<button onClick={() => socket.emit("mute", {username:name, chatId:Number(location.pathname.split("/")[2])})}>Mute</button> : null}
               {privilege && (category === "Admins" || category === "Members") ?<button onClick={() => socket.emit("set-admin", {username:name, chatId:Number(location.pathname.split("/")[2])})}>Set Admin</button> : null}
               {privilege && category === "Muted" ? <button onClick={() => socket.emit("unmute", {username:name, chatId:Number(location.pathname.split("/")[2])})}>Unmute</button> : null}
-              {privilege && category === "Banned" ? <button onClick={() => console.log("unban")}>Unban</button> : null}
+              {privilege && category === "Banned" ? <button onClick={() => socket.emit("unban", {username:name, chatId:Number(location.pathname.split("/")[2])})}>Unban</button> : null}
             </>
           )}
           

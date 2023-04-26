@@ -125,6 +125,29 @@ export class ChatService {
           )
         }
 
+        async unban_Chan(username: string, id : number)
+        {
+          await this.prisma.channel.update(
+            {
+              where: {
+                id: id,
+              },
+              data : {
+                banned : {
+                  disconnect : {
+                    username : username,
+                  },
+                },
+                members : {
+                  connect : {
+                    username : username,
+                  },
+                },
+              },
+                //isPrivate : info.Private,
+              }
+          )
+        }
 
         async kick_Chan(username: string, id : number)
         {

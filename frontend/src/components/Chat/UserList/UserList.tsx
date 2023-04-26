@@ -194,6 +194,29 @@ export default function UserList() {
 
     });
 
+    socket.on("unban", (value:any) => {
+      let unbannedUser:any = undefined;
+      setAllBanned((data:any) => {
+        for (var i in data){
+          if (data[i].username === value.username){
+            unbannedUser = data[i];
+            return data.filter((item:any) => item.username !== value.username);
+          }
+        }
+        return data;
+      });
+      if (unbannedUser === undefined)
+        return;
+      setAllMembers((data:any) => {
+        for (var i in data){
+          if (data[i].username === value.username)
+            return data;
+        }
+        return [...data, {username:unbannedUser.username, avatarUrl:unbannedUser.avatarUrl, id:unbannedUser.id, status:unbannedUser.status, active:unbannedUser.active}];
+      });
+
+    });
+
     socket.on("kick", (value:any) => {
       setAllAdmins((data:any) => {
         for (var i in data){
