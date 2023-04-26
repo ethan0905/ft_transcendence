@@ -187,7 +187,8 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 			if (!ctx)
 			return;//console.log("ctx is null");
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
-			// console.log("ball color: ", colorBall);
+			// console.log("ball color: ", colorBall);						<span id='textPlay' onClick={() => {
+
 			drawBall(canvas, colorBall);
 			// wallColission(canvas);
 			// console.log("player1 color: ", colorP1, "player2 color: ", colorP2);

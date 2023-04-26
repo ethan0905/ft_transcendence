@@ -2,7 +2,7 @@ import { WebSocketGateway, SubscribeMessage, MessageBody, ConnectedSocket ,WebSo
 import { WsGameService } from './ws_game.service';
 import { Server, Socket } from 'socket.io';
 
-@WebSocketGateway(4343, {transports:['websocket'], namespace: 'ws-game', cors: true})
+@WebSocketGateway(4343, {transports:['websocket'], namespace: 'ws-game', cors: false})
 
 // export class WsGameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect{
 export class WsGameGateway{
