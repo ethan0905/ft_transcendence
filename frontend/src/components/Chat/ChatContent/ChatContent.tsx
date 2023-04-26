@@ -127,7 +127,7 @@ export default function ChatContent(props: ChatContentProps) {
   const navigate = useNavigate();
   let location = useLocation();
   const socket = useContext(SocketContext);
-  const [channel_name,setChannel_name] = useState<string>("OK")
+  const [channel_name,setChannel_name] = useState<string>("Channel Name")
   const [chat, setChat] = useState<ChatItm[]>([]);
   const [msg, setMsg] = useState<string>('');
   const [userID, setUserID] = useState<number>()
@@ -242,9 +242,7 @@ export default function ChatContent(props: ChatContentProps) {
         
   <div className="content__header">
     <div></div>
-    <h1>
-      {channel_name}
-    </h1>
+    <h1>{channel_name}</h1>
     <FormButton/>
   </div>
 

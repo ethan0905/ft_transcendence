@@ -25,23 +25,17 @@ const FriendList = (props: TableProps) => {
 			</thead>
 
 			<tbody>
-			{data.map((item, index) => (
+			{data.length > 0 ? (
+				data.map((item, index) => (
 				<tr style={lineTable} key={index}>
 					<td>{index + 1}</td>
 					<td>{item.name}</td>
 					<td>{item.status}</td>
 				</tr>
-			))}
-			
-			
-			
-			{/* {Array(12 - data.length).fill('').map((item, index) => (
-				<tr style={lineTable}key={data.length + index}>
-					<td>-</td>
-					<td>-</td>
-					<td>-</td>
-				</tr>
-			))} */}
+				))
+			) : (
+			<tr style={lineTable}><td colSpan={6}>Any friend</td></tr>
+			)}
 			</tbody>
 			
 		</table>
