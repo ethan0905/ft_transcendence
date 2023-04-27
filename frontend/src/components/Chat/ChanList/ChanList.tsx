@@ -12,6 +12,9 @@ import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Swal from 'sweetalert2/dist/sweetalert2.all.js';
 import withReactContent from 'sweetalert2-react-content';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 
 const MySwal = withReactContent(Swal);
 
@@ -42,15 +45,12 @@ function MenuChat({name, channels}:{name:string, channels:any}){
 	return (
 		<Accordion style={{
 			width:"95%",
-			backgroundColor:'rgba(52, 52, 52, 0)',
+			backgroundColor: '#ffffff9d',
 			color:'black',
-			boxShadow:'none'
+			borderRadius:'10px',
 		}}>
 			<AccordionSummary aria-controls="panel1a-content" id="panel1a-header"
-				style={{
-					backgroundColor:'#fefefedd', 
-					borderRadius:'10px',
-				}}
+				style={{backgroundColor:'white', borderRadius:'10px',}}
 				expandIcon={<ExpandMoreIcon />}
 			>
 				<Typography>{name}</Typography>
@@ -91,7 +91,7 @@ const FormButton = () => {
 
 	useEffect(() => {
 		if (token !== '') {
-			console.log("Le token est valide !", token);
+			// console.log("Le token est valide !", token);
 			getUsername(token);
 		}
 		let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
@@ -124,7 +124,7 @@ const FormButton = () => {
 	const handleSubmit = (e: any) => {
 		e.preventDefault();
 		getUsername(token);
-		console.log(`Name: ${name}, Password: ${password}, Private: ${isPrivate}, Username: ${username}`);
+		// console.log(`Name: ${name}, Password: ${password}, Private: ${isPrivate}, Username: ${username}`);
 		if (name !== '' && name.trim().length > 0) {
 			socket.emit("create channel", {chatName:name, Password:password, isPrivate:isPrivate, username:username})
 		}
@@ -154,19 +154,12 @@ const FormButton = () => {
 					<div className="modal-content">
 						<span className="close" onClick={() => setIsOpen(false)}>&times;</span>
 						<form onSubmit={handleSubmit}>
-							<div className="form-group">
-								<label>Name:</label>
-								<input type="text" id="name" name="name" value={name} onChange={handleInputChange} className="channel_input" maxLength={20} />
+							<input type="text" id="name" name="name" placeholder={"Channel Name"} value={name} onChange={handleInputChange} className="channel_input" maxLength={20} />
+							<input type="password" id="password" name="password" placeholder={"Password"} value={password} onChange={handleInputChange} className="channel_input" maxLength={10} />
+							<div style={{display:'flex', justifyContent: 'space-between'}}>
+								<FormControlLabel control={<Checkbox checked={isPrivate} onChange={handleInputChange} name='isPrivate'/>}  onChange={handleInputChange} label="Private" />
+								<button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-7' type="submit">Create</button>
 							</div>
-							<div className="form-group">
-								<label>Password:</label>
-								<input type="password" id="password" name="password" value={password} onChange={handleInputChange} className="channel_input" maxLength={10} />
-							</div>
-							<div >
-								<label >is Private:</label>
-								<input type="checkbox" id="isPrivate" name="isPrivate" checked={isPrivate} onChange={handleInputChange} className="channel_input" />
-							</div>
-							<button type="submit">Submit</button>
 						</form>
 					</div>
 				</div>
@@ -224,7 +217,7 @@ export default function ChanList() {
 
 	useEffect(() => {
 		if (token !== '') {
-			console.log("Le token est valide !", token);
+			// console.log("Le token est valide !", token);
 			getUsername(token);
 		}
 		let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
@@ -263,7 +256,7 @@ export default function ChanList() {
 				}
 				return ([...data, value]);
 			});
-			console.log("New Channel");
+			// console.log("New Channel");
 		});
 		socket.on("Channel Created", (value:any) => {
 			if (value.client_id === socket.id){
@@ -284,7 +277,7 @@ export default function ChanList() {
 					return ([...data, value]);
 				});
 			}
-			console.log("New Channel");
+			// console.log("New Channel");
 		});
 
 		socket.on("Joined", (value:any) => {
@@ -389,7 +382,7 @@ export default function ChanList() {
 			// getUsername();
 		if (token !== ''){
 			getAllChannels(token).then((value: any) => {
-				console.log(value);
+				// console.log(value);
 				setMyDms(value.MyDms)
 				setMyChannels(value.MyChannels);
 				setChannelToJoin(value.ChannelsToJoin);
@@ -412,7 +405,9 @@ export default function ChanList() {
 				<i className='fa fa-plus'> </i>
 				<span>Private Message</span>
 			</button>
-			<FormButton />
+
+			<FormButton /> {/* Button Create Channel */}
+
 			<div className='accordion-chats'>
 					<MenuChat name={"Private Messages"} channels={myDms}/>
 					<MenuChat name={"My Channels"} channels={myChannels}/>

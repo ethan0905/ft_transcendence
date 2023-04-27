@@ -130,7 +130,7 @@ export class UserService {
 
 	async addFriend(data : FriendDto)
 	{
-		console.log("adding friend... ");
+		// console.log("adding friend... ");
 		const userid = await this.prisma.user.findUnique({
 			where: {
 				username: data.username
@@ -165,7 +165,7 @@ export class UserService {
 	}
 
 	async removeFriend(data : FriendDto) {
-		console.log("removing friends... ");
+		// console.log("removing friends... ");
 
 		const userid = await this.prisma.user.findUnique({
 			where: {
@@ -232,7 +232,7 @@ export class UserService {
 	// block part
 	async blockUser(data : BlockDto)
 	{
-		console.log("blocking user... ");
+		// console.log("blocking user... ");
 		const userid = await this.prisma.user.findUnique({
 			where: {
 				username: data.username
@@ -267,7 +267,7 @@ export class UserService {
 	}
 
 	async unblockUser(data : BlockDto) {
-		console.log("unblock user... ");
+		// console.log("unblock user... ");
 
 		const userid = await this.prisma.user.findUnique({
 			where: {
@@ -395,13 +395,13 @@ export class UserService {
 			const player2 = sortedPlayers[1].username;
 			const p1Name = game.player1Name;
 		
-			console.log({
-				player1,
-				player2,
-				player1Name: p1Name,
-				score: game.score,
-				date: game.createdAt
-			});
+			// console.log({
+			// 	player1,
+			// 	player2,
+			// 	player1Name: p1Name,
+			// 	score: game.score,
+			// 	date: game.createdAt
+			// });
 
 			return {
 			  player1,
@@ -529,7 +529,7 @@ export class UserService {
 		// 	});
 		// }
 
-		console.log("has won ", hasWon);
+		// console.log("has won ", hasWon);
 		return {
 		  hasPlayed: hasPlayed,
 		  hasWon: hasWon, // need to change this
@@ -543,7 +543,7 @@ export class UserService {
 		  ? req.headers.username[0]
 		  : req.headers.username;
 
-		console.log("getting user status... ", username);
+		// console.log("getting user status... ", username);
 
 		const user = await this.prisma.user.findUnique({
 		  where: {
@@ -575,7 +575,7 @@ export class UserService {
 
 	async updateUserStatusOffline(@Req() req: Request) {
 
-		console.log("updating user status to offline...: ", req.headers.authorization);
+		// console.log("updating user status to offline...: ", req.headers.authorization);
 
 		const status = Status.OFFLINE;
 
@@ -611,7 +611,7 @@ export class UserService {
 
 		
 		try {
-			console.log("getting avatar url...: ", req.headers.username);
+			// console.log("getting avatar url...: ", req.headers.username);
 	
 			const username = Array.isArray(req.headers.username)
 			  ? req.headers.username[0]

@@ -16,7 +16,6 @@ export class FileController {
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@Param('username') username: string, @UploadedFile() file: Multer.File) {
 
-    console.log("HEEEEEERE username ---> ", username);
     // Get user by username
     const user = await this.prisma.user.findUnique({
       where: {
@@ -44,7 +43,7 @@ export class FileController {
           id: searchFileTest.id,
         },
       });
-      console.log("File already existed for this user, so we deleted it!");
+      // console.log("File already existed for this user, so we deleted it!");
     }
 
     const newFile = await this.prisma.file.create({
@@ -60,7 +59,7 @@ export class FileController {
       },
     });
   
-    console.log("New file has been uploaded!");
+    // console.log("New file has been uploaded!");
 
     return newFile;
   }
@@ -77,7 +76,7 @@ async serveFile(@Param('username') username: string, @Res() res: Response) {
     });
   
     if (!user) {
-      console.log("User not found");
+      // console.log("User not found");
       // throw new Error('User not found');
     }
 
@@ -92,13 +91,13 @@ async serveFile(@Param('username') username: string, @Res() res: Response) {
       });
 
       if (!searchFileTest) {
-        console.log("File not found");
+        // console.log("File not found");
         res.status(404).send('File not found');
         return { status: false };
       }
 
       // Resize image to 200x200
-      console.log("searchFileTest.content ---> ", searchFileTest);
+      // console.log("searchFileTest.content ---> ", searchFileTest);
       const imageBuffer = await sharp(searchFileTest.content)
       .resize(200, 200, { fit: 'cover' })
       .toBuffer();

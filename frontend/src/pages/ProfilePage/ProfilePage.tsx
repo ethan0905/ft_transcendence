@@ -63,7 +63,7 @@ export default function ProfilePage() {
 
 		axios.post(`${import.meta.env.VITE_BACKEND_URL}` + '/auth/2fa/enable', { token, twoFactorAuth: !checked }).then(response => {
 
-			console.log(response);
+			// console.log(response);
 		}).catch(error => {
 			console.error(error);
 		});
@@ -212,11 +212,11 @@ export default function ProfilePage() {
 					'Content-Type': 'multipart/form-data',
 				},
 			  }).then(response => {
-				console.log('File uploaded successfully', response.data);
+				// console.log('File uploaded successfully', response.data);
 
-				console.log("updating avatar url...");
+				// console.log("updating avatar url...");
 				axios.post(`${import.meta.env.VITE_BACKEND_URL}` + '/users/me/avatarurl/edit', { token: token, username: name }).then(response => {
-					console.log(response);
+					// console.log(response);
 				}).catch(error => {
 					console.error(error);
 				});
@@ -258,7 +258,7 @@ export default function ProfilePage() {
 			// const data = await response.json();
 			// console.log("data equal: ", data);
 			if (response.status === 404) {
-				console.log("No profile picture found. Loading default profile picture...");
+				// console.log("No profile picture found. Loading default profile picture...");
 				getDefaultProfilePicture();
 				return;
 			}
@@ -333,7 +333,7 @@ export default function ProfilePage() {
 			});
 			const data = await response.json();
 			if (data) {
-				console.log(data);
+				// console.log(data);
 				setGameList(data);
 			}
 			return data;
@@ -410,7 +410,7 @@ export default function ProfilePage() {
 				},
 			});
 			const data = await response.json();
-			console.log("data equal: ", data);
+			// console.log("data equal: ", data);
 			if (data)
 			{
 				// console.log("default : ", data.avatarUrl);
@@ -423,7 +423,7 @@ export default function ProfilePage() {
 				setProfilePicture(new File([blob], filename));
 			}
 		} catch (error) {
-			console.log(error);
+			// console.log(error);
 		}
 
 	}

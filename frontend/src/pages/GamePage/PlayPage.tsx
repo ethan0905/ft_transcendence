@@ -176,7 +176,7 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 
 	useEffect(() => {
 		getCanvasSize();
-		console.log(size.width, size.height);
+		// console.log(size.width, size.height);
 		const canvas = canvasRef.current;
 		if (!canvas)
 			return;//console.log("canvas is null");
@@ -218,7 +218,7 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 			fetchTheme(token).then((data:boolean) => {
 				if (data)
 				{
-					console.log("fetching theme... inside effect");
+					// console.log("fetching theme... inside effect");
 					setColorP1("rgba(0, 255, 178, 1)");
 					setColorP2("rgba(255, 114, 0, 1)");
 					setMapUrl("../../public/konoha.jpg");

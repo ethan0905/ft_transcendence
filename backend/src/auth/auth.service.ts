@@ -99,12 +99,12 @@ export class AuthService{
 
 	async create42User(token: any, user42: any) {
 		try {
-			console.log("Creating user... \n");	
+			// console.log("Creating user... \n");	
 
 			// if (user42.email)
 			// 	return user42;
 
-			console.log("user image url : ", user42.image.versions.medium);
+			// console.log("user image url : ", user42.image.versions.medium);
 
 			const user = await this.prisma.user.create({
 				data: {
@@ -118,7 +118,7 @@ export class AuthService{
 				},
 			});
 	
-			console.log("User 42 has been created!\n");
+			// console.log("User 42 has been created!\n");
 
 			console.log("Converting image to File object... \n");
 
@@ -259,7 +259,7 @@ export class AuthService{
 
 	async activate2FA(@Req() req: Request, @Res() res: Response) {
 
-		console.log("99998888---> ", req.body.twoFactorActivated);
+		// console.log("99998888---> ", req.body.twoFactorActivated);
 
 		const user = await this.prisma.user.update({
 			where: {

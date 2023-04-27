@@ -157,7 +157,7 @@ export default function GamePage() {
 		})
 		
 		socket.on("FindGame", (value:any) => {
-			console.log("FindGame: " + value)
+			// console.log("FindGame: " + value)
 			Swal.close();
 			navigate(value);
 		});
@@ -166,8 +166,8 @@ export default function GamePage() {
 		socket.on("RoomDeleted", (value:string) => {
 			setData((rooms:any)=>{
 				let tab = rooms.filter((room:any,index:any) => room.name !== value);
-				console.log(tab);
-				console.log(value);
+				// console.log(tab);
+				// console.log(value);
 				return (tab);
 			})
 		});
@@ -220,7 +220,7 @@ export default function GamePage() {
 			});
 			const data = await response.json();
 
-			console.log("theme ==== ", data.theme);
+			// console.log("theme ==== ", data.theme);
 
 			return data.theme;
 		} catch (error) {

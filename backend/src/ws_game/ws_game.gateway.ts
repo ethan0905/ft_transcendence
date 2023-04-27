@@ -13,7 +13,7 @@ export class WsGameGateway{
   //creer un tableau d'objet room {room_name, number_of_player or clients[], scores[], is_playing}
 
   afterInit() {
-    console.log("Inite");
+    // console.log("Inite");
   }
 
   handleConnection(client: Socket) {

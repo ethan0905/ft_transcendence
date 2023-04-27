@@ -61,7 +61,7 @@ export class WsGameService {
 		if (client.handshake.auth.token === '')
 			return;
 		let user = await this.getUsernameFromToken(client.handshake.auth.token);
-		console.log("Connection:"+user);
+		// console.log("Connection:"+user);
 		this.clients[user] = client;
 	}
 	
@@ -282,7 +282,7 @@ export class WsGameService {
 		if (user === undefined)
 			return;
 		if (room !== undefined) {
-			console.log("LeaveRoom: " + room_name + " " + user + " P1 :" + room.player1 + " P2:" + room.player2)
+			// console.log("LeaveRoom: " + room_name + " " + user + " P1 :" + room.player1 + " P2:" + room.player2)
 			if (room.player1 === user) {
 				// this.clients[client_id].leave(room.name);
 				room.player1 = "";

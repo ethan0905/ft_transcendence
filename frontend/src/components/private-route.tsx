@@ -30,14 +30,14 @@ const PrivateRoute : React.FC<{children: React.ReactElement}> = ({children}) => 
         }
 
         const data = await response.json();
-        console.log('data: ', data);
+        // console.log('data: ', data);
 
         if (data.error) {
-            console.log('SET FALSE');
+            // console.log('SET FALSE');
             setIsAuthenticated(false);
         }
         else {
-            console.log('SET OK');
+            // console.log('SET OK');
             setIsAuthenticated(true);
         }
 
@@ -56,15 +56,15 @@ const PrivateRoute : React.FC<{children: React.ReactElement}> = ({children}) => 
         });
 
         const data = await response.json();
-        console.log('2fa data.email: ', data.email);
+        // console.log('2fa data.email: ', data.email);
         if (data.twoFactorVerified === true)
         {
-            console.log('2fa code is false in my user.data');
+            // console.log('2fa code is false in my user.data');
             navigate('/myProfile');
         }
         if (data.twoFactorActivated === true && data.twoFactorVerified === false)
         {
-            console.log('2fa code is true in my user.data');
+            // console.log('2fa code is true in my user.data');
             navigate('/2fa/verification');
             return;
         }    

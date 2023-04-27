@@ -109,7 +109,7 @@ export default function UserList() {
 
   useEffect(() => {
 		if (token !== '') {
-			console.log("Le token est valide !", token);
+			// console.log("Le token est valide !", token);
 			getUsername(token);
 		}
 		let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
