@@ -292,6 +292,7 @@ export class WsGameService {
 		if (room !== undefined) {
 			if (room.player1 === user) {
 				room.player1 = "";
+				await this.setUserOnline(this.rooms[room_name]);
 				if (room.game.is_playing === true){
 					this.schedulerRegistry.deleteInterval(room.name);
 					server.to(room.name).emit('PlayerLeft', {player:1, score:[0, 11]});
@@ -322,6 +323,7 @@ export class WsGameService {
 			}
 			else if (room.player2 === user) {
 				room.player2 = "";
+				await this.setUserOnline(this.rooms[room_name]);
 				if (room.game.is_playing === true){
 					this.schedulerRegistry.deleteInterval(room.name);
 					server.to(room.name).emit('PlayerLeft', {player:2, score:[11, 0]});
@@ -358,7 +360,43 @@ export class WsGameService {
 		// })
 	}
 
-	startGame(room_name:string, server:Server): void {
+	async setUserOnline(room:Room): Promise<void> {
+		await this.prisma.user.updateMany({
+			where: {
+				OR: [
+					{
+						username: room.player1,
+					},
+					{
+						username: room.player2,
+					},
+				],
+			},
+			data: {
+				status: 'ONLINE',
+			},
+		});
+	}
+
+	async setUserPlaying(room:Room): Promise<void> {
+		await this.prisma.user.updateMany({
+			where: {
+				OR: [
+					{
+						username: room.player1,
+					},
+					{
+						username: room.player2,
+					},
+				],
+			},
+			data: {
+				status: 'PLAYING',
+			},
+		});
+	}
+
+	async startGame(room_name:string, server:Server): Promise<void> {
 		const room: Room = this.rooms[room_name];
 		if (room !== undefined) {
 			if (room.game.is_playing === true)
@@ -371,6 +409,7 @@ export class WsGameService {
 				this.requestBallPosition(room_name, server)
 			}, 1000/60);
 			this.schedulerRegistry.addInterval(room_name, interval);
+			await this.setUserPlaying(room);
 		}
 	}
 
@@ -453,13 +492,15 @@ export class WsGameService {
 	// 	server.socketsLeave(room_name);
 	// }
 
-	endGame(room_name:string, server:Server): void {
+	async endGame(room_name:string, server:Server): Promise<void> {
 		// console.log("score 1 : ", this.rooms[room_name].game.player1_score, "score 2 : ", this.rooms[room_name].game.player2_score);
 	
 		const scoreArray = [this.rooms[room_name].game.player1_score, this.rooms[room_name].game.player2_score];
 	
 		// console.log("scoreArray : ", scoreArray);
 	
+		await this.setUserOnline(this.rooms[room_name]);
+
 		this.prisma.game.update({
 			where: {
 				roomName: room_name,
