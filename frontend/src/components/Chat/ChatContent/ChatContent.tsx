@@ -394,6 +394,8 @@ export default function ChatContent(props: ChatContentProps) {
       onFocus={() => {return false;}}
       onKeyDown={(e) => { if (e.key === 'Enter') {
         clearInput();
+        if (msg === "")
+          return;
         socket.emit("sendMsgtoC", {
           "chatId":Number(location.pathname.split("/")[2]),
           "msg":msg
@@ -402,6 +404,8 @@ export default function ChatContent(props: ChatContentProps) {
     />
     <button className="btnSendMsg" id="sendMsgBtn" onClick={() => {
       clearInput();
+      if (msg === "")
+        return;
       socket.emit("sendMsgtoC", {
         "chatId":Number(location.pathname.split("/")[2]),
         "msg":msg
