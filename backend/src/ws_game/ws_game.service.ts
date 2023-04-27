@@ -191,8 +191,7 @@ export class WsGameService {
 	joinRoom(client:Socket,room_name:string,server:Server): void {
 		const room: Room = this.rooms[room_name];
 		let user = this.getUsernameFromId(client.id);
-		if (room !== undefined) {
-			// console.log("JoinRoom: " + room_name + " " + user + " P1 :" + room.player1 + " P2:" + room.player2)
+		if (room !== undefined && user !== undefined) {
 			if (room.player1 === user){
 				server.in(room.name).fetchSockets().then((sockets) => {
 					for (let i = 0; i < sockets.length; i++) {
@@ -223,7 +222,6 @@ export class WsGameService {
 		let user = this.getUsernameFromId(client.id);
 		if (user === undefined)
 			return;
-
 		if (room !== undefined) {
 			console.log("LeaveRoom: " + room_name + " " + user + " P1 :" + room.player1 + " P2:" + room.player2)
 			if (room.player1 === user) {

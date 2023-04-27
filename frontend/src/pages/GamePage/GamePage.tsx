@@ -1,7 +1,7 @@
 import './gamePage.css';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import { io, Socket } from 'socket.io-client';
-import { useEffect, useState } from 'react';
+import { useDebugValue, useEffect, useState } from 'react';
 import { createContext } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate} from 'react-router-dom';
@@ -112,13 +112,15 @@ export default function GamePage() {
 	},[]);
 
 	useEffect(() => {
-		if (!socket.connected){
-			if (token !== ''){
-				socket.auth = {token: token};
-				console.log(token);
-				socket.connect();
-			}
+		if (socket.disconnected && token !== ''){
+			console.log("passer")
+			socket.auth = {token: token};
+			console.log(token);
+			socket.connect();
 		}
+	},[socket, token]);
+
+	useEffect(() => {
 		socket.on("RoomCreated", (value:any) => {
 			setData((rooms:any) => {
 				for (var i in rooms) {
