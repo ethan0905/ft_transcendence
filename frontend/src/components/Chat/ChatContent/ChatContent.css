@@ -8,6 +8,7 @@
   background-color: #8e8c8c39;
   width: 55%;
 }
+
 .content__header {
   display: flex;
   justify-content: space-between;
@@ -17,25 +18,30 @@
   height: 50px;
   padding: 10px 0;
 }
+
 .content__header h1 {
   font-family: 'Kocak', sans-serif;
   text-shadow: white 2px 1px 1px;
   font-size: 2rem;
 }
+
 .content__body {
   padding: 10px;
   overflow-y: auto;
   width: 100%;
   flex-grow: 1;
 }
+
 .content__footer {
   width: 100%;
   height: fit-content;
 }
+
 .current-chatting-user {
   display: flex;
   align-items: center;
 }
+
 .current-chatting-user p {
   margin: 0;
   font-weight: 600;
@@ -47,6 +53,7 @@
   padding-right: 10px;
   font-size: 1.2rem;
 }
+
 .btn-nobg:hover {
   color: #fffcfc;
 }
@@ -57,14 +64,17 @@
   align-items: flex-end;
   margin-bottom: 12px;
 }
+
 @keyframes showIn {
   0% {
     transform: scale(0);
   }
+
   100% {
     transform: scale(1);
   }
 }
+
 .chat__item .avatar {
   margin-left: 18px;
   background: #fff;
@@ -72,6 +82,7 @@
   min-width: 60px;
   height: auto;
 }
+
 .chat__item__content {
   background-color: #af0f0f;
   color: #ffffff;
@@ -104,14 +115,16 @@
 }
 
 .chat__msg {
-  user-select: none;
+  /* user-select: none; */
   overflow-wrap: break-word;
   padding: 5px 0;
 }
+
 .chat__item.other {
   flex-direction: row-reverse;
   transform-origin: left;
 }
+
 .chat__item.other .chat__item__content {
   background-color: #060606fd;
   color: #fffdfd;
@@ -133,9 +146,11 @@
   margin-right: 18px;
   margin-left: 0px;
 }
+
 .chat__item.other .chat__item__content .chat__meta span {
   color: #d1d1d1;
 }
+
 .sendNewMessage {
   width: 95%;
   height: fit-content;
@@ -145,6 +160,7 @@
   margin: 12px;
   padding-left: 10px;
 }
+
 .sendNewMessage button {
   height: 50px;
   width: 50px;
@@ -160,13 +176,16 @@
   line-height: 36px;
   transition: all 0.3s cubic-bezier(0.88, 0.19, 0.37, 1.11);
 }
+
 .sendNewMessage button:hover {
   transform: scale(1.1);
   background-color: #090909;
 }
+
 .sendNewMessage button i {
   display: block;
 }
+
 .sendNewMessage input {
   flex-grow: 1;
   /* padding: 0 15px; */
@@ -174,6 +193,7 @@
   border: none;
   outline: none;
 }
+
 /* #sendMsgBtn {
   background-color: #3b5bfe;
   color: #fff;

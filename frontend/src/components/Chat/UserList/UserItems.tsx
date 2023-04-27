@@ -25,7 +25,7 @@ const PopupButton: React.FC<Pop> = ({ buttonText }) => {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
-        console.log("click outside");
+        // console.log("click outside");
         setIsOpen(false);
       }
     };

@@ -35,12 +35,12 @@ export default function UserPage() {
 			// getProfilePicture(id);
 			getFriendStatusById();
 			getBlockedStatusById();
-			console.log("Fetching game list...", token);
+			// console.log("Fetching game list...", token);
 			const fetchData = async () => {
 			  getGameHistory();
 			};
 			fetchData();
-			console.log("Fetching achievement ...");
+			// console.log("Fetching achievement ...");
 			const fetchAchievements = async () => {
 				getUserAchievementStatus();
 			};
@@ -149,7 +149,7 @@ export default function UserPage() {
 				},
 			});
 			if (response.status === 404) {
-				console.log("No profile picture found. Loading default profile picture...");
+				// console.log("No profile picture found. Loading default profile picture...");
 				getDefaultProfilePicture();
 				return;
 			}
@@ -169,7 +169,7 @@ export default function UserPage() {
 		// 2. send friend request to user using his id
 		// let token = '';
 
-		console.log('Add friend button clicked! : ', token);
+		// console.log('Add friend button clicked! : ', token);
 		try {
 			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/users/me/friend/add', {
 				method: 'POST',
@@ -192,7 +192,7 @@ export default function UserPage() {
 	async function removeFriend() {
 		// 1. get user cookie
 		// 2. remove friend using his id
-		console.log('Remove friend button clicked! : ', token);
+		// console.log('Remove friend button clicked! : ', token);
 
 		try {
 			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/users/me/friend/remove', {
@@ -245,11 +245,11 @@ export default function UserPage() {
 			});
 			const data = await response.json();
 			if (data.value) {
-				console.log('data.value: FRIEND');
+				// console.log('data.value: FRIEND');
 				setFriendAdded(true);
 			}
 			else {
-				console.log('data.value: NOT FRIEND');
+				// console.log('data.value: NOT FRIEND');
 				setFriendAdded(false);
 			}
 		} catch (error) {
@@ -264,7 +264,7 @@ export default function UserPage() {
 		// 2. send friend request to user using his id
 		// let token = '';
 
-		console.log('Block button clicked! : ', token);
+		// console.log('Block button clicked! : ', token);
 		try {
 			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/users/me/user/block', {
 				method: 'POST',
@@ -287,7 +287,7 @@ export default function UserPage() {
 	async function unblockUser() {
 		// 1. get user cookie
 		// 2. remove friend using his id
-		console.log('Unblock button clicked! : ', token);
+		// console.log('Unblock button clicked! : ', token);
 
 		try {
 			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/users/me/user/unblock', {
@@ -340,11 +340,11 @@ export default function UserPage() {
 			});
 			const data = await response.json();
 			if (data.value) {
-				console.log('data.value: BLOCKED');
+				// console.log('data.value: BLOCKED');
 				setBlocked(true);
 			}
 			else {
-				console.log('data.value: UNBLOCKED');
+				// console.log('data.value: UNBLOCKED');
 				setBlocked(false);
 			}
 		} catch (error) {
@@ -426,7 +426,7 @@ export default function UserPage() {
 		  };
 
 		const response = await axios.request(config);
-		console.log('response from axios: ', response);
+		// console.log('response from axios: ', response);
 		setUserStatus(response.data.status);
 	}
 

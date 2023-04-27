@@ -34,7 +34,7 @@ const FormButton = () => {
   
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log('Form submitted:', formValues);
+    // console.log('Form submitted:', formValues);
     let id = Number(location.pathname.split("/")[2]);
     socket.emit('update', { channelid:id, Password:formValues.password, username: username})
     // setFormValues(initialFormValues);
@@ -269,6 +269,11 @@ export default function ChatContent(props: ChatContentProps) {
       })
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     })
+
+    socket.on("NewPartyCreated", (value:string) => {
+      navigate("/Game/"+value);
+    })
+
     return () => {
       socket.off("NewMessage");
     }
@@ -281,7 +286,7 @@ export default function ChatContent(props: ChatContentProps) {
   useEffect(() => {
     if (location.pathname !== "/Chat" && token !== ''){
       let id = Number(location.pathname.split("/")[2]);
-      console.log("id: ", id);
+      // console.log("id: ", id);
       getAllMessages(id, token).then((values:any) => {
         setChat(values.data);
         socket.emit("JoinChannel", id);
@@ -309,7 +314,7 @@ export default function ChatContent(props: ChatContentProps) {
           },
         });
         const data = await response.json();
-        console.log("is admin ? ", data);
+        // console.log("is admin ? ", data);
         if (data) {
           setIsAdmin(data);
         }
