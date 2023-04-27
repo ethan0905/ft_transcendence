@@ -13,6 +13,7 @@ import { red } from '@mui/material/colors';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 // import userEvent from '@testing-library/user-event';
+import CSS from 'csstype';
 
 export default function ProfilePage() {
 	const [name, setName] = useState('');
@@ -125,7 +126,7 @@ export default function ProfilePage() {
 				},
 				body: JSON.stringify({ token, twoFactorActivated: true })
 			});
-			// await axios.post('http://localhost:3333/auth/2fa/activated', { token, twoFactorActivated: twoFAActivated }).then(response => {
+			// await axios.post(`${import.meta.env.VITE_BACKEND_URL}` + '/auth/2fa/activated', { token, twoFactorActivated: twoFAActivated }).then(response => {
 
 			// console.log(response);
 			// }).catch(error => {
@@ -144,7 +145,7 @@ export default function ProfilePage() {
 					'Authorization': `${accessToken}`
 				},
 			});
-			// const response = await axios.get('http://localhost:3333/auth/2fa/status'
+			// const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}` + '/auth/2fa/status'
 			return response;
 		} catch (error) {
 
@@ -237,26 +238,39 @@ export default function ProfilePage() {
 			};
 			fetchData();
 		}
-	}, [name]);
+		let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+		if (cookieToken) {
+			setToken(cookieToken);
+		}
+	}, [token, name]);
 
 	async function getProfilePicture(): Promise<any> {
 
-		try {
+		// try {
 			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/files/' + name, {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
+					'Username': `${name}`,
 				},
 			});
+			// console.log("res equal: ", response);
+			// const data = await response.json();
+			// console.log("data equal: ", data);
+			if (response.status === 404) {
+				console.log("No profile picture found. Loading default profile picture...");
+				getDefaultProfilePicture();
+				return;
+			}
 			const blob = await response.blob();
 			const file = new File([blob], 'filename.jpg', { type: 'image/jpeg' });
 			setProfilePicture(file);
 			// return data;
-		} catch (error) {
+		// } catch (error) {
 
-			console.error(error);
-			// handle error
-		}
+		// 	console.error(error);
+		// 	// handle error
+		// }
 	}
 
 	const [friendList, setFriendList] = useState([]);
@@ -373,12 +387,54 @@ export default function ProfilePage() {
 
 	}
 
+	const [defaultProfilePicture, setDefaultProfilePicture] = useState('');
+
+	useEffect(() => {
+		if (token !== '')
+		{
+			const fetchDefaultProfilePicture = async () => {
+				getDefaultProfilePicture();
+			};
+			fetchDefaultProfilePicture();
+		}
+	}, [token]);
+
+	async function getDefaultProfilePicture(): Promise<any> {
+		
+		try {
+			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/users/me/avatarurl/get', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'Username': `${name}`,
+				},
+			});
+			const data = await response.json();
+			console.log("data equal: ", data);
+			if (data)
+			{
+				// console.log("default : ", data.avatarUrl);
+				// setDefaultProfilePicture(data.avatarUrl);
+				const res = await fetch(data.avatarUrl);
+				const blob = await res.blob();
+				const filename = data.avatarUrl.substring(data.avatarUrl.lastIndexOf('/')+1);
+
+				// access file here
+				setProfilePicture(new File([blob], filename));
+			}
+		} catch (error) {
+			console.log(error);
+		}
+
+	}
+
+
 	return (
 		<>
 			<Sidebar />
 			<div className='ProfilePage'>
 				<div className='ProfilePage_header'>
-					<ProfilePicture profilePicture={profilePicture} handleUpload={handleUpload} />
+					<ProfilePicture profilePicture={profilePicture} avatarUrl={defaultProfilePicture} handleUpload={handleUpload} />
 					{/* <ProfilePicture profilePicture={avatar} handleUpload={handleUpload} /> */}
 					<div className='ProfilePage_info'>
 						<EditableText text={name} onSubmit={setUsernameInDatabase} />
@@ -393,14 +449,14 @@ export default function ProfilePage() {
 
 						{checked && (
 							<>
-							<button id='generateCode' onClick={generateQRCode}>Generate QR code</button>
+							<button id='generateCode' style={Buttonstyles} onClick={generateQRCode}>Generate QR code</button>
 								{!twoFAActivated && (
 									<>
 									{qrcodeDataUrl && (
 										<>
 											<div className='Auth_block'>
 												<AuthCode allowedCharacters='numeric' onChange={handleOnChange}	inputClassName='Authcode_input'/>
-												<button onClick={activate2FA}>Submit</button>
+												<button onClick={activate2FA} style={Buttonstyles}>Submit</button>
 											</div>
 										</>
 									)}
@@ -423,3 +479,11 @@ export default function ProfilePage() {
 		</>
 	);
 };
+
+const Buttonstyles: CSS.Properties = {
+	backgroundColor: '#e5e7eb',
+	color: 'black',
+	border: 'solid 1px black',
+	borderRadius: '5px',
+	padding: '0 5px',
+  }

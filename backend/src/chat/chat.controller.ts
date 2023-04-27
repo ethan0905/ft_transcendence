@@ -72,13 +72,18 @@ export class ChatController {
 	@Get('/channels/')
 	async getUserChannels(@Req() req:Request)
 	{
+		const dms = await this.chat_service.get__DmUser(req.headers["authorization"]);
 		const channels = await this.chat_service.get__channelsUserIn(req.headers["authorization"]);
 		const channels_to_join = await this.chat_service.get__channelsUserCanJoin(req.headers["authorization"]);
 		// Check if throw error
-		return {MyChannels:channels, ChannelsToJoin:channels_to_join};
+		let mydms = [];
+		dms.forEach((elem:any) => {
+			mydms.push({id:elem.id, channelName:elem.members[0].username})
+		})
+		return {MyDms:mydms, MyChannels:channels, ChannelsToJoin:channels_to_join};
 	}
 
-	@Get('/channels/:id')
+	@Get('/channels/:id/name')
 	async getChannelName(@Param("id") id: string)
 	{
 		const channel_name = await this.chat_service.get__chanNamebyId(parseInt(id));
@@ -92,9 +97,23 @@ export class ChatController {
 		const userIsInChan = await this.chat_service.userIsInChan(req.headers["authorization"],parseInt(id));
 		if (userIsInChan)
 			return false;
-		if (pwd.password === '')
+		if (pwd.password === '' || pwd.password === null || pwd.password === undefined)
 			return false;
 		return true;
+	}
+
+	@Get('/channels/:id/isAdmin')
+	async getIsAdmin(@Req() req:Request, @Param("id") id: string)
+	{	
+		const user = await this.chat_service.getUsername(req.headers["authorization"])
+		const idChan : number = parseInt(id);
+		const users = await this.chat_service.get__UserIn(idChan);
+
+		if (users.length === 0 || user === null)
+			return false;
+		if (users[0].admins.find((element) => element.username === user.username)!== undefined)
+			return true;
+		return false;
 	}
 
 	@Get('/channels/users/:id')
@@ -106,12 +125,12 @@ export class ChatController {
 		if (users.length === 0 || user === null)
 			return {status:"none"};
 		if (users[0].admins.find((element) => element.username === user.username)!== undefined){
-			return {status: "admin", admins: users[0].admins, members: users[0].members, muted: users[0].muted, banned: users[0].banned};
+			return {status: "admin", isDM:users[0].isDM, admins: users[0].admins, members: users[0].members, muted: users[0].muted, banned: users[0].banned};
 		}
 		if (users[0].members.find((element) => element.username === user.username) !== undefined
 			|| users[0].muted.find((element) => element.username === user.username) !== undefined
 		){
-			return {status: "member", admins: users[0].admins, members: users[0].members, muted: users[0].muted, banned: users[0].banned};
+			return {status: "member", isDM:users[0].isDM,admins: users[0].admins, members: users[0].members, muted: users[0].muted, banned: users[0].banned};
 		}
 		return {status:"none"};
 	}
@@ -121,12 +140,21 @@ export class ChatController {
 	{
 		const idChan : number = parseInt(id);
 		const isInChan = await this.chat_service.userIsInChan(req.headers["authorization"], idChan);
+		const blockedUser = await this.chat_service.getUserBlocked(req.headers["authorization"]);
 		if (isInChan)
 		{
-			const messages = await this.chat_service.get__MsgIn(idChan);
+			const messages = await this.chat_service.get__MsgIn(idChan, blockedUser);
 			return res.status(200).json(messages[0].messages);
 		}
 		return res.status(403).json({message:"You are not in this channel"});
+	}
+
+	@Get('/channels/:id/peopletoinvite')
+	async getChannelPeopleToInvite(@Req() req:Request,@Param("id") id:number)
+	{
+		let chatId:number = Number(id);
+		const peopleToInvite = await this.chat_service.getPeopleToInvite(req.headers["authorization"],chatId);
+		return peopleToInvite.filter((value:any) => value !== undefined);
 	}
 
 	// Not use
@@ -136,6 +164,12 @@ export class ChatController {
 		const idChan : number = parseInt(id); 
 		const users = await this.chat_service.get__UserBanIn(idChan);
 		return users[0].banned;
+	}
+
+	@Get('/Dm/users')
+	async	getUsersToDM(@Req() req:Request){
+		const listUsers = await this.chat_service.getUserToDm(req.headers["authorization"])
+		return (listUsers);
 	}
 
 	// @Post('/channel/quit')

@@ -172,39 +172,51 @@ export class FileController {
 @Get(':username')
 async serveFile(@Param('username') username: string, @Res() res: Response) {
 
-  // Get user by username
-  const user = await this.prisma.user.findUnique({
-    where: {
-      username,
-    },
-  });
-
-  if (!user) {
-    throw new Error('User not found');
-  }
-
-  const searchFileTest = await this.prisma.file.findFirst({
-    where: {
-      owner: {
-        some: {
-          id: user.id,
-        },
+  try {
+    // Get user by username
+    const user = await this.prisma.user.findUnique({
+      where: {
+        username,
       },
-    },
-  });
+    });
+  
+    if (!user) {
+      console.log("User not found");
+      // throw new Error('User not found');
+    }
 
-  if (!searchFileTest) {
-    res.status(404).send('File not found');
-    return;
-  }
+    const searchFileTest = await this.prisma.file.findFirst({
+        where: {
+          owner: {
+            some: {
+              id: user.id,
+            },
+          },
+        },
+      });
 
-  // Resize image to 200x200
-  const imageBuffer = await sharp(searchFileTest.content)
-  .resize(200, 200, { fit: 'cover' })
-  .toBuffer();
+      if (!searchFileTest) {
+        console.log("File not found");
+        res.status(404).send('File not found');
+        return { status: false };
+      }
 
-  res.setHeader('Content-Type', searchFileTest.mimetype);
-  res.send(imageBuffer);
+      // Resize image to 200x200
+      console.log("searchFileTest.content ---> ", searchFileTest);
+      const imageBuffer = await sharp(searchFileTest.content)
+      .resize(200, 200, { fit: 'cover' })
+      .toBuffer();
+    
+      res.setHeader('Content-Type', searchFileTest.mimetype);
+      res.send(imageBuffer);
+
+    } catch (error) {
+      console.log("error ---> ", error);
+      res.status(404).send('File not found');
+      return { status: false };
+    }
+
+
   }
 }
 

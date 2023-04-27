@@ -73,10 +73,10 @@ export class WsGameService {
 		if (this.queue.includes(user))
 			this.queue.splice(this.queue.indexOf(user), 1);
 		for (let room in this.rooms) {
-			if (this.rooms[room].player1 === user) {
+			if (this.rooms[room].player1 === user && this.rooms[room].game.is_playing === true) {
 				this.leaveRoom(client, this.rooms[room].name, server);
 			}
-			else if (this.rooms[room].player2 === user) {
+			else if (this.rooms[room].player2 === user && this.rooms[room].game.is_playing === true) {
 				this.leaveRoom(client,this.rooms[room].name, server);
 			}
 		};
@@ -160,6 +160,16 @@ export class WsGameService {
 		}
 	}
 
+	cancelMatchmaking(client:Socket, server:Server): Promise<void> {
+		let user = this.getUsernameFromId(client.id);
+		if (user === undefined)
+			return;
+		if (this.queue.includes(user)){
+			this.queue.splice(this.queue.indexOf(user), 1);
+		}
+		return;
+	}
+
 	MakeMove(client: Socket, server:Server, data: any): void {
 		let user = this.getUsernameFromId(client.id);
 		if (user === undefined)
@@ -191,8 +201,7 @@ export class WsGameService {
 	joinRoom(client:Socket,room_name:string,server:Server): void {
 		const room: Room = this.rooms[room_name];
 		let user = this.getUsernameFromId(client.id);
-		if (room !== undefined) {
-			// console.log("JoinRoom: " + room_name + " " + user + " P1 :" + room.player1 + " P2:" + room.player2)
+		if (room !== undefined && user !== undefined) {
 			if (room.player1 === user){
 				server.in(room.name).fetchSockets().then((sockets) => {
 					for (let i = 0; i < sockets.length; i++) {
@@ -235,12 +244,11 @@ export class WsGameService {
 					room.game.ball.speed = 0;
 				}
 				server.to(room.name).emit('PlayerLeft', {player:1, score:[room.game.player1_score, room.game.player2_score]});
-				server.socketsLeave(room.name);
 				this.schedulerRegistry.deleteInterval(room.name);
 				// ajouter dans la bdd | efaccer la room de la liste
 				delete this.rooms[room_name];
 				server.emit("RoomDeleted", room_name);
-
+				server.socketsLeave(room.name);
 			}
 			else if (room.player2 === user) {
 				// this.clients[client_id].leave(room.name);
@@ -250,18 +258,19 @@ export class WsGameService {
 					room.game.player2_score = 0;
 				}
 				server.to(room.name).emit('PlayerLeft', {player:2, score:[room.game.player1_score, room.game.player2_score]});
-				server.to(room.name).emit('PlayerLeft', {player:1, score:[room.game.player1_score, room.game.player2_score]});
-				server.socketsLeave(room.name);
+				// verifier que le'interval existe
 				this.schedulerRegistry.deleteInterval(room.name);
 				// ajouter dans la bdd | efaccer la room de la liste
 				delete this.rooms[room_name];
 				server.emit("RoomDeleted", room_name);
+				server.socketsLeave(room.name);
 			}
 			else {
 				room.spectators.splice(room.spectators.indexOf(user), 1);
 				server.to(room.name).emit('SpectatorLeft', room.spectators);
 			}
 		}
+		// })
 	}
 
 	startGame(room_name:string, server:Server): void {
@@ -270,7 +279,7 @@ export class WsGameService {
 			if (room.game.is_playing === true)
 				return;
 			room.game.is_playing = true;
-			room.game.ball.speed = 10;
+			room.game.ball.speed = 10; // was to 10 to play game
 			server.to(room.name).emit('StartGame', room.name);
 			server.emit('NewMatch', this.rooms);
 			const interval = setInterval(() => {

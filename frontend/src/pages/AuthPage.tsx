@@ -26,6 +26,8 @@ export default function Auth() {
 				<h1 style={	{
 					color: '#000000',
 					textShadow: '0px 1px 8px #f6d21d',
+					fontSize: '50px',
+
 				}}>Are you ready ?</h1>
 
 				<Button 

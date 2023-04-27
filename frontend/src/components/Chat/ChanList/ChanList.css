@@ -6,45 +6,55 @@
   justify-content: flex-start;
   align-items: center;
   min-width: 200px;
+  width: 30%;
 }
 .chatlist__heading {
   width: 100%;
   text-align: center;
 }
+.chatlist__heading h2 {
+  font-size: 28px;
+  font-weight: 600;
+  color: #fff;
+  margin: 25px 0 15px 0;
+  font-family: 'Kocak';
+  text-shadow: #000000 3px 2px 2px;
+}
+
 .btn {
   background-color: #000000;
   color: #fff;
   border: none;
   cursor: pointer;
-  margin: 0px 10px 10px 10px;
+  margin: 0 0 8px 0;
   width: 95%;
   height: 45px;
-  border-radius: 6px;
+  border-radius: 8px;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-  display: flex;
+  display: inline-flex;
+  align-items: center;
 }
 .btn:hover {
   background-color: #bf1e2d;
   transform: scale(1.02);
 }
 .btn i {
-  flex: 0.3;
+  flex: 0.22;
   display: flex;
   justify-content: center;
-  align-items: center;
   font-size: 18px;
   border-right: 1px solid #9d9696;
+  height: 100%;
+  align-items: center;
 }
 .btn span {
-  flex: 0.9;
+  flex: 0.8;
   display: flex;
   justify-content: center;
-  align-items: center;
   font-size: medium;
-  font-family: "Roboto", sans-serif;
   font-weight: bold;
-  padding: 0px 6px;
 }
+
 .accordion-chats{
   width: 100%;
   display: flex;
@@ -102,7 +112,7 @@
   margin: 0;
   padding: 0;
   color: black;
-  font-weight: 520;
+  /* font-weight: 520; */
   font-size: 15px;
 }
 .chatlist__item .userMeta span {
@@ -159,6 +169,8 @@
   padding: 5px;
   margin: 5px 0;
   box-sizing: border-box;
+  border: 1px solid #282828;
+  border-radius: 5px;
 }
 
 #DisabledByDefaultIcon {

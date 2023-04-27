@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
+import CSS from 'csstype';
 
 type EditableTextProps = {
   text: string;
@@ -26,13 +27,21 @@ const EditableText = ({ text, onSubmit }: EditableTextProps) => {
 
   return isEditing ? (
     <form onSubmit={handleSubmit}>
-      <input type="text" value={value} onChange={handleChange}/>
-      <button type="submit">Save</button>
+      <input type="text" className="text-black" value={value} onChange={handleChange}/>
+      <button type="submit" style={Buttonstyles}>Save</button>
     </form>) : (
-    <h1>
+    <h1 className="font-semibold text-4xl">
       {text+" "}
       <EditIcon onClick={handleEdit} style={{cursor: 'pointer'}}/>
     </h1>);
 };
+
+const Buttonstyles: CSS.Properties = {
+  backgroundColor: '#e5e7eb',
+  color: 'black',
+  border: 'solid 1px black',
+  borderRadius: '5px',
+  padding: '0 5px',
+}
 
 export default EditableText;

@@ -18,18 +18,18 @@ export class AuthController {
   async getToken( @Req() req: Request, @Res() res: Response) {
 
     const code = req.query.code as string;
-    // console.log('req.query.code = ' + code);
-    // console.log('\n');
+    console.log('req.query.code = ' + code);
+    console.log('\n');
 
     const token = await this.authService.accessToken(code);
-    // console.log(token);
-    // console.log('\n');
+    console.log(token);
+    console.log('\n');
 
     const user = await this.authService.get42User(
       token.access_token,
     );
-    // console.log(user.email);
-    // console.log('\n');
+    console.log(user.email);
+    console.log('\n');
 
     if (token)
     {
@@ -67,6 +67,7 @@ export class AuthController {
         // console.log("Hello 1\n");
         req.headers.authorization = token.access_token;
         this.userService.updateUserStatusOnline(req);
+        console.log(`url: ${process.env.FRONTEND_URL}/myProfile`)
         res.redirect(
           `${process.env.FRONTEND_URL}/myProfile`,
           );

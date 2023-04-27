@@ -48,6 +48,7 @@ const GameHistory = (props: TableProps) => {
 	let gamesWon = 0;
 	let gamesLost = 0;
   
+	
 	data.forEach((item) => {
 		const score1 = item.score[0];
 		const score2 = item.score[1];
@@ -79,20 +80,20 @@ const GameHistory = (props: TableProps) => {
 	const winrate = gamesPlayed > 0 ? ((gamesWon / gamesPlayed) * 100).toFixed(2) : "0.00";
   
 	return (
-		<div style={{overflowY: 'scroll', minWidth: '60%', height: '550px'}}>
-			<table style={{ borderCollapse: 'collapse', width: '100%', height:'100%' }}>
+	<div style={{overflowY: 'auto', minWidth: '60%', height: '100%', borderRadius: '10px',}}>
+			<table style={{ borderCollapse: 'collapse' }}>
 
 				<thead style={{ position: 'sticky', top: '0' }}>
 					<tr>
 						<th colSpan={6} style={titleTable}>Game history</th>
 					</tr>
-					<tr>
-						<th style={stats}></th>
-						<th style={stats}>Winrate: {winrate}%</th>
-						<th style={stats}></th>
-						<th style={stats}>Games: {gamesPlayed}</th>
-						<th style={stats}>Win: {gamesWon}</th>
-						<th style={stats}>Lost: {gamesLost}</th>
+					<tr style={stats}>
+						<th></th>
+						<th>Winrate: {winrate}%</th>
+						<th></th>
+						<th>Games: {gamesPlayed}</th>
+						<th>Win: {gamesWon}</th>
+						<th>Lost: {gamesLost}</th>
 					</tr>
 					<tr>
 						<th style={titleCol}>#</th>
@@ -105,11 +106,13 @@ const GameHistory = (props: TableProps) => {
 				</thead>
 
 				<tbody style={{ paddingTop: '100px' }}>
-					{data.map((item, index) => (
+					{data.length > 0 ? (
+						data.map((item, index) => (
 						<tr key={index} style={{ backgroundColor: 
-							(item.score[0] > item.score[1] && item.player1Name === userName) || 
-							(item.score[1] > item.score[0] && item.player1Name !== userName) 
-							? '#42f5b033' /* green */ : '#f5484233' /* red */
+							(item.score[0] >= item.score[1] && item.player1Name === userName) || 
+							(item.score[1] >= item.score[0] && item.player1Name !== userName) ? 
+							(item.score[0] == item.score[1]) ? '#ffffff11' : '#42f5b055' /* green */ 
+							: '#f5484255' /* red */
 						  }}>
 							<td style={lineTable}>{index + 1}</td>
 							{ item.player1Name == userName &&
@@ -133,8 +136,12 @@ const GameHistory = (props: TableProps) => {
 							}
 
 							<td style={lineTable}>{item.score.at(0)} - {item.score.at(1)}</td>
-							<td style={lineTable}>{item.date}</td>
-						</tr>))}
+							<td style={lineTable}>{item.date.split('T').at(0)}-[{item.date.split('T').at(1)?.split('.').at(0)}]</td>
+						</tr>))
+						) : (
+						<tr style={lineTable}><td colSpan={6}>No match found</td></tr>
+						)
+					}
 				</tbody>
 			</table>
 		</div>
@@ -144,21 +151,18 @@ const GameHistory = (props: TableProps) => {
 const stats: CSS.Properties = {
 	backgroundColor: '#b62f2ff8',
 	textAlign: 'center',
-	padding: '5px',
 }
 
 const titleCol: CSS.Properties = {
 	backgroundColor: 'black', 
 	color: 'white', 
 	textAlign: 'center',
-	padding: '5px',
 }
 
 const titleTable: CSS.Properties = {
 	backgroundColor: 'black', 
 	color: 'white', 
 	textAlign: 'center', 
-	padding: '8px',
 	fontFamily: 'Kocak',
 	fontSize: '30px',
 }
@@ -166,15 +170,18 @@ const titleTable: CSS.Properties = {
 const lineTable: CSS.Properties = {
 	borderBottom: '1px solid #ddd',
 	textAlign: 'center',
-	backgroundColor: '#fff9f955',
-
+	backgroundColor: '#fff9f932',
+	height: '75px',
+	fontWeight: 'bold',
+	color: 'white',
+	textShadow: '1px 1px 1px black',
 }
 
 const playerCol: CSS.Properties = {
 	backgroundColor: 'black', 
 	color: 'white', 
 	textAlign: 'center',
-	width: '130px'
+	width: '20%'
 }
 
 export default GameHistory;

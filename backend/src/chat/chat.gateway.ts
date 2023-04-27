@@ -14,7 +14,8 @@ import { ValidationPipe, UsePipes } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { PrismaClient } from '@prisma/client';
 import { QuitChanDto, JoinChanDto, ActionsChanDto} from "./dto/edit-chat.dto"
-
+import { EditChannelCreateDto } from './dto/edit-chat.dto';
+import { IsAdminDto } from './dto/admin.dto';
 
 export interface User {
   id: number;
@@ -24,7 +25,7 @@ export interface User {
 @UsePipes(new ValidationPipe())
  @WebSocketGateway({
      cors: {
-     origin: 'http://localhost:3080',
+     origin: `${process.env.SOCKET_URL}`,
    },
    namespace: 'chat',
   })
@@ -91,9 +92,18 @@ export class ChatGateway implements OnGatewayConnection {
     @ConnectedSocket() client : Socket,
   ) {
     const chat = await this.chatService.newMsg(data, this.clients[client.id].id);
+    const except_user = await this.chatService.getExceptUser(data.chatId, this.clients[client.id].id);
+    let except = await this.server.in(data.chatId.toString()).fetchSockets().then((sockets) => {
+      let except_user_socket = [];
+      sockets.forEach((socket) => {
+        if (except_user.some((user) => user.username === this.clients[socket.id].username))
+          except_user_socket.push(socket.id);
+      });
+      return except_user_socket;
+    });
     if (chat == null)
       return "error";
-    this.server.to(data.chatId.toString()).emit("NewMessage",chat); // emit to the room
+    this.server.to(data.chatId.toString()).except(except).emit("NewMessage",chat); // emit to the room
   }
 
   @SubscribeMessage('joinNewChannel')
@@ -131,6 +141,8 @@ export class ChatGateway implements OnGatewayConnection {
     @MessageBody()  data: number ,
     @ConnectedSocket() client : Socket,
   ) {
+    if(this.clients[client.id] === undefined)
+      return;
     const user = await this.userService.getUser(this.clients[client.id].username);
     const userIsInChan = await this.chatService.userIsInChan(user.accessToken, data);
     if (userIsInChan)
@@ -147,9 +159,31 @@ export class ChatGateway implements OnGatewayConnection {
     ) {
       if (this.clients[client.id] === undefined)
       return;
+      const chatInfo = await this.chatService.isDM(data.chatId);
+      if (chatInfo){
+        this.server.to(client.id).emit("DM:quit");
+        return;
+      }
     const quit = await this.chatService.quit_Chan(this.clients[client.id].username, data.chatId);
     client.leave(data.chatId.toString());
+    this.server.to(client.id).emit("quited", {chatId:data.chatId});
+    this.server.to(data.chatId.toString()).emit("quit",{username:this.clients[client.id].username})
     console.log("user quit: " + this.clients[client.id].username);
+  }
+
+  @SubscribeMessage('is-admin')
+  async isAdmin_Chan(
+    @MessageBody()  data: IsAdminDto ,
+    @ConnectedSocket() client : Socket,
+  ) {
+    if (this.clients[client.id] === undefined)
+      return;
+    const isAdmin = await this.chatService.isAdmin_Chan(this.clients[client.id].username, data.channel_id);
+    console.log("is admin: " + isAdmin);
+    if (isAdmin)
+      this.server.to(client.id).emit("isAdmin", {isAdmin:isAdmin});
+    else
+      this.server.to(client.id).emit("isAdmin", {isAdmin:isAdmin});
   }
 
   @SubscribeMessage('invit')
@@ -163,6 +197,14 @@ export class ChatGateway implements OnGatewayConnection {
     if (!isAdmin)
       return;
     await this.chatService.invit_Chan(data.username, data.chatId);
+    for (let key in this.clients){
+      if (this.clients[key].username === data.username)
+      {
+        let channel = await this.chatService.get__chanNamebyId(data.chatId); 
+        this.server.to(key).emit("invited", {chatId:data.chatId, channelName:channel.channelName})
+        return;
+      }
+    }
     console.log("user invited");
   }
 
@@ -190,6 +232,28 @@ export class ChatGateway implements OnGatewayConnection {
     }
     this.server.to(data.chatId.toString()).emit("ban", {username: data.username});
     console.log("chan banned");
+  }
+
+  @SubscribeMessage('unban')
+  async unban_chan(
+    @MessageBody()  data: ActionsChanDto ,
+    @ConnectedSocket() client : Socket,
+  ) {
+    if (this.clients[client.id] === undefined)
+      return;
+    console.log(data);
+    const isAdmin = await this.chatService.isAdmin_Chan(this.clients[client.id].username, data.chatId);
+    if (!isAdmin)
+      return;
+    await this.chatService.unban_Chan(data.username, data.chatId);
+    for (let key in this.clients){
+      if (this.clients[key].username === data.username){
+        this.server.to(key).emit("unbanned", {chatId: data.chatId});
+        break;
+      }
+    }
+    this.server.to(data.chatId.toString()).emit("unban", {username: data.username});
+    console.log("chan unbanned");
   }
 
   @SubscribeMessage('kick')
@@ -252,20 +316,46 @@ export class ChatGateway implements OnGatewayConnection {
     console.log("chan unmuteed");
   }
 
-  // @SubscribeMessage('update')
-  // async update_chan(
-  //   @MessageBody()  data: EditChannelCreateDto ,
-  //   @ConnectedSocket() client : Socket,
-  // ) {
-  //   if (this.clients[client.id] === undefined)
-  //     return;
-  //   const res : number = await this.chatService.update_chan(data);
-  //   if (res == 1)
-  //     console.log("Password is empty but chan need password");
-  //   else if (res == 2)
-  //     console.log("not an admin");
-  //   else
-  //     console.log("chan updated");
-  // }
+  @SubscribeMessage('CreateDm')
+  async createDm(@ConnectedSocket() client:Socket, @MessageBody() data:any){
+    const dmchannel = await this.chatService.createDmChannel(this.clients[client.id].username, data.username)
+    for (let key in this.clients){
+      if (this.clients[key].username === data.username){
+        this.server.to(key).emit("DM Created",{channelName:this.clients[client.id].username, id: dmchannel.id})
+      }
+    }
+    this.server.to(client.id).emit("DM Created",{channelName:data.username, id: dmchannel.id})
+    return ;
+  }
+
+  @SubscribeMessage('set-admin')
+  async set_admin(
+    @MessageBody()  data: ActionsChanDto ,
+    @ConnectedSocket() client : Socket,)
+    {
+        if (this.clients[client.id] === undefined)
+          return;
+        const isAdmin = await this.chatService.isAdmin_Chan(this.clients[client.id].username, data.chatId);
+        if (!isAdmin)
+          return;
+        await this.chatService.set_admin_Chan(data.username, data.chatId);
+        this.server.to(data.chatId.toString()).emit("set-admin", {username: data.username});
+        console.log("new admin");
+  }
+
+  @SubscribeMessage('update')
+  async update_chan(
+    @MessageBody()  data: EditChannelCreateDto ,
+    @ConnectedSocket() client : Socket,
+  ) {
+    
+    const res : number = await this.chatService.update_chan(data);
+    if (res == 1)
+      client.broadcast.emit('Password is empty but chan need password', data);
+    else if (res == 2)
+      client.broadcast.emit('not an admin', data);
+    else
+      client.broadcast.emit('chan updated', data);
+  }
 
 }

@@ -54,7 +54,7 @@ export class AuthService{
 			body: `grant_type=authorization_code&client_id=${process.env.API42_CLIENT_ID}&client_secret=${process.env.API42_CLIENT_SECRET}&code=${req}&redirect_uri=${process.env.API42_REDIRECT_URI}`,
 		  });
 		  const data = await response.json();
-		  
+		  console.log("accessToken(): \n", process.env.API42_CLIENT_ID + "\n" + process.env.API42_CLIENT_SECRET + "\n" + process.env.API42_REDIRECT_URI + "\n\n");
 		  if (!data)
 		  {
 			throw new HttpException(
@@ -284,7 +284,7 @@ export class AuthService{
 			if (twoFactorSecret.twoFactorSecret == null)
 				return {message: "Error while enabling 2FA"};
 
-			const otpauthUrl = authenticator.keyuri(user.email, 'Pong Pong', twoFactorSecret.twoFactorSecret);
+			const otpauthUrl = authenticator.keyuri(user.email, 'Konoha Pong', twoFactorSecret.twoFactorSecret);
 			// console.log("otpauthUrl: ", otpauthUrl);
 
 			return res.json(
@@ -324,9 +324,9 @@ export class AuthService{
 					accessToken: req.headers.authorization,
 				},
 			});
-			// console.log("User found: ", user.email);
+			if (!user)
+				throw new HttpException('User not found', HttpStatus.NOT_FOUND);
 			delete user.accessToken;
-
 			return user;
 		} catch (error) {
 			console.log(error);

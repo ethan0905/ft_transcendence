@@ -478,21 +478,34 @@ export class UserService {
 		  }
 		});
 
+		const games = await this.prisma.game.findMany({
+			where: {
+				players: {
+					some: {
+						id: user.id
+					}
+				}
+			},
+			include : {
+				players: true,
+			}
+		});
+
 		// check if user has played at least 1 game
 		const hasPlayed = user.games.length > 0;
 
 		// check if from the games played, user has won at least 1 game
 		// const games = user.games;
 
-		// // let hasWon = false;
+		let hasWon = false;
 
-		// // games.forEach((game) => {
-		// //   if (game.player1 === username && game.score[0] > game.score[1]) {
-		// // 	hasWon = true;
-		// //   } else if (game.player2 === username && game.score[1] > game.score[0]) {
-		// // 	hasWon = true;
-		// //   }
-		// // });
+		games.forEach((game) => {
+		  if (game.player1Name === username && game.score[0] > game.score[1]) {
+			hasWon = true;
+		  } else if (game.player1Name !== username && game.score[1] > game.score[0]) {
+			hasWon = true;
+		  }
+		});
 
 		// const hasWon = user.games.some((game) => {
 		// 	let player1Index = game.players.findIndex((player) => player.id === user.id);
@@ -506,12 +519,23 @@ export class UserService {
 
 		// check if user has at least 1 friend
 		const hasFriend = user.friends.length > 0;
+		// let hasWon = false;
+		// if (hasPlayed) {
+			
+		// 	console.log("555 games: ", user.games[0]);
+		// 	hasWon = games.some((game) => {
+		// 		let idx = game.players[0].id === user.id ? 0 : 1;
+		// 		return game.score[idx] > game.score[1 - idx];
+		// 	});
+		// }
 
+		console.log("has won ", hasWon);
 		return {
 		  hasPlayed: hasPlayed,
-		  hasWon: false, // need to change this
+		  hasWon: hasWon, // need to change this
 		  hasFriend: hasFriend,
 		};
+		
 	}
 
 	async getUserStatus(@Req() req: Request) {
@@ -583,6 +607,38 @@ export class UserService {
 		return { message: "Status updated to playing!" };
 	}
 
+	async getAvatarUrl(@Req() req: Request) {
+
+		
+		try {
+			console.log("getting avatar url...: ", req.headers.username);
+	
+			const username = Array.isArray(req.headers.username)
+			  ? req.headers.username[0]
+			  : req.headers.username;
+
+			if (!username) {
+				return;
+			}
+
+			const user = await this.prisma.user.findUnique({
+			where: {
+				username: username,
+			},
+			select: {
+				avatarUrl: true,
+			},
+
+			});
+
+			return { avatarUrl: user.avatarUrl };
+		
+		} catch (error) {
+			console.log("error: ", error);
+		}
+
+	}
+
 	async editAvatarUrl(@Req() req: Request) {
 
 		const user = await this.prisma.user.update({
@@ -590,7 +646,7 @@ export class UserService {
 			accessToken: req.body.token,
 		  },
 		  data: {
-			avatarUrl: "http://localhost:3333/files/" + req.body.username,
+			avatarUrl: `${process.env.BACKEND_URL}` + "/files/" + req.body.username,
 		  },
 		});
 
@@ -624,4 +680,39 @@ export class UserService {
 	// 	})
 	// 	return (user)
 	// }
+
+	async getTheme(@Req() req: Request) {
+		
+		// console.log("getting user theme...: ", req.headers.authorization);
+
+		const user = await this.prisma.user.findUnique({
+		  where: {
+			accessToken: req.headers.authorization,
+		  },
+		  select: {
+			theme: true,
+		  },
+		});
+
+		// console.log("user theme: ", user.theme);
+		
+		return { theme: user.theme };
+	}
+
+	async editTheme(@Req() req: Request) {
+
+		// console.log("updating user token...: ", req.body.token);
+		// console.log("updating user status...: ", req.body.status);
+
+		const user = await this.prisma.user.update({
+		  where: {
+			accessToken: req.body.token,
+		  },
+		  data: {
+			theme: req.body.status,
+		  },
+		});
+
+		return { message: "Theme updated!" };
+	}
 }

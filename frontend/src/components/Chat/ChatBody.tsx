@@ -1,4 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, createContext } from 'react';
+import { io, Socket } from 'socket.io-client';
 import ChatList from './ChanList/ChanList';
 import ChatContent from './ChatContent/ChatContent';
 import UserList from './UserList/UserList';
@@ -20,6 +21,9 @@ const ChatBody: React.FC = () => {
       navigate('/Chat');
       Alert(value);
     })
+    return () => {
+      socket.off("error");
+    }
   },[])
 
   const Alert = (value:string) =>{

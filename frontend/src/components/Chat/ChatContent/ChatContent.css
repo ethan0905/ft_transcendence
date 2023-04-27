@@ -1,4 +1,5 @@
 .main__chatcontent {
+  /* flex-shrink: 2; */
   flex-grow: 1;
   max-height: 100%;
   border-right: 1px solid #f8f8f9;
@@ -18,11 +19,12 @@
 }
 .content__header h1 {
   font-family: 'Kocak', sans-serif;
-  text-shadow: white 1px 1px 1px;
+  text-shadow: white 2px 1px 1px;
+  font-size: 2rem;
 }
 .content__body {
   padding-top: 10px;
-  overflow-y: scroll;
+  overflow-y: auto;
   width: 100%;
   flex-grow: 1;
 }
@@ -43,6 +45,7 @@
   color: #5e5c5c;
   cursor: pointer;
   padding-right: 10px;
+  font-size: 1.2rem;
 }
 .btn-nobg:hover {
   color: #fffcfc;
@@ -53,6 +56,7 @@
   justify-content: flex-end;
   align-items: flex-end;
   margin-bottom: 15px;
+  margin-right: 10px;
   transition: all 0.3s ease;
   transform: scale(0);
   transform-origin: right;
@@ -84,12 +88,12 @@
   padding: 1px;
 }
 .chat__item__content {
-  background-color: #a11826;
+  background-color: #af0f0f;
   color: #ffffff;
   padding: 15px;
   border-radius: 10px 10px 0 10px;
   max-width: 50%;
-  min-width: 215px;
+  min-width: 130px;
 }
 .chat__item__content .chat__meta {
   justify-content: space-between;
@@ -101,12 +105,28 @@
   color: #8693d3;
   user-select: none;
 }
+
+.chat__item__content div:first-child{
+  font-size: smaller;
+  font-weight: bolder;
+  color: #D2B48C;
+}
+
+.chat__item__content div:last-child{
+  font-size: smaller;
+  font-weight: light;
+  color: #D2B48C;
+  text-align: right;
+}
+
 .chat__msg {
   user-select: none;
+  overflow-wrap: break-word;
 }
 .chat__item.other {
   flex-direction: row-reverse;
   transform-origin: left;
+  margin-left: 10px;
 }
 .chat__item.other .chat__item__content {
   background-color: #060606fd;

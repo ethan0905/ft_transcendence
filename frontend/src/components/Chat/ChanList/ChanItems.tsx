@@ -67,7 +67,7 @@ const ChanItems: React.FC<Props> = ({ name, active, animationDelay, id_channel }
     const isProtected = await getChannelProtection(id_channel,document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1"));
     if (isProtected === false)
       return;
-    console.log("is pretected:",isProtected);
+    console.log("is protected:",isProtected);
     const { value: password } = await MySwal.fire({
       title: 'Enter your password',
       input: 'password',
@@ -84,11 +84,6 @@ const ChanItems: React.FC<Props> = ({ name, active, animationDelay, id_channel }
     >
       <div className="userMeta">
         <p>{name}</p>
-      </div>
-      <div className="QuitButton">
-        <DisabledByDefaultIcon id='DisabledByDefaultIcon' sx={{ fontSize: 15 }}
-          onClick={() => {socket.emit("quit",{chatId:id_channel})}}
-        />
       </div>
     </div>
   );

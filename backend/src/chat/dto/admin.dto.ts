@@ -29,3 +29,13 @@ export class ChannelUnbanMemberDto {
 	@IsString()
 	public user_id: string = "";
 }
+
+export class IsAdminDto {
+	@IsNotEmpty()
+	@IsString()
+	public username: string;
+
+	@IsNotEmpty()
+	@IsNumber()
+	public channel_id: number;
+}

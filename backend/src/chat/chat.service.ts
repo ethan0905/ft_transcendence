@@ -7,6 +7,10 @@ import { UserService } from 'src/user/user.service'
 import { Message, User } from '@prisma/client';
 import { AuthService } from 'src/auth/auth.service';
 import { JoinChanDto, EditChannelCreateDto } from 'src/chat/dto/edit-chat.dto';
+import { channel } from 'diagnostics_channel';
+import { use } from 'passport';
+import * as bcrypt from 'bcrypt';
+
 
 @Injectable()
 export class ChatService {
@@ -17,16 +21,28 @@ export class ChatService {
         ) {}
 
         async newChannel(info: ChannelCreateDto, username: string) {
-            const password = info.Password ?? null;
+
+          let hash = null;
+          info.isPassword = false;
+            if (info.Password != null && info.Password != undefined && info.Password != "")
+            {
+              const salt = await bcrypt.genSalt();
+
+              hash = await bcrypt.hash(info.Password, salt);
+              console.log("hash:" + hash);
+              info.isPassword = true;
+            }
+
             if (info.isPrivate === undefined)
               info.isPrivate = false;
-            if (info.isPassword === undefined)
-              info.isPassword = false;
+            // if (info.Password != null && info.Password != undefined && info.Password != "")
+            //   info.isPassword = true;
+            console.log(info);
             const user = await this.userService.getUser(username);
             const channel = await this.prisma.channel.create({
               data: {
                 channelName: info.chatName,
-                password: password,
+                password: hash,
                 isPrivate: info.isPrivate,
                 isPassword: info.isPassword,
                 owner: {
@@ -107,7 +123,17 @@ export class ChatService {
                 id: id,
               },
               data : {
+                admins:{
+                  disconnect : {
+                    username : username,
+                  },
+                },
                 members : {
+                  disconnect : {
+                    username : username,
+                  },
+                },
+                muted:{
                   disconnect : {
                     username : username,
                   },
@@ -123,25 +149,49 @@ export class ChatService {
           )
         }
 
-
-        async kick_Chan(username: string, id : number)
+        async unban_Chan(username: string, id : number)
         {
-          const chan = await this.prisma.channel.findUnique({
-            where : {
-              id : id,
-            },
-            select : {
-              admins : true,
-            }
-          })
-          const isadmin = chan.admins.find(admins => admins.username == username)
           await this.prisma.channel.update(
             {
               where: {
                 id: id,
               },
               data : {
+                banned : {
+                  disconnect : {
+                    username : username,
+                  },
+                },
                 members : {
+                  connect : {
+                    username : username,
+                  },
+                },
+              },
+                //isPrivate : info.Private,
+              }
+          )
+        }
+
+        async kick_Chan(username: string, id : number)
+        {
+          await this.prisma.channel.update(
+            {
+              where: {
+                id: id,
+              },
+              data : {
+                admins:{
+                  disconnect : {
+                    username : username,
+                  },
+                },
+                members : {
+                  disconnect : {
+                    username : username,
+                  },
+                },
+                muted:{
                   disconnect : {
                     username : username,
                   },
@@ -150,23 +200,6 @@ export class ChatService {
                 //isPrivate : info.Private,
               }
           )
-          if (isadmin)
-            await this.prisma.channel.update(
-              {
-                where: {
-                  id: id,
-                },
-                data : {
-                  admins : {
-                    disconnect : {
-                      username : username,
-                    },
-                  },
-                },
-                  //isPrivate : info.Private,
-                }
-            )
-
         }
 
         
@@ -185,6 +218,24 @@ export class ChatService {
                 },
               },
                 //isPrivate : info.Private,
+              }
+          )
+        }
+
+        async set_admin_Chan(username: string, id : number)
+        {
+          await this.prisma.channel.update(
+            {
+              where: {
+                id: id,
+              },
+              data : {
+                admins : {
+                  connect : {
+                    username : username,
+                  },
+                },
+              },
               }
           )
         }
@@ -239,8 +290,13 @@ export class ChatService {
             else if (isban)
             return (2);
           }
-          else if (chan.password !== ''){
-            if (data.Password === undefined || data.Password != chan.password)
+          else if (chan.password !== '' && chan.password !== null && chan.password !== undefined){
+            console.log("chan pass : ", chan.password, "data pass : ", data.Password);
+            const isMatch = await bcrypt.compare(data.Password, chan.password);
+
+            console.log("is mathc ? " + isMatch);
+
+            if (!isMatch)
               return (3);
           }
           await this.prisma.channel.update(
@@ -342,6 +398,12 @@ export class ChatService {
             },
             select: {
               id: true,
+              owner:{
+                select: {
+                  avatarUrl: true,
+                  username:true,
+                }
+              },
               createdAt: true,
               message: true,
               userId: true,
@@ -423,10 +485,36 @@ export class ChatService {
             const source = await this.prisma.channel.findMany({
               where: {
                 members : { some : {accessToken : token}},
+                isDM:false,
               },
               select: {
                 id : true,
                 channelName: true,
+              },
+            });
+            return source;
+          } catch (error) {
+            console.log('get__channels error:', error);
+          }
+        }
+
+        async get__DmUser(token:string) {
+          try {
+            const source = await this.prisma.channel.findMany({
+              where: {
+                members : { some : {accessToken : token}},
+                isDM:true,
+              },
+              select: {
+                id : true,
+                members:{
+                  where:{
+                    NOT:{accessToken:token},
+                  },
+                  select:{
+                    username:true,
+                  }
+                }
               },
             });
             return source;
@@ -468,6 +556,7 @@ export class ChatService {
                 id : id,
               },
               select: {
+                isDM:true,
                 admins: {
                   select: {username: true,status: true,avatarUrl: true,id: true},
                 },
@@ -527,14 +616,33 @@ export class ChatService {
           }
         }
 
-        async get__MsgIn(id : number) {
+        async get__MsgIn(id : number, blockedUser:number[]) {
           try {
             const source = await this.prisma.channel.findMany({
               where: {
                 id : id,
               },
               select: {
-                messages: true,
+                messages: {
+                  where:{
+                    userId:{
+                      notIn:blockedUser,
+                    }
+                  },
+                  select: {
+                    id: true,
+                    createdAt: true,
+                    message: true,
+                    userId: true,
+                    channelId: true,
+                    owner:{
+                      select:{
+                        username:true,
+                        avatarUrl:true,
+                      },
+                    },
+                  },
+                },
               },
             });
             return source
@@ -565,40 +673,56 @@ export class ChatService {
         async update_chan(info: EditChannelCreateDto) {
 
             const idchat = info.channelid;
-            if (info.isPrivate == undefined)
-              info.isPrivate = false;
-            const isPass = info.isPassword.valueOf();
+            // if (info.isPrivate == undefined)
+            //   info.isPrivate = false;
+            // const isPass = info.isPassword.valueOf();
+            let hash = "";
+            if (info.Password != undefined && info.Password != null && info.Password != "")
+            {
+              const salt = await bcrypt.genSalt();
+              hash = await bcrypt.hash(info.Password, salt);
+              // console.log("hash updated !:" + hash);
+              info.isPassword = true;
+            }
+            else
+            {
+              // console.log("IS PASSWORD NULL ?");
+              info.isPassword = false;
+            }
+            // console.log("isPass : ", isPass);
             if (await this.isAdmin_Chan(info.username, info.channelid) == true)
             {
-              if (isPass)
+              if (info.isPassword)
                 if (!info.Password)
                   return (1);
+              if (hash == "")
+                hash = null;
               await this.prisma.channel.update(
                 {
                   where: {
                     id: idchat,
                   },
                   data: {
-                    password : info.Password,
-                    isPassword : info.isPassword || null,
-                    isPrivate : info.isPrivate,
+                    password : hash,
+                    isPassword : info.isPassword,
+                    // isPrivate : info.isPrivate,
                     //isPrivate : info.Private,
                   }
                 }
               )
-              if (info.newname)
-              {  
-                await this.prisma.channel.update(
-                  {
-                    where: {
-                      id: idchat,
-                    },
-                    data: {
-                      channelName : info.newname,
-                    },
-                  }
-                )
-              }
+              // if (info.newname)
+              // {  
+              //   await this.prisma.channel.update(
+              //     {
+              //       where: {
+              //         id: idchat,
+              //       },
+              //       data: {
+              //         channelName : info.newname,
+              //       },
+              //     }
+              //   )
+              // }
               return (0);
             }
             else
@@ -647,4 +771,193 @@ export class ChatService {
               },
             });
           }
+
+          async getPeopleToInvite(token:string, channelId:number){
+            const friends = await this.prisma.user.findUnique({
+              where: {
+              accessToken: token,
+              },
+              select: {
+                friends: true,
+              },
+            });
+
+            const userToInvite = friends.friends.map(async (id_user:number) => {
+              const user = await this.prisma.user.findUnique({
+                where:{
+                  id:id_user,
+                },
+                select:{
+                  username:true,
+                  admins:{
+                    select:{
+                      id:true,
+                    }
+                  },
+                  members:{
+                    select:{
+                      id:true,
+                    }
+                  },
+                  muted:{
+                    select:{
+                      id:true,
+                    }
+                  },
+                  banned:{
+                    select:{
+                      id:true,
+                    }
+                  },
+                }
+              });
+              if (user.admins.find((elem:any) => {return elem.id === channelId}) === undefined &&
+                  user.members.find((elem:any) => {return elem.id === channelId}) === undefined &&
+                  user.muted.find((elem:any) => {return elem.id === channelId}) === undefined &&
+                  user.banned.find((elem:any) => {return elem.id === channelId}) === undefined
+              ){
+                console.log(user);
+                return user.username;
+              }
+              return;
+            })
+            return Promise.all(userToInvite);
+          }
+
+          // async getUserToDm(token:string){
+          //   const useralreadydm = await this.prisma.user.findMany({
+          //     where:{
+          //       accessToken:token,
+          //     },
+          //     select:{
+          //       members:{
+          //         where:{
+          //           isDM:true
+          //         },
+          //         select:{
+          //           members:{
+          //             where:{
+          //               NOT:{accessToken:token}
+          //             },
+          //             select:{
+          //               username:true,
+          //             }
+          //           },
+          //         }
+          //       }
+          //     }
+          //   })
+          // }
+          async getUserToDm(token:string){
+            const useralreadydm = await this.prisma.channel.findMany({
+              where:{
+                members:{
+                  some:{accessToken:token}
+                },
+                isDM:true,
+              },
+              select:{
+                members:{
+                  where:{
+                    NOT:{accessToken:token}
+                  },
+                  select:{
+                    username:true,
+                  }
+                }
+              }
+            })
+
+            console.log(useralreadydm);
+            let usernames = [];
+            if (useralreadydm.length > 0){
+              useralreadydm[0].members.forEach((value:any) => {
+                usernames.push(value.username);
+              })
+            }
+            const users = await this.prisma.user.findMany({
+              where:{
+                AND:{
+                  username:{
+                    notIn:usernames,
+                  },
+                  NOT:{accessToken:token}
+                }
+              },
+              select:{
+                username:true,
+              }
+            })
+            console.log(users);
+            let values = []
+            users.forEach((value:any) => {
+              values.push(value.username);
+            })
+            return (values);
+          }
+
+        async createDmChannel(username1:string, username2:string){
+          const channel = await this.prisma.channel.create({
+            data:{
+              channelName:username1+","+username2,
+              password:'',
+              isPrivate:true,
+              isDM:true,
+              owner: {
+                connect: [{username : username1},{username:username2}]
+              },
+              admins: {
+                connect: [{username : username1},{username:username2}]
+              },
+              members: {
+                connect: [{username : username1},{username:username2}]
+              }
+            }
+          });
+          return channel;
+        }
+
+        async isDM(channelId:number){
+          const value = await this.prisma.channel.findUnique({
+            where:{
+              id:channelId,
+            },
+            select:{
+              isDM:true,
+            }
+          })
+          return value.isDM;
+        }
+
+        async getUserBlocked(token:string){
+          const usersBlocked = await this.prisma.user.findUnique({
+            where:{
+              accessToken:token,
+            },
+            select:{
+              blocked:true,
+            }
+          })
+          return usersBlocked.blocked;
+        }
+
+        async getExceptUser(channelId:number, id_user:number){
+          const users = await this.prisma.user.findMany({
+            where:{
+              blocked:{
+                has:id_user,
+              },
+              OR:[
+                {owner:{ some: {id:channelId} }},
+                {admins:{ some: {id:channelId} }},
+                {members:{ some: {id:channelId} }},
+                {muted:{ some: {id:channelId} }},
+              ],
+            },
+            select:{
+              username:true,
+            }
+          });
+          return users;
+        }
   }

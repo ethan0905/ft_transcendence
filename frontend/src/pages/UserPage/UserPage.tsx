@@ -10,6 +10,7 @@ import ProfilePicture from '../../components/ProfileSetting/ProfilePicture';
 import { CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import CSS from 'csstype';
 
 export default function UserPage() {
 	const navigate = useNavigate();
@@ -147,6 +148,11 @@ export default function UserPage() {
 					'Content-Type': 'application/json',
 				},
 			});
+			if (response.status === 404) {
+				console.log("No profile picture found. Loading default profile picture...");
+				getDefaultProfilePicture();
+				return;
+			}
 			const blob = await response.blob();
 			const file = new File([blob], 'filename.jpg', { type: 'image/jpeg' });
 			setProfilePicture(file);
@@ -438,36 +444,71 @@ export default function UserPage() {
 
 	let userStatusDot = getStatusLabel() as 'online' | 'offline' | 'ingame';
 
+	const [defaultProfilePicture, setDefaultProfilePicture] = useState('');
+
+	useEffect(() => {
+		if (token !== '')
+		{
+			const fetchDefaultProfilePicture = async () => {
+				getDefaultProfilePicture();
+			};
+			fetchDefaultProfilePicture();
+		}
+	}, [token]);
+
+	async function getDefaultProfilePicture(): Promise<any> {
+		
+		try {
+			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}` + '/users/me/avatarurl/get', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'Username': `${username}`,
+				},
+			});
+			const data = await response.json();
+			if (data)
+			{
+				// console.log("default : ", data.avatarUrl);
+				// setDefaultProfilePicture(data.avatarUrl);
+				const res = await fetch(data.avatarUrl);
+				const blob = await res.blob();
+				const filename = data.avatarUrl.substring(data.avatarUrl.lastIndexOf('/')+1);
+
+				// access file here
+				setProfilePicture(new File([blob], filename));
+			}
+		} catch (error) {
+			console.log(error);
+		}
+
+	}
+
 	return (
 		<>
 			<Sidebar />
 			<div className='UserPage'>
 				<div className='UserPage_header'>
 					{imageIsLoaded ? (
-							<Avatar
-								id='UserAvatar'
-								alt='Profile Picture'
-								sx={{
-									width: 150,
-									height: 150,
-									verticalAlign: 'middle',
-									border: '#f8f8f8 4px solid',
-									margin: '10px 20px 10px 10px'
-								}}
-								src={profilePicture ? URL.createObjectURL(profilePicture) : undefined}/>
+						<Avatar id='UserAvatar' alt='Profile Picture'
+							sx={{
+								width: 150,
+								height: 150,
+								verticalAlign: 'middle',
+								border: '#f8f8f8 4px solid',
+								margin: '10px 20px 10px 10px'
+							}}
+							src={profilePicture ? URL.createObjectURL(profilePicture) : undefined}/>
 						) : (
-							<CircularProgress
-								id='LoadingAvatar'
-								size={150}
-								thickness={2}
-								sx={{	
-								color: '#f8f8f8'
-								}}
-						  />
-						)
+						<CircularProgress
+							id='LoadingAvatar'
+							size={150}
+							thickness={2}
+							sx={{color: '#f8f8f8'}}
+						/>)
 					}
 					<div className='UserPage_info'>
-						<h1>{username}
+						<h1 className='font-semibold text-4xl'>{username}
 							<div className={`userStatus ${userStatusDot}`}></div>
 						</h1>
 						<div className='buttonList'>
@@ -476,18 +517,45 @@ export default function UserPage() {
 								) : (
 									<>
 										{ !friendAdded ? (
-											<button style={{backgroundColor: 'green'}} onClick={addFriend}>Add</button>
+											<button style={{
+												backgroundColor: 'green',
+												border: 'solid 1px black',
+												borderRadius: '3px',
+												padding: '0 10px',
+											}} onClick={addFriend}>Add</button>
 											) : (
-												<button style={{backgroundColor: 'red'}} onClick={removeFriend}>Delete</button>
+												<button style={{
+													backgroundColor: 'red',
+													border: 'solid 1px black',
+													borderRadius: '3px',
+													padding: '0 10px',
+												}} onClick={removeFriend}>Delete</button>
 												)
 											}
 										{ !blocked ? (
-											<button style={{backgroundColor: 'orange'}} onClick={blockUser}>Block</button>
+											<button style={{
+												backgroundColor: 'orange',
+												border: 'solid 1px black',
+												borderRadius: '3px',
+												padding: '0 10px',
+											}} onClick={blockUser}>Block</button>
 											) : (
-												<button onClick={unblockUser}>Unblock</button>
+												<button style={{
+													backgroundColor: '#e5e7eb',
+													border: 'solid 1px black',
+													color: 'black',
+													borderRadius: '3px',
+													padding: '0 10px',
+												}} onClick={unblockUser}>Unblock</button>
 												)
 											}
-										<button>Fight</button>
+										<button style={{
+												backgroundColor: '#e5e7eb',
+												border: 'solid 1px black',
+												color: 'black',
+												borderRadius: '3px',
+												padding: '0 10px',
+											}}>Fight</button>
 									</>
 								)
 							}
@@ -504,32 +572,10 @@ export default function UserPage() {
 	);
 }
 
-// const games = [
-// 	{ player1: 'Mika', player2: 'Ethan', score: "3-2", date: "2023-01-02" },
-// 	{ player1: 'Ethan', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-// 	{ player1: 'Kenny', player2: 'Ethan', score: "3-2", date: "2023-01-02" },
-// 	{ player1: 'Clem', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-// 	{ player1: 'Alex', player2: 'Mika', score: "3-2", date: "2023-01-02" },
-// ];
+const Buttonstyles: CSS.Properties = {
+	backgroundColor: '#e5e7eb',
+	color: 'black',
+	border: 'solid 1px black',
+	borderRadius: '5px',
+	padding: '0 5px',
+  }

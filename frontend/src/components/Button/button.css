@@ -18,6 +18,5 @@
   
   .button-31:hover,
   .button-31:focus {
-    opacity: .80;
-    color: #b72819;
+    background-color: #b72819;
   }
