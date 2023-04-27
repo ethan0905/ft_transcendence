@@ -322,6 +322,16 @@ export default function UserList() {
           setAllMuted((data:any) => {return data.filter((item:any) => item.username !== value.username)});
         });
     }
+    return () => {
+      socket.off("kick");
+      socket.off("NewUserJoin");
+      socket.off("ban");
+      socket.off("unban");
+      socket.off("mute");
+      socket.off("unmute");
+      socket.off("set-admin");
+      socket.off("quit");
+    }
   }, [socket, username]);
   
   useEffect(() => {

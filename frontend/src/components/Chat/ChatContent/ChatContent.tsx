@@ -201,6 +201,7 @@ export default function ChatContent(props: ChatContentProps) {
     socket.on("DM:quit",() => {
       AlertYouCannotLeaveDM();
     })
+
     socket.on("banned", (value:any) => {
       let id = Number(location.pathname.split("/")[2]);
       if (id !== value.chatId)
@@ -208,6 +209,7 @@ export default function ChatContent(props: ChatContentProps) {
       AlertYouAreBanned();
       navigate('/Chat');
     });
+
     socket.on("kicked", (value:any) => {
       let id = Number(location.pathname.split("/")[2]);
       if (id !== value.chatId)
@@ -215,13 +217,7 @@ export default function ChatContent(props: ChatContentProps) {
       AlertYouAreKicked();
       navigate('/Chat');
     });
-    socket.on("kicked", (value:any) => {
-      let id = Number(location.pathname.split("/")[2]);
-      if (id !== value.chatId)
-        return;
-      AlertYouAreKicked();
-      navigate('/Chat');
-    });
+
     socket.on("quited", (value:any) => {
       let id = Number(location.pathname.split("/")[2]);
       if (id !== value.chatId)
@@ -229,6 +225,12 @@ export default function ChatContent(props: ChatContentProps) {
       AlertSuccessfulQuit();
       navigate('/Chat');
     })
+    return () => {
+      socket.off("DM:quit");
+      socket.off("banned");
+      socket.off("kicked");
+      socket.off("quited");
+    }
   }, [socket])
   function clearInput() {
     setMsg("");
@@ -267,7 +269,9 @@ export default function ChatContent(props: ChatContentProps) {
       })
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     })
-    
+    return () => {
+      socket.off("NewMessage");
+    }
   },[location.pathname, socket]) // mistake was here
 
   const onStateChange = (e: React.ChangeEvent<HTMLInputElement>) => {

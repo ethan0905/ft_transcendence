@@ -372,6 +372,15 @@ export default function ChanList() {
 				return [...data, {channelName:value.channelName, id:value.chatId, active:false, isOnline:false}];
 			});
 		})
+		return () => {
+			socket.off("DM Created");
+			socket.off("Channel Created");
+			socket.off("Joined");
+			socket.off("kicked");
+			socket.off("banned");
+			socket.off("quited");
+			socket.off("invited");
+		}
 	}, [socket]);
 	
 	useEffect(() => {

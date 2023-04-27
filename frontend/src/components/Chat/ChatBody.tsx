@@ -21,6 +21,9 @@ const ChatBody: React.FC = () => {
       navigate('/Chat');
       Alert(value);
     })
+    return () => {
+      socket.off("error");
+    }
   },[])
 
   const Alert = (value:string) =>{
