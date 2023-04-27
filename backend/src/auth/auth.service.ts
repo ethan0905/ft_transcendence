@@ -324,9 +324,9 @@ export class AuthService{
 					accessToken: req.headers.authorization,
 				},
 			});
-			// console.log("User found: ", user.email);
+			if (!user)
+				throw new HttpException('User not found', HttpStatus.NOT_FOUND);
 			delete user.accessToken;
-
 			return user;
 		} catch (error) {
 			console.log(error);
