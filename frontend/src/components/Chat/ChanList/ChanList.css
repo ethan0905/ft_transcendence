@@ -6,6 +6,7 @@
   justify-content: flex-start;
   align-items: center;
   min-width: 200px;
+  max-width: 200px;
   width: 30%;
 }
 .chatlist__heading {
@@ -71,33 +72,18 @@
 
 .chatlist__items {
   overflow: auto;
-  padding: 20px;
+  /* padding: 5px; */
   width: 95%;
   display: flex;
   flex-direction: column;
-  gap:10px;
-  /* max-height: 25vh; */
+  /* gap:10px; */
 }
 .chatlist__item {
   display: flex;
   justify-content: space-between;
-  border-bottom: 1px solid #ebe7fb;
   padding: 10px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.88, 0.19, 0.37, 1.11);
-  transform: scale(0);
-  animation-name: showIn;
-  animation-duration: 0.2s; /* or: Xms */
-  animation-iteration-count: 1;
-  animation-direction: normal; /* or: normal */
-  animation-timing-function: cubic-bezier(
-    0.88,
-    0.19,
-    0.37,
-    1.11
-  ); /* or: ease, ease-in, ease-in-out, linear, cubic-bezier(x1, y1, x2, y2) */
-  animation-fill-mode: both; /* or: backwards, both, none */
-  animation-delay: 0.1s; /* or: Xms */
 }
 @keyframes showIn {
   0% {
@@ -124,7 +110,7 @@
   display: block;
 }
 .chatlist__item:hover, .chatlist__item.active {
-  background: #fff;
+  background: #ffffff;
   border-radius: 10px;
 }
 
@@ -142,45 +128,27 @@
 }
 
 .modal-content {
-  background-color: #fff;
-  padding: 20px;
+  background-color: #ffffff;
+  padding: 15px;
   border-radius: 5px;
   box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
   max-width: 500px;
-  width: 100%;
+  width: 50%;
 }
 
 .close {
   float: right;
-  font-size: 28px;
+  font-size: 25px;
   font-weight: bold;
   cursor: pointer;
 }
 
-.form-group {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 10px;
-}
-
-.channel_input {
-  width: 90%;
-  font-size: 14px;
+#name, #password{
+  width: 94%;
+  font-size: 16px;
   padding: 5px;
-  margin: 5px 0;
+  margin: 0 0 10px 0;
   box-sizing: border-box;
   border: 1px solid #282828;
   border-radius: 5px;
-}
-
-#DisabledByDefaultIcon {
-  display: none;
-}
-
-.chatlist__item:hover #DisabledByDefaultIcon {
-  display: block;
-}
-
-#DisabledByDefaultIcon:hover {
-  color: #c13232;
 }

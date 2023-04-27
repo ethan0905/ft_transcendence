@@ -387,6 +387,13 @@ export default function ChatContent(props: ChatContentProps) {
       onChange={onStateChange}
       value={msg}
       onFocus={() => {return false;}}
+      onKeyDown={(e) => { if (e.key === 'Enter') {
+        clearInput();
+        socket.emit("sendMsgtoC", {
+          "chatId":Number(location.pathname.split("/")[2]),
+          "msg":msg
+        })
+      }}}
     />
     <button className="btnSendMsg" id="sendMsgBtn" onClick={() => {
       clearInput();
