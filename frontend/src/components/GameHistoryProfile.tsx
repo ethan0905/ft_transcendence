@@ -11,7 +11,7 @@ interface TableProps {
 	}[];
   }
   
-const GameHistory = (props: TableProps) => {
+const GameHistoryProfile = (props: TableProps) => {
 	const { data } = props;
 
 	const [token, setToken] = useState<string>('');
@@ -50,8 +50,8 @@ const GameHistory = (props: TableProps) => {
   
 	
 	data.forEach((item) => {
-		const score1 = item.score[0];
-		const score2 = item.score[1];
+		const score1 = item.score[1];
+		const score2 = item.score[0];
 		const player1 = item.player1Name;
 		console.log("indie gamehistory: " + score1 + " ", score2 + " ", player1 + " ");
 
@@ -112,8 +112,8 @@ const GameHistory = (props: TableProps) => {
 						<tr key={index} style={{ backgroundColor: 
 							(item.score[0] >= item.score[1] && item.player1Name === userName) || 
 							(item.score[1] >= item.score[0] && item.player1Name !== userName) ? 
-							(item.score[0] == item.score[1]) ? '#ffffff11' : '#42f5b055' /* green */ 
-							: '#f5484255' /* red */
+							(item.score[0] == item.score[1]) ? '#ffffff11' : '#f5484255' /* red */ 
+							: '#42f5b055' /* green */
 						  }}>
 							<td style={lineTable}>{index + 1}</td>
 							{ item.player1Name == userName &&
@@ -185,4 +185,4 @@ const playerCol: CSS.Properties = {
 	width: '20%'
 }
 
-export default GameHistory;
+export default GameHistoryProfile;

@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import Avatar from '@mui/material/Avatar';
-import GameHistory from '../../components/GameHistory';
+import GameHistoryProfile from '../../components/GameHistoryProfile';
 import Achievements from '../../components/Achievements/Achievements';
 import './userPage.css';
 import { useState } from 'react';
@@ -565,7 +565,7 @@ export default function UserPage() {
 					<Achievements data={{ hasPlayed: hasPlayed, hasWon: hasWon, hasFriend: hasFriend }} />
 				</div>
 				<div className='UserPage_stats'>
-					<GameHistory data={gameHistoryList} />
+					<GameHistoryProfile data={gameHistoryList} />
 				</div>
 			</div>
 		</>
