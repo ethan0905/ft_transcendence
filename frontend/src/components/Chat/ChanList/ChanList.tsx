@@ -125,7 +125,9 @@ const FormButton = () => {
 		e.preventDefault();
 		getUsername(token);
 		console.log(`Name: ${name}, Password: ${password}, Private: ${isPrivate}, Username: ${username}`);
-		socket.emit("create channel", {chatName:name, Password:password, isPrivate:isPrivate, username:username})
+		if (name !== '' && name.trim().length > 0) {
+			socket.emit("create channel", {chatName:name, Password:password, isPrivate:isPrivate, username:username})
+		}
 		setIsOpen(false);
 	}
 

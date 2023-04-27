@@ -15,7 +15,8 @@ import { toDataURL } from 'qrcode';
 import { Body } from '@nestjs/common';
 import { join } from 'path';
 import { readFileSync } from 'fs';
-
+import fetch from 'node-fetch';
+import axios from 'axios';
 
 @Injectable()
 export class AuthService{
@@ -114,11 +115,37 @@ export class AuthService{
 					twoFactorAuth: false,
 					twoFactorActivated: false,
 					avatarUrl: user42.image.versions.medium,
-					// hash: token, //while we don't have a password
 				},
 			});
 	
 			console.log("User 42 has been created!\n");
+
+			console.log("Converting image to File object... \n");
+
+			const imageUrl = user42.image.versions.medium; // replace with your image URL
+
+			// Fetch the image data and convert it to a blob
+			const response = await fetch(imageUrl);
+			const imageBlob = await response.blob();
+
+			// Create a FormData object and append the image to it
+			const formData = new FormData();
+			formData.append('file', imageBlob, 'image.png'); // the second argument is the file name
+
+			// console.log("FormData created!", formData);
+
+			// // Make a POST request to the uploadFile endpoint with the FormData object as the request body
+			const username = user42.login; // replace with the username
+			const uploadUrl = `http://localhost:3333/files/${username}/upload`;
+			// console.log("before api call-----");
+			const uploadResponse = await axios.post(uploadUrl, formData);
+			// const newFile = uploadResponse.data;
+			// console.log('New file:', newFile);
+
+			console.log("File object created!\n");
+
+			// delete user.accessToken;
+			// delete user.refreshToken;
 
 			return user;
 		}catch (error) {
@@ -127,11 +154,6 @@ export class AuthService{
 					throw new ForbiddenException('Credentials taken');
 				}
 			}
-			// throw new HttpException(
-			// 	{
-			// 	  status: HttpStatus.BAD_REQUEST,
-			// 	  error: "Error while creating user in the database"
-			// 	}, HttpStatus.BAD_REQUEST); 
 		};
 	}
 

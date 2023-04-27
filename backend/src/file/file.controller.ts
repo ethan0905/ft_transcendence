@@ -15,8 +15,8 @@ export class FileController {
   @Post(':username/upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@Param('username') username: string, @UploadedFile() file: Multer.File) {
-    console.log("username ---> ", username);
 
+    console.log("HEEEEEERE username ---> ", username);
     // Get user by username
     const user = await this.prisma.user.findUnique({
       where: {
@@ -47,47 +47,6 @@ export class FileController {
       console.log("File already existed for this user, so we deleted it!");
     }
 
-    // if (previousFile) {
-    //   await this.prisma.file.delete({
-    //     where: {
-    //       id: previousFile.id,
-    //     },
-    //   });
-    // }
-
-
-    // // Delete previous file if it exists inside the user
-    // const previousFile = await this.prisma.file.findFirst({
-    //   where: {
-    //     owner: {
-    //       id: user.id
-    //     },
-    //   },
-    // });
-
-    // if (previousFile) {
-    //   await this.prisma.file.delete({
-    //     where: {
-    //       id: previousFile.id,
-    //     },
-    //   });
-    // }
-      
-
-    // // Delete previous file if it exists inside the user
-    // const previousFile = await this.prisma.file.findFirst({
-    //   where: {
-    //     owner: user.id,
-    //   },
-    // });
-    // if (previousFile) {
-    //   await this.prisma.file.delete({
-    //     where: {
-    //       id: previousFile.id,
-    //     },
-    //   });
-    // }
-
     const newFile = await this.prisma.file.create({
       data: {
         content: file.buffer,
@@ -104,70 +63,7 @@ export class FileController {
     console.log("New file has been uploaded!");
 
     return newFile;
-
-	// // Delete previous file if it exists
-	// const previousFile = await this.prisma.file.findFirst();
-	// if (previousFile) {
-	//   await this.prisma.file.delete({
-	// 	where: {
-	// 	  id: previousFile.id,
-	// 	},
-	//   });
-	// }
-	
-    // const newFile = await this.prisma.file.create({
-    //   data: {
-    //     content: file.buffer,
-    //     filename: file.originalname,
-    //     mimetype: file.mimetype,
-    //   },
-    // });
-
-    // return newFile;
   }
-
-// @Post('upload')
-// @UseInterceptors(FileInterceptor('file'))
-// async uploadFile(@UploadedFile() file: Multer.File, @Req() req: Request, @Res() res: Response) {
-// 	// Get user by token
-// 	console.log("req.headers.authorization ---> ", req.body.token);
-// 	  const user = await this.prisma.user.findUnique({
-// 		where: {
-// 			accessToken: req.body.token,
-// 		},
-// 	  });
-// 	  if (!user) {
-// 		return res.status(401).send('Unauthorized');
-// 	  }
-
-//   // Delete previous file if it exists
-//   const previousFile = await this.prisma.file.findFirst({
-// 	where: {
-// 	  userId: user.id,
-// 	},
-//   });
-//   if (previousFile) {
-// 	await this.prisma.file.delete({
-// 	  where: {
-// 		id: previousFile.id,
-// 	  },
-// 	});
-//   }
-
-//   const newFile = await this.prisma.file.create({
-// 	data: {
-// 	  content: file.buffer,
-// 	  filename: file.originalname,
-// 	  mimetype: file.mimetype,
-// 	  user: {
-// 		connect: {
-// 		  id: user.id,
-// 		},
-// 	  },
-// 	},
-//   });
-//   return newFile;
-// }
 
 @Get(':username')
 async serveFile(@Param('username') username: string, @Res() res: Response) {
