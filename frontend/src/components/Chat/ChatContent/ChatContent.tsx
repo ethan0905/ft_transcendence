@@ -131,7 +131,7 @@ async function getChannelName(id_channel:number, accessToken:string){
 
 type ChatItm = {
   id: number,
-  createdAt: Date,
+  createdAt: string,
   message: string,
   userId: number,
   channelId: number,
