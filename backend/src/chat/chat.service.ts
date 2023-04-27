@@ -123,7 +123,17 @@ export class ChatService {
                 id: id,
               },
               data : {
+                admins:{
+                  disconnect : {
+                    username : username,
+                  },
+                },
                 members : {
+                  disconnect : {
+                    username : username,
+                  },
+                },
+                muted:{
                   disconnect : {
                     username : username,
                   },
@@ -165,22 +175,23 @@ export class ChatService {
 
         async kick_Chan(username: string, id : number)
         {
-          const chan = await this.prisma.channel.findUnique({
-            where : {
-              id : id,
-            },
-            select : {
-              admins : true,
-            }
-          })
-          const isadmin = chan.admins.find(admins => admins.username == username)
           await this.prisma.channel.update(
             {
               where: {
                 id: id,
               },
               data : {
+                admins:{
+                  disconnect : {
+                    username : username,
+                  },
+                },
                 members : {
+                  disconnect : {
+                    username : username,
+                  },
+                },
+                muted:{
                   disconnect : {
                     username : username,
                   },
@@ -189,23 +200,6 @@ export class ChatService {
                 //isPrivate : info.Private,
               }
           )
-          if (isadmin)
-            await this.prisma.channel.update(
-              {
-                where: {
-                  id: id,
-                },
-                data : {
-                  admins : {
-                    disconnect : {
-                      username : username,
-                    },
-                  },
-                },
-                  //isPrivate : info.Private,
-                }
-            )
-
         }
 
         
