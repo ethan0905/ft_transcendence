@@ -198,10 +198,11 @@ async serveFile(@Param('username') username: string, @Res() res: Response) {
       if (!searchFileTest) {
         console.log("File not found");
         res.status(404).send('File not found');
-        // return { status: false };
+        return { status: false };
       }
 
       // Resize image to 200x200
+      console.log("searchFileTest.content ---> ", searchFileTest);
       const imageBuffer = await sharp(searchFileTest.content)
       .resize(200, 200, { fit: 'cover' })
       .toBuffer();
