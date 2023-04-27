@@ -269,6 +269,11 @@ export default function ChatContent(props: ChatContentProps) {
       })
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     })
+
+    socket.on("NewPartyCreated", (value:string) => {
+      navigate("/Game/"+value);
+    })
+
     return () => {
       socket.off("NewMessage");
     }

@@ -100,6 +100,7 @@ export default function UserList() {
   const [allAdmins, setAllAdmins] = useState<ChanUser[]>([]);
   const [allMembers, setAllMembers] = useState<ChanUser[]>([]);
   const [allMuted, setAllMuted] = useState<ChanUser[]>([]);
+  const [isDM, setIsDm] = useState<boolean>(false);
   const [allBanned, setAllBanned] = useState<ChanUser[]>([]);
   const socket = useContext(SocketContext);
   let location = useLocation();
@@ -344,6 +345,11 @@ export default function UserList() {
           setChannelStatus(true);
         else
           setChannelStatus(false);
+
+        if (value.isDM)
+          setIsDm(true);
+        else
+          setIsDm(false);
         setAllAdmins(value.admins);
         setAllMembers(value.members);
         setAllMuted(value.muted);
@@ -358,28 +364,47 @@ export default function UserList() {
         <ListSection name="Admins" listUsers={allAdmins} privilege={channelStatus}/>
 
         <div id='CommandBox' className="flex flex-col gap-[5px] w-1/2">
-          {channelStatus && <button className='button__inviteChannel' onClick={() => {
-            InviteFriendChannel(Number(location.pathname.split("/")[2]),token).then((value:any) => {
-              if (value.confirm){
-                socket.emit("invit", {username:value.value, chatId:Number(location.pathname.split("/")[2])})
-              }
-            })
-          }}>
-            <i className='fa fa-plus'> </i>
-            <span>Invite</span>
-          </button>}
-
-          <button className='button__quitChannel' onClick={() => {
-            socket.emit("quit", {chatId:Number(location.pathname.split("/")[2])});
-          }}>
-            <i className='fa fa-times'></i>
-            <span>Quit Channel</span>
+          {channelStatus && !isDM ?
+            <button className='button__inviteChannel' onClick={() => {
+              InviteFriendChannel(Number(location.pathname.split("/")[2]),token).then((value:any) => {
+                if (value.confirm){
+                  socket.emit("invit", {username:value.value, chatId:Number(location.pathname.split("/")[2])})
+                }
+              })
+            }}>
+              <i className='fa fa-plus'> </i>
+              <span>Invite</span>
             </button>
+            :
+            null
+          }
+
+          {isDM ? 
+            null
+            :
+            <button className='button__quitChannel' onClick={() => {
+              socket.emit("quit", {chatId:Number(location.pathname.split("/")[2])});
+            }}>
+              <i className='fa fa-times'></i>
+              <span>Quit Channel</span>
+            </button>
+          }
+          
+          {isDM ? 
+            <button className='button__inviteChannel' onClick={() => {
+              socket.emit("play", {chatId:Number(location.pathname.split("/")[2])});
+            }}>
+              <i className='fa fa-times'></i>
+              <span>Play</span>
+            </button>
+            :
+            null
+          }
         </div>
        
-        <ListSection name="Members" listUsers={allMembers} privilege={channelStatus}/>
-        <ListSection name="Muted" listUsers={allMuted} privilege={channelStatus}/>
-        <ListSection name="Banned" listUsers={allBanned} privilege={channelStatus}/>
+        {isDM ? null : <ListSection name="Members" listUsers={allMembers} privilege={channelStatus}/>}
+        {isDM ? null : <ListSection name="Muted" listUsers={allMuted} privilege={channelStatus}/>}
+        {isDM ? null : <ListSection name="Banned" listUsers={allBanned} privilege={channelStatus}/>}{}
 
       </div>
     );

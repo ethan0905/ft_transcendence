@@ -33,6 +33,11 @@ export class QuitChanDto{
     chatId?: number;
 }
 
+export class PlayChanDto{
+    @IsNumber()
+    chatId?: number;
+}
+
 export class ActionsChanDto{
     @IsNumber()
     chatId?: number;

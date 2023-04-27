@@ -13,7 +13,7 @@ import { ChannelMessageSendDto, DmMsgSend  } from './dto/msg.dto';
 import { ValidationPipe, UsePipes } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { PrismaClient } from '@prisma/client';
-import { QuitChanDto, JoinChanDto, ActionsChanDto} from "./dto/edit-chat.dto"
+import { QuitChanDto, JoinChanDto, ActionsChanDto, PlayChanDto} from "./dto/edit-chat.dto"
 import { EditChannelCreateDto } from './dto/edit-chat.dto';
 import { IsAdminDto } from './dto/admin.dto';
 
@@ -358,4 +358,14 @@ export class ChatGateway implements OnGatewayConnection {
       client.broadcast.emit('chan updated', data);
   }
 
+  @SubscribeMessage('play')
+  async playMatchWithFriends(@ConnectedSocket() client:Socket, @MessageBody()  data: PlayChanDto){
+    const room = await this.chatService.playMatchWithFriends(client, this.clients[client.id].username, data.chatId, this.server);
+    setTimeout(async () => {
+      this.server.to(client.id).emit("NewPartyCreated", room.name);
+      const msg = await this.chatService.newMsg({chatId:data.chatId,msg:"Link to Play with me:\n"+`${process.env.FRONTEND_URL}`+"/Game/"+room.name}, this.clients[client.id].id);
+      this.server.to(data.chatId.toString()).emit("NewMessage", msg);
+    },2000);
+
+  }
 }

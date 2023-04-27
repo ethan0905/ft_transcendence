@@ -69,7 +69,6 @@ export class WsGameService {
 		let user = this.getUsernameFromId(client.id);
 		if (user === undefined)
 			return;
-		console.log("Deconnection:"+user);
 		if (this.queue.includes(user))
 			this.queue.splice(this.queue.indexOf(user), 1);
 		for (let room in this.rooms) {
@@ -140,8 +139,58 @@ export class WsGameService {
 		}
 		this.rooms[room.name] = room;
 		server.emit('RoomCreated', room);
-		console.log(this.clients[client1].id +"|"+this.clients[client2].id)
 		server.to([this.clients[client1].id, this.clients[client2].id]).emit('FindGame', room.name);
+	}
+
+	async createRoomWithFriends(client1:string, client2:string){
+		let userplayers = await  this.prisma.user.findMany({
+			where:{
+				OR:[
+					{username:client1},
+					{username:client2}
+				]
+			}
+		});
+		const uuid = uuidv4();
+
+		const new_game = await this.prisma.game.create({
+			data: {
+				players: {
+					connect: [
+						{ username: client1 },
+						{ username: client2 },
+					],
+				},
+				duration: 10,
+				score: [0, 0],
+				roomName: uuid,
+				player1Name: client1,
+			},
+		});
+
+		let room: Room = {
+			name: uuid,
+			player1: client1,
+			player2: client2,
+			spectators: [],
+			game: {
+				player1_position: 0,
+				player2_position: 0,
+				player1_score: 0,
+				player2_score: 0,
+				is_playing: false,
+				ball: {
+					x: 0.5,
+					y: 0.5,
+					vx: 0.001,
+					vy: 0.001,
+					speed: 0,
+					radius: 0.015,
+				}
+			}
+		}
+		this.rooms[room.name] = room;
+		return (room);
 	}
 
 	matchmaking(client:Socket, server:Server): Promise<void> {
@@ -205,7 +254,7 @@ export class WsGameService {
 			if (room.player1 === user){
 				server.in(room.name).fetchSockets().then((sockets) => {
 					for (let i = 0; i < sockets.length; i++) {
-						if (sockets[i].id === this.clients[room.player2].id)
+						if (this.clients[room.player2] !== undefined && sockets[i].id === this.clients[room.player2].id)
 							this.startGame(room.name,server);
 					}
 				})
@@ -215,7 +264,7 @@ export class WsGameService {
 				this.clients[user].join(room.name);
 				server.in(room.name).fetchSockets().then((sockets) => {
 					for (let i = 0; i < sockets.length; i++) {
-						if (sockets[i].id === this.clients[room.player1].id)
+						if (this.clients[room.player1] !== undefined && sockets[i].id === this.clients[room.player1].id)
 							this.startGame(room.name,server);
 					}
 				})
@@ -237,6 +286,8 @@ export class WsGameService {
 			if (room.player1 === user) {
 				// this.clients[client_id].leave(room.name);
 				room.player1 = "";
+				if (room.game.is_playing === true)
+					this.schedulerRegistry.deleteInterval(room.name);
 				if (room.game.is_playing === true){
 					room.game.player1_score = 0;
 					room.game.player2_score = 11;
@@ -244,7 +295,6 @@ export class WsGameService {
 					room.game.ball.speed = 0;
 				}
 				server.to(room.name).emit('PlayerLeft', {player:1, score:[room.game.player1_score, room.game.player2_score]});
-				this.schedulerRegistry.deleteInterval(room.name);
 				// ajouter dans la bdd | efaccer la room de la liste
 				delete this.rooms[room_name];
 				server.emit("RoomDeleted", room_name);
@@ -253,13 +303,14 @@ export class WsGameService {
 			else if (room.player2 === user) {
 				// this.clients[client_id].leave(room.name);
 				room.player2 = "";
+				if (room.game.is_playing === true)
+					this.schedulerRegistry.deleteInterval(room.name);
 				if (room.game.is_playing === true){
 					room.game.player1_score = 11;
 					room.game.player2_score = 0;
 				}
 				server.to(room.name).emit('PlayerLeft', {player:2, score:[room.game.player1_score, room.game.player2_score]});
 				// verifier que le'interval existe
-				this.schedulerRegistry.deleteInterval(room.name);
 				// ajouter dans la bdd | efaccer la room de la liste
 				delete this.rooms[room_name];
 				server.emit("RoomDeleted", room_name);

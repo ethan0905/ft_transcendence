@@ -10,6 +10,8 @@ import { JoinChanDto, EditChannelCreateDto } from 'src/chat/dto/edit-chat.dto';
 import { channel } from 'diagnostics_channel';
 import { use } from 'passport';
 import * as bcrypt from 'bcrypt';
+import { Server, Socket } from 'socket.io';
+import { WsGameService } from 'src/ws_game/ws_game.service';
 
 
 @Injectable()
@@ -18,6 +20,7 @@ export class ChatService {
         private readonly prisma: PrismaService,
         private readonly userService: UserService,
         private readonly auth: AuthService,
+        private readonly WsGameService: WsGameService,
         ) {}
 
         async newChannel(info: ChannelCreateDto, username: string) {
@@ -959,5 +962,26 @@ export class ChatService {
             }
           });
           return users;
+        }
+
+        async playMatchWithFriends(client:Socket, username:string, channelId:number, server:Server){
+          const users = await this.prisma.channel.findMany({
+            where:{
+              id:channelId,
+              isDM:true,
+            },
+            select:{
+              admins:{
+                select:{
+                  username:true,
+                }
+              }
+            }
+          });
+          if (users.length === 0 || users[0].admins.length === 0 || 
+            (users[0].admins[0].username !== username && users[0].admins[1].username !== username))
+            return;
+          const room = await this.WsGameService.createRoomWithFriends(users[0].admins[0].username, users[0].admins[1].username);
+          return room;
         }
   }

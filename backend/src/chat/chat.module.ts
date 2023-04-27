@@ -9,11 +9,12 @@ import { PrismaClient } from '@prisma/client';
 import { AuthModule } from 'src/auth/auth.module';
 import { AuthService } from 'src/auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
+import { WsGameModule } from 'src/ws_game/ws_game.module';
 
 @Module({
-	imports: [ UserModule],
+	imports: [ UserModule,WsGameModule],
 	controllers: [ChatController],
-	providers: [ ChatGateway, ChatService , PrismaClient, AuthService, JwtService, UserService ],
+	providers: [ ChatGateway, ChatService, PrismaClient, AuthService, JwtService, UserService ],
 	exports: [ ChatService],
 })
 
