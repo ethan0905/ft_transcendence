@@ -284,7 +284,7 @@ export class AuthService{
 			if (twoFactorSecret.twoFactorSecret == null)
 				return {message: "Error while enabling 2FA"};
 
-			const otpauthUrl = authenticator.keyuri(user.email, 'Pong Pong', twoFactorSecret.twoFactorSecret);
+			const otpauthUrl = authenticator.keyuri(user.email, 'Konoha Pong', twoFactorSecret.twoFactorSecret);
 			// console.log("otpauthUrl: ", otpauthUrl);
 
 			return res.json(
