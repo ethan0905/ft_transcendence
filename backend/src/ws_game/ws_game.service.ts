@@ -29,6 +29,8 @@ type Room = {
 	name: string;
 	player1: string;
 	player2: string;
+	player1_inRoom: boolean;
+	player2_inRoom: boolean;
 	spectators: string[];
 	game: Game;
 }
@@ -72,10 +74,10 @@ export class WsGameService {
 		if (this.queue.includes(user))
 			this.queue.splice(this.queue.indexOf(user), 1);
 		for (let room in this.rooms) {
-			if (this.rooms[room].player1 === user && this.rooms[room].game.is_playing === true) {
+			if (this.rooms[room].player1 === user && (this.rooms[room].game.is_playing === true || this.rooms[room].player1_inRoom === true)) {
 				this.leaveRoom(client, this.rooms[room].name, server);
 			}
-			else if (this.rooms[room].player2 === user && this.rooms[room].game.is_playing === true) {
+			else if (this.rooms[room].player2 === user && (this.rooms[room].game.is_playing === true || this.rooms[room].player2_inRoom === true)) {
 				this.leaveRoom(client,this.rooms[room].name, server);
 			}
 		};
@@ -120,6 +122,8 @@ export class WsGameService {
 			name: uuid,
 			player1: client1,
 			player2: client2,
+			player1_inRoom: false,
+			player2_inRoom: false,
 			spectators: [],
 			game: {
 				player1_position: 0,
@@ -172,6 +176,8 @@ export class WsGameService {
 			name: uuid,
 			player1: client1,
 			player2: client2,
+			player1_inRoom: false,
+			player2_inRoom: false,
 			spectators: [],
 			game: {
 				player1_position: 0,
@@ -252,16 +258,18 @@ export class WsGameService {
 		let user = this.getUsernameFromId(client.id);
 		if (room !== undefined && user !== undefined) {
 			if (room.player1 === user){
+				this.clients[user].join(room.name);
+				room.player1_inRoom = true;
 				server.in(room.name).fetchSockets().then((sockets) => {
 					for (let i = 0; i < sockets.length; i++) {
 						if (this.clients[room.player2] !== undefined && sockets[i].id === this.clients[room.player2].id)
 							this.startGame(room.name,server);
 					}
 				})
-				this.clients[user].join(room.name);
 			}
 			else if (room.player2 === user) {
 				this.clients[user].join(room.name);
+				room.player2_inRoom = true;
 				server.in(room.name).fetchSockets().then((sockets) => {
 					for (let i = 0; i < sockets.length; i++) {
 						if (this.clients[room.player1] !== undefined && sockets[i].id === this.clients[room.player1].id)
