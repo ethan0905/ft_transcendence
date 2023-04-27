@@ -73,10 +73,10 @@ export class WsGameService {
 		if (this.queue.includes(user))
 			this.queue.splice(this.queue.indexOf(user), 1);
 		for (let room in this.rooms) {
-			if (this.rooms[room].player1 === user) {
+			if (this.rooms[room].player1 === user && this.rooms[room].game.is_playing === true) {
 				this.leaveRoom(client, this.rooms[room].name, server);
 			}
-			else if (this.rooms[room].player2 === user) {
+			else if (this.rooms[room].player2 === user && this.rooms[room].game.is_playing === true) {
 				this.leaveRoom(client,this.rooms[room].name, server);
 			}
 		};

@@ -135,12 +135,11 @@ export default function GamePage() {
 			const rooms:any = Object.values(values);
 			setData(rooms);
 		})
-	},[]);
+	},[token]);
 
 	useEffect(() => {
 		if (socket.disconnected && token !== ''){
 			socket.auth = {token: token};
-			console.log(token);
 			socket.connect();
 		}
 	},[socket, token]);
@@ -176,6 +175,8 @@ export default function GamePage() {
 		return (() =>{
 			socket.off("RoomCreated");
 			socket.off("FindGame");
+			socket.off("RoomDeleted");
+			socket.disconnect();
 		})
 	}, [socket, token, navigate])
 

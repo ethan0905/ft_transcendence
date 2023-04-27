@@ -376,14 +376,12 @@ function PlayPage() {
 	
 	useEffect(() => {
 		let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-		if (!cookieToken)
-			setToken("prout")
-		else
+		if (cookieToken !== "")
 			setToken(cookieToken);
-	},[])
+	},[token])
 
 	useEffect(() => {
-		if (!socket.connected && token !== ''){
+		if (socket.disconnected && token !== ''){
 			socket.auth= {token: token};
 			socket.connect();
 		}
@@ -398,6 +396,7 @@ function PlayPage() {
 					AlertRoomsNotExists();
 					navigate("/Game");
 				}
+				console.log("role:"+data);
 				setPlayer_role(data);
 			})
 			socket.emit('JoinRoom', {room_name:id_game});
@@ -456,6 +455,7 @@ function PlayPage() {
 							<h1 className="w-fit text-5xl text-white">Score: {score[0]}:{score[1]}</h1>
 							<button className="bg-red-200 p-3 rounded-xl w-fit text-2xl" onClick={() => {
 									socket.emit('LeaveRoom', {room_name:id_game});
+									socket.disconnect();
 									navigate("/Game");
 							}}>GO BACK TO MENU</button>
 						</>
