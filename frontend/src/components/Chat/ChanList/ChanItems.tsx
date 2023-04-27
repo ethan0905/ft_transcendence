@@ -67,7 +67,7 @@ const ChanItems: React.FC<Props> = ({ name, active, animationDelay, id_channel }
     const isProtected = await getChannelProtection(id_channel,document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1"));
     if (isProtected === false)
       return;
-    console.log("is protected:",isProtected);
+    // console.log("is protected:",isProtected);
     const { value: password } = await MySwal.fire({
       title: 'Enter your password',
       input: 'password',

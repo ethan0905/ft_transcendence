@@ -32,7 +32,7 @@ export class ChatService {
               const salt = await bcrypt.genSalt();
 
               hash = await bcrypt.hash(info.Password, salt);
-              console.log("hash:" + hash);
+              // console.log("hash:" + hash);
               info.isPassword = true;
             }
 
@@ -40,7 +40,7 @@ export class ChatService {
               info.isPrivate = false;
             // if (info.Password != null && info.Password != undefined && info.Password != "")
             //   info.isPassword = true;
-            console.log(info);
+            // console.log(info);
             const user = await this.userService.getUser(username);
             const channel = await this.prisma.channel.create({
               data: {
@@ -96,7 +96,7 @@ export class ChatService {
                 //isPrivate : info.Private,
               }
           )
-          console.log(value);
+          // console.log(value);
         }
 
         async invit_Chan(username: string, id : number)
@@ -294,10 +294,10 @@ export class ChatService {
             return (2);
           }
           else if (chan.password !== '' && chan.password !== null && chan.password !== undefined){
-            console.log("chan pass : ", chan.password, "data pass : ", data.Password);
+            // console.log("chan pass : ", chan.password, "data pass : ", data.Password);
             const isMatch = await bcrypt.compare(data.Password, chan.password);
 
-            console.log("is mathc ? " + isMatch);
+            // console.log("is mathc ? " + isMatch);
 
             if (!isMatch)
               return (3);
@@ -544,10 +544,10 @@ export class ChatService {
 
         organize__channelToJoin(source: any) {
           const channels = [];
-          console.log("source : ", source)
-          console.log("channelName : ", source.channelName)
-          console.log("source size : ", source.contains)
-          console.log("member : ", source.member)
+          // console.log("source : ", source)
+          // console.log("channelName : ", source.channelName)
+          // console.log("source size : ", source.contains)
+          // console.log("member : ", source.member)
 
           return channels;
         }
@@ -819,7 +819,7 @@ export class ChatService {
                   user.muted.find((elem:any) => {return elem.id === channelId}) === undefined &&
                   user.banned.find((elem:any) => {return elem.id === channelId}) === undefined
               ){
-                console.log(user);
+                // console.log(user);
                 return user.username;
               }
               return;
@@ -871,7 +871,7 @@ export class ChatService {
               }
             })
 
-            console.log(useralreadydm);
+            // console.log(useralreadydm);
             let usernames = [];
             if (useralreadydm.length > 0){
               useralreadydm[0].members.forEach((value:any) => {
@@ -891,7 +891,7 @@ export class ChatService {
                 username:true,
               }
             })
-            console.log(users);
+            // console.log(users);
             let values = []
             users.forEach((value:any) => {
               values.push(value.username);

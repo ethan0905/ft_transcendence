@@ -15,7 +15,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({profilePicture, handleUp
 	useEffect(() => {
 		if (profilePicture) {
 			setTimeout(() => {
-				console.log('Image avatar: ', avatarUrl);
+				// console.log('Image avatar: ', avatarUrl);
 				setImageIsLoaded(true);
 			  }, 400); // 1 second delay
 		}

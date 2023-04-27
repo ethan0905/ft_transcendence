@@ -54,7 +54,7 @@ export class AuthService{
 			body: `grant_type=authorization_code&client_id=${process.env.API42_CLIENT_ID}&client_secret=${process.env.API42_CLIENT_SECRET}&code=${req}&redirect_uri=${process.env.API42_REDIRECT_URI}`,
 		  });
 		  const data = await response.json();
-		  console.log("accessToken(): \n", process.env.API42_CLIENT_ID + "\n" + process.env.API42_CLIENT_SECRET + "\n" + process.env.API42_REDIRECT_URI + "\n\n");
+		//   console.log("accessToken(): \n", process.env.API42_CLIENT_ID + "\n" + process.env.API42_CLIENT_SECRET + "\n" + process.env.API42_REDIRECT_URI + "\n\n");
 		  if (!data)
 		  {
 			throw new HttpException(
@@ -99,12 +99,12 @@ export class AuthService{
 
 	async create42User(token: any, user42: any) {
 		try {
-			console.log("Creating user... \n");	
+			// console.log("Creating user... \n");	
 
 			// if (user42.email)
 			// 	return user42;
 
-			console.log("user image url : ", user42.image.versions.medium);
+			// console.log("user image url : ", user42.image.versions.medium);
 
 			const user = await this.prisma.user.create({
 				data: {
@@ -119,7 +119,7 @@ export class AuthService{
 				},
 			});
 	
-			console.log("User 42 has been created!\n");
+			// console.log("User 42 has been created!\n");
 
 			return user;
 		}catch (error) {
@@ -238,7 +238,7 @@ export class AuthService{
 
 	async activate2FA(@Req() req: Request, @Res() res: Response) {
 
-		console.log("99998888---> ", req.body.twoFactorActivated);
+		// console.log("99998888---> ", req.body.twoFactorActivated);
 
 		const user = await this.prisma.user.update({
 			where: {

@@ -91,7 +91,7 @@ const FormButton = () => {
 
 	useEffect(() => {
 		if (token !== '') {
-			console.log("Le token est valide !", token);
+			// console.log("Le token est valide !", token);
 			getUsername(token);
 		}
 		let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
@@ -124,7 +124,7 @@ const FormButton = () => {
 	const handleSubmit = (e: any) => {
 		e.preventDefault();
 		getUsername(token);
-		console.log(`Name: ${name}, Password: ${password}, Private: ${isPrivate}, Username: ${username}`);
+		// console.log(`Name: ${name}, Password: ${password}, Private: ${isPrivate}, Username: ${username}`);
 		if (name !== '' && name.trim().length > 0) {
 			socket.emit("create channel", {chatName:name, Password:password, isPrivate:isPrivate, username:username})
 		}
@@ -224,7 +224,7 @@ export default function ChanList() {
 
 	useEffect(() => {
 		if (token !== '') {
-			console.log("Le token est valide !", token);
+			// console.log("Le token est valide !", token);
 			getUsername(token);
 		}
 		let cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
@@ -263,7 +263,7 @@ export default function ChanList() {
 				}
 				return ([...data, value]);
 			});
-			console.log("New Channel");
+			// console.log("New Channel");
 		});
 		socket.on("Channel Created", (value:any) => {
 			if (value.client_id === socket.id){
@@ -284,7 +284,7 @@ export default function ChanList() {
 					return ([...data, value]);
 				});
 			}
-			console.log("New Channel");
+			// console.log("New Channel");
 		});
 
 		socket.on("Joined", (value:any) => {
@@ -389,7 +389,7 @@ export default function ChanList() {
 			// getUsername();
 		if (token !== ''){
 			getAllChannels(token).then((value: any) => {
-				console.log(value);
+				// console.log(value);
 				setMyDms(value.MyDms)
 				setMyChannels(value.MyChannels);
 				setChannelToJoin(value.ChannelsToJoin);
