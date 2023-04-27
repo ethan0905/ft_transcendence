@@ -168,7 +168,7 @@ export class ChatGateway implements OnGatewayConnection {
     client.leave(data.chatId.toString());
     this.server.to(client.id).emit("quited", {chatId:data.chatId});
     this.server.to(data.chatId.toString()).emit("quit",{username:this.clients[client.id].username})
-    console.log("user quit: " + this.clients[client.id].username);
+    // console.log("user quit: " + this.clients[client.id].username);
   }
 
   @SubscribeMessage('is-admin')
