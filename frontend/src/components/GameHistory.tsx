@@ -112,11 +112,11 @@ const GameHistory = (props: TableProps) => {
 						<tr key={index} style={{ backgroundColor: 
 							(item.score[0] >= item.score[1] && item.player1Name === userName) || 
 							(item.score[1] >= item.score[0] && item.player1Name !== userName) ? 
-							(item.score[0] == item.score[1]) ? '#ffffff11' : '#42f5b055' /* green */ 
+							(item.score[0] === item.score[1]) ? '#ffffff11' : '#42f5b055' /* green */ 
 							: '#f5484255' /* red */
 						  }}>
 							<td style={lineTable}>{index + 1}</td>
-							{ item.player1Name == userName &&
+							{ item.player1Name === item.player1 &&
 								(
 									<>
 										<td style={lineTable}>{item.player1}</td>
@@ -126,7 +126,7 @@ const GameHistory = (props: TableProps) => {
 								)
 							}
 
-							{ item.player1Name != userName &&
+							{ item.player1Name !== item.player1 &&
 								(
 									<>
 										<td style={lineTable}>{item.player2}</td>

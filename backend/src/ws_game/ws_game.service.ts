@@ -284,42 +284,68 @@ export class WsGameService {
 		}
 	}
 
-	leaveRoom(client:Socket,room_name:string,server:Server): void {
+	async leaveRoom(client:Socket,room_name:string,server:Server): Promise<void> {
 		const room: Room = this.rooms[room_name];
 		let user = this.getUsernameFromId(client.id);
 		if (user === undefined)
 			return;
 		if (room !== undefined) {
-			// console.log("LeaveRoom: " + room_name + " " + user + " P1 :" + room.player1 + " P2:" + room.player2)
 			if (room.player1 === user) {
-				// this.clients[client_id].leave(room.name);
 				room.player1 = "";
-				if (room.game.is_playing === true)
-					this.schedulerRegistry.deleteInterval(room.name);
 				if (room.game.is_playing === true){
-					room.game.player1_score = 0;
-					room.game.player2_score = 11;
-					room.game.is_playing = false;
-					room.game.ball.speed = 0;
+					this.schedulerRegistry.deleteInterval(room.name);
+					server.to(room.name).emit('PlayerLeft', {player:1, score:[0, 11]});
+					const scoreArray = [0, 11];
+					await this.prisma.game.update({
+						where: {
+							roomName: room.name,
+						},
+						data: {
+							score: scoreArray,
+						},
+					})
 				}
-				server.to(room.name).emit('PlayerLeft', {player:1, score:[room.game.player1_score, room.game.player2_score]});
-				// ajouter dans la bdd | efaccer la room de la liste
+				else{
+					const scoreArray = [0, 0];
+					await this.prisma.game.update({
+						where: {
+							roomName: room.name,
+						},
+						data: {
+							score: scoreArray,
+						},
+					})
+				}
 				delete this.rooms[room_name];
 				server.emit("RoomDeleted", room_name);
 				server.socketsLeave(room.name);
 			}
 			else if (room.player2 === user) {
-				// this.clients[client_id].leave(room.name);
 				room.player2 = "";
-				if (room.game.is_playing === true)
-					this.schedulerRegistry.deleteInterval(room.name);
 				if (room.game.is_playing === true){
-					room.game.player1_score = 11;
-					room.game.player2_score = 0;
+					this.schedulerRegistry.deleteInterval(room.name);
+					server.to(room.name).emit('PlayerLeft', {player:2, score:[11, 0]});
+					const scoreArray = [11, 0];
+					await this.prisma.game.update({
+						where: {
+							roomName: room.name,
+						},
+						data: {
+							score: scoreArray,
+						},
+					})
 				}
-				server.to(room.name).emit('PlayerLeft', {player:2, score:[room.game.player1_score, room.game.player2_score]});
-				// verifier que le'interval existe
-				// ajouter dans la bdd | efaccer la room de la liste
+				else{
+					const scoreArray = [0, 0];
+					await this.prisma.game.update({
+						where: {
+							roomName: room.name,
+						},
+						data: {
+							score: scoreArray,
+						},
+					})
+				}
 				delete this.rooms[room_name];
 				server.emit("RoomDeleted", room_name);
 				server.socketsLeave(room.name);
