@@ -120,7 +120,7 @@
 }
 
 .chat__msg {
-  user-select: none;
+  /* user-select: none; */
   overflow-wrap: break-word;
 }
 .chat__item.other {

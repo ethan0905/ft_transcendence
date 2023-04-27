@@ -54,7 +54,6 @@ export class AuthService{
 			body: `grant_type=authorization_code&client_id=${process.env.API42_CLIENT_ID}&client_secret=${process.env.API42_CLIENT_SECRET}&code=${req}&redirect_uri=${process.env.API42_REDIRECT_URI}`,
 		  });
 		  const data = await response.json();
-		  console.log("accessToken(): \n", process.env.API42_CLIENT_ID + "\n" + process.env.API42_CLIENT_SECRET + "\n" + process.env.API42_REDIRECT_URI + "\n\n");
 		  if (!data)
 		  {
 			throw new HttpException(
