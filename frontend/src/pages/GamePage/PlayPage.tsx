@@ -396,14 +396,12 @@ function PlayPage() {
 					AlertRoomsNotExists();
 					navigate("/Game");
 				}
-				console.log("role:"+data);
 				setPlayer_role(data);
 			})
 			socket.emit('JoinRoom', {room_name:id_game});
 		}
 
 		socket.on('StartGame', (value:any) => {
-			console.log("StartGame:"+value);
 			setStatus_game(StatusGame.Playing);
 		});
 		socket.on('PlayerLeft', (values:any) => {
