@@ -5,6 +5,7 @@ import { WsGameController } from './ws_game.controller';
 
 @Module({
   providers: [WsGameGateway, WsGameService],
-  controllers: [WsGameController]
+  controllers: [WsGameController],
+  exports:[WsGameService]
 })
 export class WsGameModule {}

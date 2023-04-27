@@ -13,7 +13,7 @@ import { ChannelMessageSendDto, DmMsgSend  } from './dto/msg.dto';
 import { ValidationPipe, UsePipes } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { PrismaClient } from '@prisma/client';
-import { QuitChanDto, JoinChanDto, ActionsChanDto} from "./dto/edit-chat.dto"
+import { QuitChanDto, JoinChanDto, ActionsChanDto, PlayChanDto} from "./dto/edit-chat.dto"
 import { EditChannelCreateDto } from './dto/edit-chat.dto';
 import { IsAdminDto } from './dto/admin.dto';
 
@@ -58,7 +58,7 @@ export class ChatGateway implements OnGatewayConnection {
         }
       })
       this.clients[client.id] = user;
-      console.log("Connect")
+      // console.log("Connect")
       // console.log(this.clients);
     }
     catch (e){
@@ -70,7 +70,7 @@ export class ChatGateway implements OnGatewayConnection {
 
 
   handleDisconnect(client: Socket) {
-    console.log("Disconnect")
+    // console.log("Disconnect")
     delete this.clients[client.id];
   }
 
@@ -168,7 +168,7 @@ export class ChatGateway implements OnGatewayConnection {
     client.leave(data.chatId.toString());
     this.server.to(client.id).emit("quited", {chatId:data.chatId});
     this.server.to(data.chatId.toString()).emit("quit",{username:this.clients[client.id].username})
-    console.log("user quit: " + this.clients[client.id].username);
+    // console.log("user quit: " + this.clients[client.id].username);
   }
 
   @SubscribeMessage('is-admin')
@@ -179,7 +179,7 @@ export class ChatGateway implements OnGatewayConnection {
     if (this.clients[client.id] === undefined)
       return;
     const isAdmin = await this.chatService.isAdmin_Chan(this.clients[client.id].username, data.channel_id);
-    console.log("is admin: " + isAdmin);
+    // console.log("is admin: " + isAdmin);
     if (isAdmin)
       this.server.to(client.id).emit("isAdmin", {isAdmin:isAdmin});
     else
@@ -205,7 +205,7 @@ export class ChatGateway implements OnGatewayConnection {
         return;
       }
     }
-    console.log("user invited");
+    // console.log("user invited");
   }
 
   @SubscribeMessage('ban')
@@ -231,7 +231,7 @@ export class ChatGateway implements OnGatewayConnection {
       }
     }
     this.server.to(data.chatId.toString()).emit("ban", {username: data.username});
-    console.log("chan banned");
+    // console.log("chan banned");
   }
 
   @SubscribeMessage('unban')
@@ -241,7 +241,7 @@ export class ChatGateway implements OnGatewayConnection {
   ) {
     if (this.clients[client.id] === undefined)
       return;
-    console.log(data);
+    // console.log(data);
     const isAdmin = await this.chatService.isAdmin_Chan(this.clients[client.id].username, data.chatId);
     if (!isAdmin)
       return;
@@ -253,7 +253,7 @@ export class ChatGateway implements OnGatewayConnection {
       }
     }
     this.server.to(data.chatId.toString()).emit("unban", {username: data.username});
-    console.log("chan unbanned");
+    // console.log("chan unbanned");
   }
 
   @SubscribeMessage('kick')
@@ -281,7 +281,7 @@ export class ChatGateway implements OnGatewayConnection {
       }
     }
     this.server.to(data.chatId.toString()).emit("kick", {username: data.username});
-    console.log("chan kicked");
+    // console.log("chan kicked");
   }
 
   
@@ -297,7 +297,7 @@ export class ChatGateway implements OnGatewayConnection {
       return;
     await this.chatService.mute_Chan(data.username, data.chatId);
     this.server.to(data.chatId.toString()).emit("mute", {username: data.username});
-    console.log("chan muteed");
+    // console.log("chan muteed");
   }
 
     
@@ -313,7 +313,7 @@ export class ChatGateway implements OnGatewayConnection {
       return;
     await this.chatService.unmute_Chan(data.username, data.chatId);
     this.server.to(data.chatId.toString()).emit("unmute", {username: data.username});
-    console.log("chan unmuteed");
+    // console.log("chan unmuteed");
   }
 
   @SubscribeMessage('CreateDm')
@@ -340,7 +340,7 @@ export class ChatGateway implements OnGatewayConnection {
           return;
         await this.chatService.set_admin_Chan(data.username, data.chatId);
         this.server.to(data.chatId.toString()).emit("set-admin", {username: data.username});
-        console.log("new admin");
+        // console.log("new admin");
   }
 
   @SubscribeMessage('update')
@@ -358,4 +358,14 @@ export class ChatGateway implements OnGatewayConnection {
       client.broadcast.emit('chan updated', data);
   }
 
+  @SubscribeMessage('play')
+  async playMatchWithFriends(@ConnectedSocket() client:Socket, @MessageBody()  data: PlayChanDto){
+    const room = await this.chatService.playMatchWithFriends(client, this.clients[client.id].username, data.chatId, this.server);
+    setTimeout(async () => {
+      this.server.to(client.id).emit("NewPartyCreated", room.name);
+      const msg = await this.chatService.newMsg({chatId:data.chatId,msg:"Link to Play with me:\n"+`${process.env.FRONTEND_URL}`+"/Game/"+room.name}, this.clients[client.id].id);
+      this.server.to(data.chatId.toString()).emit("NewMessage", msg);
+    },2000);
+
+  }
 }
