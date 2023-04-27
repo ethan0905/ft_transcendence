@@ -9,7 +9,7 @@ import PlayPage from './PlayPage.tsx';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Swal from 'sweetalert2/dist/sweetalert2.all.js';
-
+import withReactContent from 'sweetalert2-react-content';
 export const SocketContext = createContext({} as Socket);
 interface TableProps {
   data: {
@@ -21,6 +21,8 @@ interface TableProps {
 	game: any;
   }[];
 }
+
+const MySwal = withReactContent(Swal);
 
 const GameTable = (props: TableProps) => {
   const { data } = props;
@@ -90,6 +92,30 @@ async function getRooms() {
 	  return (value);
 }
 
+const NoOpponentPopUp = () => MySwal.fire({
+	title: 'No opponent found',
+	text: 'Nobody want play?',
+})
+
+const matchmakingPopUp = (socket:Socket) => MySwal.fire({
+		title: 'Searching for an opponent...',
+		allowOutsideClick: false,
+		allowEscapeKey: false,
+		allowEnterKey: false,
+		showConfirmButton: false,
+		showCancelButton: true,
+		timer: 60000,
+		timerProgressBar: true,
+	}).then((result) => {
+	if (result.dismiss === Swal.DismissReason.timer) {
+		socket.emit("cancelMatchmaking");
+		NoOpponentPopUp();
+	}
+	else if (result.dismiss === Swal.DismissReason.cancel) {
+		socket.emit("cancelMatchmaking");
+	}
+});
+
 export default function GamePage() {
 	const [socket, setSocket] = useState(io(`${import.meta.env.VITE_GAME_URL}` + "/ws-game", {transports:["websocket"], autoConnect:false, reconnection:true,reconnectionAttempts: 3, reconnectionDelay: 1000}));
 	// const data = [];
@@ -113,7 +139,6 @@ export default function GamePage() {
 
 	useEffect(() => {
 		if (socket.disconnected && token !== ''){
-			console.log("passer")
 			socket.auth = {token: token};
 			console.log(token);
 			socket.connect();
@@ -135,22 +160,7 @@ export default function GamePage() {
 		socket.on("FindGame", (value:any) => {
 			console.log("FindGame: " + value)
 			Swal.close();
-			// Swal.fire({
-			// 	title: 'Game found',
-			// 	text: 'Do you want to join the game?',
-			// 	icon: 'success',
-			// 	showCancelButton: true,
-			// 	confirmButtonText: 'Yes',
-			// 	cancelButtonText: 'No'
-			// }).then((result) => {
-			// 	if (result.dismiss === Swal.DismissReason.cancel) {
-			// 		navigate(value);
-			// 		socket.emit("LeaveRoom", {room_name:value});
-			// 	}
-			// 	if (result.isConfirmed ) {
-					navigate(value);
-			// 	}
-			// })
+			navigate(value);
 		});
 
 
@@ -243,63 +253,12 @@ export default function GamePage() {
 						</label> */}
 					</div>
 
-					<div className='ButtonPlay'>
-						<img src="/rasengan.png" alt='ImgButton' id='ImgButton'
-							onClick={() => {
-								socket.emit("matchmaking")
-								Swal.fire({
-									title: 'Searching for an opponent...',
-									allowOutsideClick: false,
-									allowEscapeKey: false,
-									allowEnterKey: false,
-									showConfirmButton: false,
-									showCancelButton: true,
-									timer: 10000,
-									timerProgressBar: true,
-									onBeforeOpen: () => {
-										Swal.showLoading()
-									},
-									onClose: () => {
-										clearInterval(timerInterval)
-									}
-								}).then((result) => {
-									if (result.dismiss === Swal.DismissReason.timer) {
-										console.log('I was closed by the timer')
-									}
-									else if (result.dismiss === Swal.DismissReason.cancel) {
-										console.log('Cancelled');
-										// socket.emit("cancelMatchmaking"); // alex: emit the right event here
-									}
-								})
-							}}
-						/>
-						<span id='textPlay' onClick={() => {
-							socket.emit("matchmaking")
-							Swal.fire({
-								title: 'Searching for an opponent...',
-								allowOutsideClick: false,
-								allowEscapeKey: false,
-								allowEnterKey: false,
-								showConfirmButton: false,
-								showCancelButton: true,
-								timer: 10000,
-								timerProgressBar: true,
-								onBeforeOpen: () => {
-									Swal.showLoading()
-								},
-								onClose: () => {
-									clearInterval(timerInterval)
-								}
-							}).then((result) => {
-								if (result.dismiss === Swal.DismissReason.timer) {
-									console.log('I was closed by the timer')
-								}
-								else if (result.dismiss === Swal.DismissReason.cancel) {
-									console.log('Cancelled');
-									// socket.emit("cancelMatchmaking"); // alex: emit the right event here
-								}
-							})
-							}}>PLAY</span>
+					<div className='ButtonPlay' onClick={() => {
+						socket.emit("matchmaking")
+						matchmakingPopUp(socket);
+					}}>
+						<img src="/rasengan.png" alt='ImgButton' id='ImgButton'/>
+						<span id='textPlay'>PLAY</span>
 					</div>
 				</div>:
 				<PlayPage />

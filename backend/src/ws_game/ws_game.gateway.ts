@@ -29,6 +29,11 @@ export class WsGameGateway{
     this.wsGameService.matchmaking(client, this.server);
   }
 
+  @SubscribeMessage('cancelMatchmaking')
+  handleCancelMatchmaking(@ConnectedSocket() client: Socket): void {
+    this.wsGameService.cancelMatchmaking(client, this.server);
+  }
+
   @SubscribeMessage('JoinRoom')
   handleJoinRoom(@ConnectedSocket() client: Socket, @MessageBody() data:any) : void {
     this.wsGameService.joinRoom(client,data.room_name, this.server);

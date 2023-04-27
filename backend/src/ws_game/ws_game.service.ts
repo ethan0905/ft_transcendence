@@ -160,6 +160,16 @@ export class WsGameService {
 		}
 	}
 
+	cancelMatchmaking(client:Socket, server:Server): Promise<void> {
+		let user = this.getUsernameFromId(client.id);
+		if (user === undefined)
+			return;
+		if (this.queue.includes(user)){
+			this.queue.splice(this.queue.indexOf(user), 1);
+		}
+		return;
+	}
+
 	MakeMove(client: Socket, server:Server, data: any): void {
 		let user = this.getUsernameFromId(client.id);
 		if (user === undefined)

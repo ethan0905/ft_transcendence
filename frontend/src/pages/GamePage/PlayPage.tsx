@@ -354,6 +354,15 @@ enum StatusGame {
 	End = 2
 }
 
+const AlertRoomsNotExists = () => {
+	Swal.fire({
+		title: 'Error!',
+		text: 'Room not exists',
+		icon: 'error',
+		confirmButtonText: 'Ok'
+	})
+}
+
 function PlayPage() {
 	let params = useParams();
 	const navigate = useNavigate();
@@ -385,6 +394,10 @@ function PlayPage() {
 		// socket.emit("ClientSession", "prout");
 		if (id_game !== "" && token !== ''){
 			fetchRole(id_game, token).then((data:number) => {
+				if (data === 0){
+					AlertRoomsNotExists();
+					navigate("/Game");
+				}
 				setPlayer_role(data);
 			})
 			socket.emit('JoinRoom', {room_name:id_game});
